@@ -94,7 +94,7 @@ export function Button(props: LinkProps | ButtonProps) {
   const press = () => scale.set(0.97);
 
   const base = cn(
-    "relative inline-flex items-center justify-center font-semibold select-none",
+    "tap-min relative inline-flex items-center justify-center font-semibold select-none",
     "tracking-[-0.005em] isolate overflow-hidden",
     "focus-visible:outline-2 focus-visible:outline-offset-3",
     SIZES[size],

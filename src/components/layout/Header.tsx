@@ -85,7 +85,7 @@ export function Header() {
           </p>
           <a
             href={telLink()}
-            className="hidden items-center gap-1.5 font-semibold text-[var(--gold-300)] hover:text-white transition-colors sm:flex"
+            className="tap hidden min-h-11 items-center gap-1.5 font-semibold text-[var(--gold-300)] transition-colors hover:text-white sm:flex"
           >
             <Phone className="size-3" />
             {SITE.phoneDisplay}
@@ -174,7 +174,7 @@ export function Header() {
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
                 aria-expanded={mobileOpen}
-                className="grid size-10 place-items-center rounded-full border border-line text-ink lg:hidden"
+                className="tap grid size-10 place-items-center rounded-full border border-line text-ink lg:hidden"
               >
                 <Menu className="size-[18px]" />
               </button>
@@ -339,7 +339,7 @@ function MobileMenu({
                 type="button"
                 onClick={onClose}
                 aria-label="Close menu"
-                className="grid size-10 place-items-center rounded-full border border-line text-ink"
+                className="tap grid size-10 place-items-center rounded-full border border-line text-ink"
               >
                 <X className="size-[18px]" />
               </button>

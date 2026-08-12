@@ -10,7 +10,8 @@
     "images": "node scripts/fetch-images.mjs",
     "images:universities": "node scripts/fetch-university-images.mjs",
     "share": "node scripts/share.mjs",
-    "images:compress": "node scripts/compress-images.mjs"
+    "images:compress": "node scripts/compress-images.mjs",
+    "audit:mobile": "node scripts/audit-mobile.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -30,6 +31,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "puppeteer-core": "^23.11.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

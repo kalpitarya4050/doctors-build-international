@@ -217,7 +217,7 @@ export function LeadForm({
       </div>
 
       {/* Honeypot — off-screen, never announced, never tabbable */}
-      <div aria-hidden className="absolute left-[-9999px] size-px overflow-hidden">
+      <div aria-hidden className="offscreen">
         <label htmlFor="website">Leave this empty</label>
         <input
           id="website"

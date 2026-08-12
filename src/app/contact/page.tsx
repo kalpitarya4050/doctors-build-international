@@ -169,13 +169,13 @@ export default function ContactPage() {
                   <div className="mt-5 flex flex-col gap-1.5">
                     <a
                       href={telLink()}
-                      className="t-num text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
+                      className="tap inline-flex min-h-11 items-center t-num text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
                     >
                       {SITE.phoneDisplay}
                     </a>
                     <a
                       href={`mailto:${SITE.email}`}
-                      className="text-[0.875rem] text-ink-muted hover:text-[var(--accent)]"
+                      className="tap inline-flex min-h-11 items-center text-[0.875rem] text-ink-muted hover:text-[var(--accent)]"
                     >
                       {SITE.email}
                     </a>

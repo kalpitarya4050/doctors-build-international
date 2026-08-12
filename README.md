@@ -18,6 +18,24 @@ npm run build      # production build — must pass clean
 npm start          # serve the production build
 ```
 
+## Check it on phones
+
+```bash
+npm run audit:mobile          # every route x 4 viewports
+```
+
+Reports horizontal overflow (and which element causes it), tap targets
+under Apple's 44x44pt minimum, and text below 12px. It emulates a
+coarse pointer, so touch-only rules are actually exercised — a plain
+headless screenshot does not do this and will mislead you.
+
+```bash
+node scripts/shot-mobile.mjs / /apply --out=./shots --w=393 --full
+```
+
+True mobile screenshots. `chrome --headless --window-size=390` only
+crops a desktop layout; this uses real viewport emulation.
+
 ## Show it to someone
 
 ```bash

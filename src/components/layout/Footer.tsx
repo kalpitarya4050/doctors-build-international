@@ -118,7 +118,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="grid size-9 place-items-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-[var(--gold-500)] hover:bg-white/5 hover:text-[var(--gold-300)]"
+                  className="tap grid size-9 place-items-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-[var(--gold-500)] hover:bg-white/5 hover:text-[var(--gold-300)]"
                 >
                   <Icon className="size-4" />
                 </a>
@@ -197,13 +197,13 @@ export function Footer() {
               © {year} {SITE.name}. All rights reserved.
             </p>
             <div className="flex items-center gap-5">
-              <Link href="/privacy-policy" className="transition-colors hover:text-white">
+              <Link href="/privacy-policy" className="tap inline-flex min-h-11 items-center transition-colors hover:text-white">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="transition-colors hover:text-white">
+              <Link href="/terms" className="tap inline-flex min-h-11 items-center transition-colors hover:text-white">
                 Terms of Use
               </Link>
-              <Link href="/contact" className="transition-colors hover:text-white">
+              <Link href="/contact" className="tap inline-flex min-h-11 items-center transition-colors hover:text-white">
                 Contact
               </Link>
             </div>

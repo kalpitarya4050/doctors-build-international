@@ -27,7 +27,7 @@ export function WhatsAppFAB() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat with us on WhatsApp"
-          className="group fixed bottom-[5.5rem] right-4 z-40 flex items-center gap-0 overflow-hidden rounded-full bg-[var(--green-500)] pl-0 text-[#062611] shadow-[0_10px_34px_rgba(37,211,102,0.38)] md:bottom-6 md:right-6"
+          className="group fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-4 z-40 flex items-center gap-0 overflow-hidden rounded-full bg-[var(--green-500)] pl-0 text-[#062611] shadow-[0_10px_34px_rgba(37,211,102,0.38)] md:bottom-6 md:right-6"
           initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6, y: 16 }}
           animate={reduced ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
           exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6, y: 16 }}
@@ -56,18 +56,18 @@ export function WhatsAppFAB() {
  *  is always visible so a second one would be noise. */
 export function MobileCTABar() {
   return (
-    <div className="material-chrome fixed inset-x-0 bottom-0 z-40 border-t border-line md:hidden">
+    <div className="material-chrome safe-b fixed inset-x-0 bottom-0 z-40 border-t border-line md:hidden">
       <div className="grid grid-cols-2 gap-2 px-3 py-2.5">
         <a
           href={telLink()}
-          className="flex h-11 items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-line-strong text-[0.875rem] font-semibold text-ink active:scale-[0.98]"
+          className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-line-strong text-[0.875rem] font-semibold text-ink active:scale-[0.98]"
         >
           <Phone className="size-4" />
           Call Now
         </a>
         <Link
           href="/apply"
-          className="flex h-11 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[linear-gradient(100deg,var(--gold-600),var(--gold-300)_45%,var(--gold-500))] text-[0.875rem] font-bold text-[var(--navy-950)] active:scale-[0.98]"
+          className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[linear-gradient(100deg,var(--gold-600),var(--gold-300)_45%,var(--gold-500))] text-[0.875rem] font-bold text-[var(--navy-950)] active:scale-[0.98]"
         >
           <CalendarCheck className="size-4" />
           Apply Now

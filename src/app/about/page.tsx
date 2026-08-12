@@ -231,7 +231,7 @@ export default function AboutPage() {
                   <p className="t-body mt-4">{o.address}</p>
                   <a
                     href={`tel:${SITE.phone}`}
-                    className="t-num mt-5 inline-block font-semibold text-[var(--accent)] hover:underline"
+                    className="tap t-num mt-5 inline-flex min-h-11 items-center font-semibold text-[var(--accent)] hover:underline"
                   >
                     {SITE.phoneDisplay}
                   </a>

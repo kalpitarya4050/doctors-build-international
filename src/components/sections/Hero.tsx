@@ -99,7 +99,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="shell-wide relative grid items-center gap-12 pb-16 pt-14 lg:grid-cols-[1.06fr_1fr] lg:gap-8 lg:pb-24 lg:pt-20">
+      <div className="shell-wide relative grid items-center gap-8 pb-12 pt-8 sm:gap-12 sm:pb-16 sm:pt-14 lg:grid-cols-[1.06fr_1fr] lg:gap-8 lg:pb-24 lg:pt-20">
         {/* ---------------- Copy ---------------- */}
         <motion.div style={reduced ? undefined : { y: copyY, opacity: fade }} className="relative z-10">
           <motion.div
@@ -108,7 +108,7 @@ export function Hero() {
             transition={{ ...SPRING_UI, delay: 0.05 }}
             className="material-chip inline-flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-4"
           >
-            <span className="rounded-full bg-[var(--navy-900)] px-2.5 py-1 text-[0.6875rem] font-bold tracking-[0.08em] text-[var(--gold-300)] uppercase">
+            <span className="shrink-0 whitespace-nowrap rounded-full bg-[var(--navy-900)] px-2.5 py-1 text-[0.6875rem] font-bold tracking-[0.08em] text-[var(--gold-300)] uppercase">
               {SITE.admissionYear}
             </span>
             <span className="text-[0.8125rem] font-medium text-ink-secondary">
@@ -137,19 +137,19 @@ export function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...SPRING_UI, delay: 0.5 }}
-            className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
+            className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center"
           >
-            <Button href="/apply" variant="gold" size="lg">
+            <Button href="/apply" variant="gold" size="lg" className="w-full sm:w-auto">
               Get Free Counselling
               <ArrowRight className="size-4" />
             </Button>
-            <Button href={whatsappLink()} external variant="whatsapp" size="lg">
+            <Button href={whatsappLink()} external variant="whatsapp" size="lg" className="w-full sm:w-auto">
               <WhatsAppIcon className="size-[18px]" />
               WhatsApp Us
             </Button>
             <a
               href={telLink()}
-              className="flex items-center gap-2 px-1 text-[0.9375rem] font-semibold text-ink-secondary transition-colors hover:text-[var(--accent)] sm:px-3"
+              className="tap flex min-h-11 items-center gap-2 px-1 text-[0.9375rem] font-semibold text-ink-secondary transition-colors hover:text-[var(--accent)] sm:px-3"
             >
               <Phone className="size-4" />
               {SITE.phoneDisplay}
@@ -184,7 +184,7 @@ export function Hero() {
         {/* ---------------- Globe ---------------- */}
         <motion.div
           style={reduced ? undefined : { y: globeY, opacity: fade }}
-          className="relative mx-auto aspect-square w-full max-w-[36rem] lg:max-w-none"
+          className="relative mx-auto aspect-square w-full max-w-[26rem] sm:max-w-[32rem] lg:max-w-none"
         >
           {/* Globe sits inset so the photo ring has room to breathe */}
           <motion.div

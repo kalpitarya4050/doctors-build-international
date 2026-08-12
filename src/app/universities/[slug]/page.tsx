@@ -576,7 +576,7 @@ export default async function UniversityPage({
             <div className="mt-8 text-center">
               <Link
                 href="/faq"
-                className="inline-flex items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
+                className="tap inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
               >
                 Read all 30 questions
                 <ArrowRight className="size-4" />

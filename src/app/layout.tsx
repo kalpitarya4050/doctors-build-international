@@ -169,8 +169,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <WhatsAppFAB />
           <MobileCTABar />
           <LeadModal />
-          {/* Clearance for the mobile sticky bar */}
-          <div aria-hidden className="h-16 md:hidden" />
+          {/* Clearance for the fixed mobile bar, including the home
+              indicator on notched phones. */}
+          <div aria-hidden className="mobile-bar-clearance md:hidden" />
         </ThemeProvider>
       </body>
     </html>

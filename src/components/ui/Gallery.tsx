@@ -53,7 +53,7 @@ export function Gallery({
 
   return (
     <>
-      <div className={cn("grid auto-rows-[11rem] grid-cols-2 gap-3 lg:grid-cols-4", className)}>
+      <div className={cn("grid auto-rows-[8.5rem] grid-cols-2 gap-2.5 sm:auto-rows-[11rem] sm:gap-3 lg:grid-cols-4", className)}>
         {items.map((item, i) => {
           const src = img(item.id);
           return (

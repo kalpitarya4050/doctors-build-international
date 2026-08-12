@@ -32,7 +32,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       onClick={toggle}
       aria-label="Toggle light and dark theme"
       className={cn(
-        "relative grid size-10 place-items-center rounded-full border border-line",
+        "tap relative grid size-10 place-items-center rounded-full border border-line",
         "text-ink-secondary transition-colors duration-200",
         "hover:border-[var(--accent)] hover:text-[var(--accent)]",
         className,

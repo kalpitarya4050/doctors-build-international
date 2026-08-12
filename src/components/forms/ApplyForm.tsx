@@ -237,7 +237,7 @@ export function ApplyForm() {
         </AnimatePresence>
 
         {/* Honeypot */}
-        <div aria-hidden className="absolute left-[-9999px] size-px overflow-hidden">
+        <div aria-hidden className="offscreen">
           <label htmlFor="apply-website">Leave empty</label>
           <input id="apply-website" tabIndex={-1} autoComplete="off" value={v.website} onChange={(e) => set("website", e.target.value)} />
         </div>

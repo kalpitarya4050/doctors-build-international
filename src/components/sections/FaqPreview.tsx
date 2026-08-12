@@ -23,7 +23,7 @@ export function FaqPreview() {
           <Reveal direction="up" delay={0.12}>
             <Link
               href="/faq"
-              className="mt-8 inline-flex items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
+              className="tap mt-8 inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
             >
               Read all 30 questions
               <ArrowRight className="size-4" />

@@ -23,16 +23,19 @@ import { cn } from "@/lib/utils";
    a family assume otherwise.
    ============================================================ */
 
+// On a 2-column phone grid a "col-span-2 row-span-2" tile becomes a
+// full-width double-height block, which is right for the lead image
+// but wrong for the rest. Spans only apply from sm upward.
 const BENTO = [
   "col-span-2 row-span-2",
   "",
   "",
-  "col-span-2",
+  "sm:col-span-2",
   "",
-  "col-span-2 row-span-2",
+  "sm:col-span-2 sm:row-span-2",
   "",
   "",
-  "col-span-2",
+  "sm:col-span-2",
 ];
 
 export function UniversityMedia({
@@ -88,7 +91,7 @@ export function UniversityMedia({
         />
 
         <Reveal direction="up" className="mt-14">
-          <div className="grid auto-rows-[10rem] grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="grid auto-rows-[8.5rem] grid-cols-2 gap-2.5 sm:auto-rows-[10rem] sm:gap-3 lg:grid-cols-4">
             {all.map((item, i) => (
               <motion.button
                 key={item.key}

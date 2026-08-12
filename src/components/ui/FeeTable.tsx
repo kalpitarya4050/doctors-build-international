@@ -98,7 +98,7 @@ export function FeeTable({
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
-            className="rounded-[var(--radius-sm)] border border-line-strong bg-[var(--bg-elevated)] px-3 py-2 text-[0.8125rem] font-medium text-ink outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--ring)]"
+            className="tap-min rounded-[var(--radius-sm)] border border-line-strong bg-[var(--bg-elevated)] px-3 py-2 text-[0.8125rem] font-medium text-ink outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--ring)]"
           >
             {SORTS.map((s) => (
               <option key={s.key} value={s.key}>
@@ -113,7 +113,7 @@ export function FeeTable({
           <select
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            className="rounded-[var(--radius-sm)] border border-line-strong bg-[var(--bg-elevated)] px-3 py-2 text-[0.8125rem] font-medium text-ink outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--ring)]"
+            className="tap-min rounded-[var(--radius-sm)] border border-line-strong bg-[var(--bg-elevated)] px-3 py-2 text-[0.8125rem] font-medium text-ink outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--ring)]"
           >
             <option value="all">All countries</option>
             {countries.map((c) => (
@@ -137,7 +137,7 @@ export function FeeTable({
               onClick={() => setMoney(m)}
               aria-pressed={money === m}
               className={cn(
-                "relative z-10 rounded-full px-3.5 py-1.5 text-[0.75rem] font-bold transition-colors duration-200",
+                "tap-min relative z-10 inline-flex items-center rounded-full px-4 py-1.5 text-[0.75rem] font-bold transition-colors duration-200",
                 money === m ? "text-[var(--navy-950)]" : "text-ink-muted hover:text-ink",
               )}
             >
@@ -187,7 +187,7 @@ export function FeeTable({
                 <Td className="sticky left-0 z-10 bg-[inherit]">
                   <Link
                     href={`/universities/${u.slug}`}
-                    className="group flex items-center gap-2.5"
+                    className="tap-min group flex items-center gap-2.5"
                   >
                     <span
                       className="grid size-7 shrink-0 place-items-center rounded-full text-[0.6875rem] font-bold text-white"
