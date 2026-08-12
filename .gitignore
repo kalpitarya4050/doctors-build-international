@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local tooling (cloudflared binary for npm run share)
+.tools/
+
+.env.local
+.compressed.json

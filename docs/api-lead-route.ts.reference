@@ -1,0 +1,174 @@
+import { NextResponse } from "next/server";
+import { leadSchema, type LeadInput } from "@/lib/lead";
+import { SITE } from "@/lib/site";
+
+export const runtime = "nodejs";
+
+/* ------------------------------------------------------------
+   In-memory rate limit. Sufficient for a single-instance
+   deployment; swap for Upstash/Redis if the site is scaled out.
+   ------------------------------------------------------------ */
+const WINDOW_MS = 60_000;
+const MAX_PER_WINDOW = 5;
+const hits = new Map<string, { count: number; resetAt: number }>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = hits.get(ip);
+  if (!entry || now > entry.resetAt) {
+    hits.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > MAX_PER_WINDOW;
+}
+
+/* ------------------------------------------------------------
+   Fan-out. Each destination is independently guarded so a
+   missing key never breaks the form for the student.
+   ------------------------------------------------------------ */
+
+async function toGoogleSheets(lead: LeadInput, meta: Record<string, string>) {
+  const url = process.env.SHEETS_WEBHOOK_URL;
+  if (!url) return { ok: false, skipped: true as const };
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...lead, ...meta }),
+    });
+    return { ok: res.ok, skipped: false as const };
+  } catch (err) {
+    console.error("[lead] sheets webhook failed:", err);
+    return { ok: false, skipped: false as const };
+  }
+}
+
+async function toEmail(lead: LeadInput, meta: Record<string, string>) {
+  const key = process.env.RESEND_API_KEY;
+  const to = process.env.LEAD_NOTIFY_EMAIL;
+  const from = process.env.LEAD_FROM_EMAIL ?? "leads@doctorsbuild.com";
+  if (!key || !to) return { ok: false, skipped: true as const };
+
+  const rows = [
+    ["Name", lead.name],
+    ["Phone", lead.phone],
+    ["Email", lead.email || "—"],
+    ["City", lead.city || "—"],
+    ["NEET Score", lead.neetScore || "—"],
+    ["Interested In", lead.interest],
+    ["Message", lead.message || "—"],
+    ["Source", lead.source || "—"],
+    ["Received", meta.receivedAt],
+  ];
+
+  const html = `
+    <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;max-width:560px">
+      <h2 style="color:#0A1F44;margin:0 0 4px">New enquiry — ${SITE.name}</h2>
+      <p style="color:#6b7789;margin:0 0 18px;font-size:14px">via ${SITE.domain}</p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px">
+        ${rows
+          .map(
+            ([k, v]) =>
+              `<tr><td style="padding:9px 12px;border-bottom:1px solid #eef0f4;color:#6b7789;width:34%">${k}</td><td style="padding:9px 12px;border-bottom:1px solid #eef0f4;color:#0b1220;font-weight:600">${String(v).replace(/</g, "&lt;")}</td></tr>`,
+          )
+          .join("")}
+      </table>
+      <p style="margin:22px 0 0">
+        <a href="https://wa.me/${lead.phone.replace(/\D/g, "")}"
+           style="background:#25D366;color:#062611;padding:11px 20px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px">
+          Reply on WhatsApp
+        </a>
+      </p>
+    </div>`;
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `${SITE.shortName} <${from}>`,
+        to: [to],
+        subject: `New MBBS enquiry — ${lead.name} (${lead.interest})`,
+        html,
+        reply_to: lead.email || undefined,
+      }),
+    });
+    return { ok: res.ok, skipped: false as const };
+  } catch (err) {
+    console.error("[lead] email send failed:", err);
+    return { ok: false, skipped: false as const };
+  }
+}
+
+export async function POST(request: Request) {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+
+  if (rateLimited(ip)) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests. Please try again in a minute." },
+      { status: 429 },
+    );
+  }
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ ok: false, error: "Invalid request." }, { status: 400 });
+  }
+
+  const parsed = leadSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Please check the highlighted fields.",
+        fields: parsed.error.flatten().fieldErrors,
+      },
+      { status: 400 },
+    );
+  }
+
+  const lead = parsed.data;
+
+  // Honeypot tripped — accept silently so the bot learns nothing.
+  if (lead.website) {
+    return NextResponse.json({ ok: true, delivered: [] });
+  }
+
+  const meta = {
+    receivedAt: new Date().toISOString(),
+    ip,
+    userAgent: request.headers.get("user-agent") ?? "",
+  };
+
+  const [sheets, email] = await Promise.all([
+    toGoogleSheets(lead, meta),
+    toEmail(lead, meta),
+  ]);
+
+  const delivered = [
+    sheets.ok && "sheets",
+    email.ok && "email",
+  ].filter(Boolean) as string[];
+
+  // The WhatsApp handoff happens client-side and always works, so
+  // the student is never blocked by an unconfigured integration.
+  if (delivered.length === 0) {
+    console.info("[lead] captured (no delivery channel configured):", {
+      name: lead.name,
+      phone: lead.phone,
+      interest: lead.interest,
+      at: meta.receivedAt,
+    });
+  }
+
+  return NextResponse.json({ ok: true, delivered });
+}

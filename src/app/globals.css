@@ -1,26 +1,604 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   DOCTORS BUILD INTERNATIONAL — DESIGN TOKENS
+   Brand values extracted from the logo + Admission Portfolio.
+   Light palette lives on bare :root. Dark is redefined twice —
+   once under prefers-color-scheme (guarded so an explicit light
+   choice wins) and once under [data-theme="dark"] (so the
+   toggle wins in both directions).
+   ============================================================ */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  /* Brand — navy */
+  --navy-950: #050f22;
+  --navy-900: #0a1f44;
+  --navy-800: #0f2a58;
+  --navy-700: #14315f;
+  --navy-600: #1c4080;
+  --navy-500: #2a559f;
+
+  /* Brand — gold */
+  --gold-600: #a8851d;
+  --gold-500: #c9a227;
+  --gold-400: #d9b743;
+  --gold-300: #e8c766;
+  --gold-200: #f2dda0;
+  --gold-100: #faf0d4;
+
+  /* Signal */
+  --red-600: #d22b2b;
+  --green-600: #1e8e3e;
+  --green-500: #25d366; /* WhatsApp */
+
+  /* Semantic — LIGHT (default) */
+  --bg: #fbfbfd;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #f4f5f8;
+  --bg-inverse: var(--navy-900);
+
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-strong: rgba(255, 255, 255, 0.9);
+  --surface-solid: #ffffff;
+
+  --text: #0b1220;
+  --text-secondary: #414b5e;
+  --text-muted: #6b7789;
+  --text-inverse: #ffffff;
+
+  --accent: var(--gold-600);
+  --accent-bright: var(--gold-500);
+  --accent-soft: var(--gold-100);
+  --brand: var(--navy-900);
+
+  --border: rgba(10, 31, 68, 0.1);
+  --border-strong: rgba(10, 31, 68, 0.18);
+  --hairline: rgba(10, 31, 68, 0.07);
+
+  --shadow-sm: 0 1px 2px rgba(10, 31, 68, 0.06), 0 1px 3px rgba(10, 31, 68, 0.05);
+  --shadow-md: 0 4px 12px rgba(10, 31, 68, 0.07), 0 2px 4px rgba(10, 31, 68, 0.04);
+  --shadow-lg: 0 12px 32px rgba(10, 31, 68, 0.1), 0 4px 8px rgba(10, 31, 68, 0.05);
+  --shadow-xl: 0 24px 64px rgba(10, 31, 68, 0.14), 0 8px 16px rgba(10, 31, 68, 0.06);
+  --shadow-glow: 0 8px 40px rgba(201, 162, 39, 0.28);
+
+  /* Material blur — bigger surfaces read thicker (Apple §12) */
+  --blur-chip: 12px;
+  --blur-card: 20px;
+  --blur-chrome: 28px;
+
+  --ring: rgba(201, 162, 39, 0.55);
+
+  /* Layout */
+  --header-h: 4.5rem;
+  --radius-sm: 0.5rem;
+  --radius: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-2xl: 2.25rem;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: #060d1c;
+    --bg-elevated: #0c1730;
+    --bg-sunken: #030814;
+    --bg-inverse: #ffffff;
+
+    --surface: rgba(20, 40, 82, 0.5);
+    --surface-strong: rgba(20, 40, 82, 0.72);
+    --surface-solid: #0f1e3d;
+
+    --text: #f2f5fb;
+    --text-secondary: #b7c2d6;
+    --text-muted: #8593ab;
+    --text-inverse: #06101f;
+
+    --accent: var(--gold-400);
+    --accent-bright: var(--gold-300);
+    --accent-soft: rgba(201, 162, 39, 0.14);
+    --brand: #ffffff;
+
+    --border: rgba(255, 255, 255, 0.12);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --hairline: rgba(255, 255, 255, 0.08);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 8px 48px rgba(233, 199, 102, 0.22);
+
+    --ring: rgba(233, 199, 102, 0.6);
   }
 }
 
+:root[data-theme="dark"] {
+  --bg: #060d1c;
+  --bg-elevated: #0c1730;
+  --bg-sunken: #030814;
+  --bg-inverse: #ffffff;
+
+  --surface: rgba(20, 40, 82, 0.5);
+  --surface-strong: rgba(20, 40, 82, 0.72);
+  --surface-solid: #0f1e3d;
+
+  --text: #f2f5fb;
+  --text-secondary: #b7c2d6;
+  --text-muted: #8593ab;
+  --text-inverse: #06101f;
+
+  --accent: var(--gold-400);
+  --accent-bright: var(--gold-300);
+  --accent-soft: rgba(201, 162, 39, 0.14);
+  --brand: #ffffff;
+
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --hairline: rgba(255, 255, 255, 0.08);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 8px 48px rgba(233, 199, 102, 0.22);
+
+  --ring: rgba(233, 199, 102, 0.6);
+}
+
+/* ============================================================
+   Tailwind v4 theme bridge
+   ============================================================ */
+@theme inline {
+  --color-navy-950: var(--navy-950);
+  --color-navy-900: var(--navy-900);
+  --color-navy-800: var(--navy-800);
+  --color-navy-700: var(--navy-700);
+  --color-navy-600: var(--navy-600);
+  --color-navy-500: var(--navy-500);
+
+  --color-gold-600: var(--gold-600);
+  --color-gold-500: var(--gold-500);
+  --color-gold-400: var(--gold-400);
+  --color-gold-300: var(--gold-300);
+  --color-gold-200: var(--gold-200);
+  --color-gold-100: var(--gold-100);
+
+  --color-signal-red: var(--red-600);
+  --color-signal-green: var(--green-600);
+  --color-whatsapp: var(--green-500);
+
+  --color-bg: var(--bg);
+  --color-elevated: var(--bg-elevated);
+  --color-sunken: var(--bg-sunken);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-surface-solid: var(--surface-solid);
+
+  --color-ink: var(--text);
+  --color-ink-secondary: var(--text-secondary);
+  --color-ink-muted: var(--text-muted);
+  --color-ink-inverse: var(--text-inverse);
+
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-accent-soft: var(--accent-soft);
+  --color-brand: var(--brand);
+
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-hairline: var(--hairline);
+
+  --radius-sm: var(--radius-sm);
+  --radius-DEFAULT: var(--radius);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 100%;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--gold-300);
+  color: var(--navy-950);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   Typography — size-specific tracking & leading (Apple §15).
+   Never one letter-spacing for all sizes: large display text
+   wants negative tracking, body sits near zero, small labels
+   want a positive bump for legibility.
+   ============================================================ */
+.t-display {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: clamp(2.5rem, 6.5vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.028em;
+  font-weight: 700;
+  font-optical-sizing: auto;
+}
+
+.t-h1 {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: clamp(2.125rem, 5vw, 3.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+  font-weight: 700;
+}
+
+.t-h2 {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  line-height: 1.14;
+  letter-spacing: -0.018em;
+  font-weight: 700;
+}
+
+.t-h3 {
+  font-size: clamp(1.25rem, 2.1vw, 1.625rem);
+  line-height: 1.28;
+  letter-spacing: -0.012em;
+  font-weight: 650;
+}
+
+.t-h4 {
+  font-size: clamp(1.0625rem, 1.5vw, 1.1875rem);
+  line-height: 1.38;
+  letter-spacing: -0.006em;
+  font-weight: 620;
+}
+
+.t-lead {
+  font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
+  line-height: 1.62;
+  letter-spacing: -0.003em;
+  color: var(--text-secondary);
+}
+
+.t-body {
+  font-size: 1rem;
+  line-height: 1.68;
+  letter-spacing: 0;
+  color: var(--text-secondary);
+}
+
+.t-small {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  letter-spacing: 0.004em;
+  color: var(--text-muted);
+}
+
+/* Eyebrow / small-caps label — positive tracking at small size */
+.t-eyebrow {
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 640;
+}
+
+/* Numeric data — tabular so fee tables align */
+.t-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   Materials (Apple §12) — translucent layers, never stacked
+   ============================================================ */
+.material-chrome {
+  background: var(--surface-strong);
+  backdrop-filter: blur(var(--blur-chrome)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-chrome)) saturate(180%);
+}
+
+.material-card {
+  background: var(--surface);
+  backdrop-filter: blur(var(--blur-card)) saturate(170%);
+  -webkit-backdrop-filter: blur(var(--blur-card)) saturate(170%);
+  border: 1px solid var(--border);
+  /* Bright top edge — light catching the material */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), var(--shadow-md);
+}
+
+:root[data-theme="dark"] .material-card {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), var(--shadow-md);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .material-card {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), var(--shadow-md);
+  }
+}
+
+.material-chip {
+  background: var(--surface);
+  backdrop-filter: blur(var(--blur-chip)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--blur-chip)) saturate(160%);
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   Theme toggle icons — resolved in CSS off the same signals the
+   palette uses, so the correct icon is present in the first
+   painted frame with no hydration flash.
+   ============================================================ */
+.theme-icon-light,
+.theme-icon-dark {
+  position: absolute;
+  transition:
+    opacity 220ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Light is the default ground: sun shown, moon parked */
+.theme-icon-light {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+.theme-icon-dark {
+  opacity: 0;
+  transform: rotate(70deg) scale(0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-icon-light {
+    opacity: 0;
+    transform: rotate(-70deg) scale(0.6);
+  }
+  :root:not([data-theme="light"]) .theme-icon-dark {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+:root[data-theme="dark"] .theme-icon-light {
+  opacity: 0;
+  transform: rotate(-70deg) scale(0.6);
+}
+:root[data-theme="dark"] .theme-icon-dark {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* Scroll-edge effect — a fading mask where content meets floating
+   chrome, instead of a hard 1px divider (Apple §12) */
+.scroll-edge {
+  mask-image: linear-gradient(to bottom, transparent, black 6%, black 94%, transparent);
+}
+
+/* ============================================================
+   Brand utilities
+   ============================================================ */
+.gold-text {
+  background: linear-gradient(
+    100deg,
+    var(--gold-600) 0%,
+    var(--gold-300) 32%,
+    var(--gold-500) 55%,
+    var(--gold-200) 78%,
+    var(--gold-500) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.navy-text {
+  color: var(--brand);
+}
+
+.gold-rule {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold-500) 20%,
+    var(--gold-300) 50%,
+    var(--gold-500) 80%,
+    transparent
+  );
+}
+
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.section {
+  padding-block: clamp(3.5rem, 8vw, 7.5rem);
+}
+
+.shell {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.125rem, 4vw, 2.5rem);
+}
+
+.shell-wide {
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.125rem, 4vw, 2.5rem);
+}
+
+/* Wide content (fee tables) scrolls inside its own container —
+   the page body must never scroll horizontally */
+.scroll-x {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-x::-webkit-scrollbar {
+  height: 6px;
+}
+.scroll-x::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 99px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* ============================================================
+   Keyframes — decorative/ambient only. Anything a user can
+   touch is spring-driven in JS so it stays interruptible.
+   ============================================================ */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -220% 0;
+  }
+  to {
+    background-position: 220% 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 42s) linear infinite;
+}
+.animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.shimmer {
+  background: linear-gradient(
+    100deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 68%
+  );
+  background-size: 220% 100%;
+  animation: shimmer 2.6s linear infinite;
+}
+
+/* ============================================================
+   Accessibility preferences (Apple §14)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-marquee,
+  .animate-float-slow,
+  .animate-pulse-ring,
+  .shimmer {
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material-chrome,
+  .material-card,
+  .material-chip {
+    background: var(--surface-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border: rgba(10, 31, 68, 0.4);
+    --border-strong: rgba(10, 31, 68, 0.62);
+    --text-secondary: #1e2637;
+    --text-muted: #38414f;
+  }
+  :root[data-theme="dark"] {
+    --border: rgba(255, 255, 255, 0.42);
+    --border-strong: rgba(255, 255, 255, 0.66);
+    --text-secondary: #e4eaf5;
+    --text-muted: #c3ccdb;
+  }
+  .material-chrome,
+  .material-card,
+  .material-chip {
+    background: var(--surface-solid) !important;
+    backdrop-filter: none !important;
+  }
 }
