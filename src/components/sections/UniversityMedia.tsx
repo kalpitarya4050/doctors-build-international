@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight, X, Expand, Camera, MapPin } from "lucide-react";
 import type { UniImage } from "@/lib/data/university-images";
+import { withBasePath } from "@/lib/images";
 import { SPRING_UI, SPRING_SHEET, EASE_OUT } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -105,7 +106,7 @@ export function UniversityMedia({
                 whileTap={{ scale: 0.985 }}
               >
                 <Image
-                  src={item.src}
+                  src={withBasePath(item.src)}
                   alt={item.alt}
                   fill
                   sizes="(max-width: 640px) 50vw, 25vw"
@@ -184,7 +185,7 @@ export function UniversityMedia({
             >
               <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[var(--radius-xl)] bg-[var(--navy-900)]">
                 <Image
-                  src={active.src}
+                  src={withBasePath(active.src)}
                   alt={active.alt}
                   fill
                   sizes="90vw"

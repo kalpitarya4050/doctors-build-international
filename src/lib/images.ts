@@ -33,6 +33,27 @@ const OWNED: Record<string, SiteImage> = {
   },
 };
 
+/* ------------------------------------------------------------------
+   basePath handling.
+
+   `next/image` prefixes basePath onto its own /_next/image URLs, but
+   when `unoptimized: true` is set — which a static export requires —
+   it uses the `src` verbatim. On GitHub Pages the site is served from
+   /<repo>, so every /images/... path would 404. Prefixing here means
+   every component gets it right without knowing basePath exists.
+
+   NEXT_PUBLIC_ is required: BASE_PATH alone is build-only and would
+   be undefined in the browser bundle.
+   ------------------------------------------------------------------ */
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+export function withBasePath(src: string): string {
+  if (!BASE_PATH) return src;
+  if (!src.startsWith("/")) return src;
+  if (src.startsWith(`${BASE_PATH}/`)) return src;
+  return `${BASE_PATH}${src}`;
+}
+
 /** True where the image is genuine photography of the thing it
  *  depicts, rather than illustrative stock. Drives the caption. */
 export function isOwned(id: string): boolean {
@@ -56,7 +77,7 @@ export function img(id: string): SiteImage | undefined {
     const found = (UNIVERSITY_IMAGES[slug] ?? []).find((i) => i.key === key);
     if (!found) return undefined;
     return {
-      src: found.src,
+      src: withBasePath(found.src),
       alt: found.alt,
       width: 1880,
       height: 1253,
@@ -66,7 +87,9 @@ export function img(id: string): SiteImage | undefined {
       avgColor: found.avgColor,
     };
   }
-  return OWNED[id] ?? (IMAGES as Record<string, SiteImage>)[id];
+  const found = OWNED[id] ?? (IMAGES as Record<string, SiteImage>)[id];
+  if (!found) return undefined;
+  return { ...found, src: withBasePath(found.src) };
 }
 
 /** Builds a `uni:` id for the resolver above. */

@@ -43,6 +43,10 @@ jobs:
           # GitHub Pages serves a project site from /<repo>, so every
           # route and asset needs that prefix.
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # Also exposed to the browser bundle: next/image with
+          # `unoptimized` uses `src` verbatim and does NOT apply
+          # basePath itself, so src/lib/images.ts prefixes it.
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
           NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.origin }}${{ steps.pages.outputs.base_path }}
           # Optional: set this repo secret to log enquiries to a Google
           # Sheet. Without it the form still works — it hands off to
