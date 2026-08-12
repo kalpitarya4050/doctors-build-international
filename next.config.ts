@@ -31,7 +31,23 @@ const nextConfig: NextConfig = {
         // Pages serves /about as /about/index.html — without this the
         // deep links 404 on a refresh.
         trailingSlash: true,
-        images: { unoptimized: true },
+        images: {
+          /**
+           * `unoptimized: true` is the usual answer for a static export,
+           * but it ships one full-size file to every device — measured
+           * at 5MB of images on the homepage, with 1600px JPEGs landing
+           * in 218px slots.
+           *
+           * Instead, `npm run images:variants` pre-renders WebP at each
+           * width and this loader maps requests onto them, so Next still
+           * emits a real srcset. These lists must match WIDTHS in the
+           * generator, or Next will ask for a width nobody built.
+           */
+          loader: "custom" as const,
+          loaderFile: "./src/lib/image-loader.ts",
+          deviceSizes: [640, 828, 1200, 1600],
+          imageSizes: [320, 480],
+        },
         ...(basePath ? { basePath, assetPrefix: basePath } : {}),
       }
     : {}),

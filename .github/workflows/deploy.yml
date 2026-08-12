@@ -37,6 +37,11 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
+      # A static host cannot resize images, so the width variants are
+      # rendered here instead. ~2 min; skipped locally via the ledger.
+      - name: Build responsive image variants
+        run: npm run images:variants
+
       - name: Build static export
         env:
           STATIC_EXPORT: "1"

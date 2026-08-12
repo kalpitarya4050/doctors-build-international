@@ -45,3 +45,7 @@ next-env.d.ts
 
 .env.local
 .compressed.json
+
+# Generated responsive image variants (rebuilt in CI)
+public/**/*-[0-9]*w.webp
+public/images/.variants.json
