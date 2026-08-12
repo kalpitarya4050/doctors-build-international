@@ -1,105 +1,124 @@
-# Getting the site in front of the client
+# Hosting
 
-Three options, in the order you'll probably want them.
+## The demo is live, permanently
 
-> **On Google Apps Script:** it can't host this. Apps Script runs small
-> server-side scripts and serves simple HTML — it has no Node runtime, so a
-> Next.js app cannot run on it. We *do* use it for one thing: catching lead-form
-> submissions into a Google Sheet (`scripts/google-apps-script.gs`). For hosting
-> the site itself, use one of the options below.
+**https://lytevoice.github.io/doctors-build-international/**
+
+Hosted on GitHub Pages. It stays up whether or not any machine here is
+switched on — nothing runs locally any more. Free, no card, no expiry.
+
+Repo: https://github.com/lytevoice/doctors-build-international
+
+### Updating it
+
+```bash
+git add -A
+git commit -m "what changed"
+git push
+```
+
+That's it. A GitHub Actions workflow builds and republishes on every
+push to `main` — roughly 60 seconds. Watch it with `gh run watch`.
+
+To rebuild without a code change: **Actions → Deploy to GitHub Pages →
+Run workflow**.
 
 ---
 
-## 1. Right now — a public link in 30 seconds
+## How it is built
 
-```bash
-npm run share
-```
+`npm run build` produces a normal Next.js server build. With
+`STATIC_EXPORT=1` it instead emits a folder of plain HTML/CSS/JS to
+`out/`, which is what Pages serves. Both modes are kept working, so
+moving to real hosting later is a config change, not a rewrite.
 
-Prints a live HTTPS link, something like:
-
-```
-https://reaction-gold-testing-republican.trycloudflare.com
-```
-
-Send it to the client. It opens on any phone or laptop, anywhere.
-
-**What it does:** builds the site, serves it locally, and opens a Cloudflare
-tunnel in front of it. The `cloudflared` binary downloads once (~50MB) into
-`.tools/` and is reused after that.
-
-**Limits — worth knowing before you send it:**
+Three things the static mode has to handle, all done:
 
 | | |
 |---|---|
-| Works while | this terminal window stays open and the PC is awake |
-| URL changes | every time you restart it |
-| Speed | routed through your home internet, so a little slower |
-| Good for | "have a look and tell me what to change" |
-| Not for | printing on a card, or sending to twenty people over a week |
+| **No server code** | The lead form posts to Google Sheets and hands off to WhatsApp directly from the browser (`src/lib/lead-delivery.ts`). |
+| **No image optimiser** | `npm run images:compress` caps images at 1600px first — 46MB → 25MB. |
+| **Served from a sub-path** | `BASE_PATH` prefixes routes; `NEXT_PUBLIC_BASE_PATH` prefixes image `src` (see below). |
 
-Press `Ctrl-C` to stop.
-
----
-
-## 2. Proper demo link — Vercel, ~3 minutes, free
-
-Gives a permanent URL like `doctors-build.vercel.app` that works when your
-laptop is closed. This is what you want once the client is happy enough to share
-it internally.
-
-```bash
-npx vercel login      # opens the browser once
-npx vercel            # preview deploy
-npx vercel --prod     # production deploy
-```
-
-Accept the defaults — it detects Next.js on its own.
-
-**If you use the lead integrations,** add the env vars in the Vercel dashboard
-under *Project → Settings → Environment Variables*:
-
-```
-PEXELS_API_KEY        (only needed to re-run `npm run images`, not at runtime)
-SHEETS_WEBHOOK_URL    (optional)
-RESEND_API_KEY        (optional)
-LEAD_NOTIFY_EMAIL     (optional)
-```
-
-The WhatsApp handoff needs none of these — it works on a fresh deploy.
+> **The basePath trap.** `next/image` applies `basePath` to its own
+> `/_next/image` URLs, but with `unoptimized: true` — which a static
+> export requires — it uses `src` verbatim. Every `/images/...` path
+> silently 404s. `src/lib/images.ts` prefixes centrally so components
+> never need to know. If you ever see alt text instead of photos, this
+> is why.
 
 ---
 
-## 3. Live on doctorsbuild.com
+## Enquiries
 
-Once the client signs off:
+**WhatsApp works right now**, with no configuration — the form opens
+`wa.me/917746000015` pre-filled.
 
-1. Deploy to Vercel as above.
-2. In Vercel: *Project → Settings → Domains → Add* → `doctorsbuild.com`.
-3. Vercel shows the DNS records to add. At the registrar, set:
-   - `A` record on `@` → the IP Vercel gives you
-   - `CNAME` on `www` → `cname.vercel-dns.com`
-4. Wait for DNS to propagate (usually minutes, up to a few hours).
+To also log every enquiry to a Google Sheet:
 
-**Before going live**, in [src/lib/site.ts](src/lib/site.ts):
+1. Deploy [`scripts/google-apps-script.gs`](scripts/google-apps-script.gs)
+   as a Web App (*Execute as: Me · Who has access: Anyone*).
+2. Copy the `/exec` URL.
+3. Repo → **Settings → Secrets and variables → Actions → New secret**
+   - Name: `SHEETS_WEBHOOK_URL`
+   - Value: that URL
+4. Re-run the workflow.
 
-- confirm `SITE.url` is `https://doctorsbuild.com` — canonical URLs, the
-  sitemap and all JSON-LD are generated from it
-- replace the placeholder `SITE.email` and `SITE.social` handles with the real
-  ones
-
-Then submit `https://doctorsbuild.com/sitemap.xml` in Google Search Console.
+The browser posts `no-cors`, so the row is written even though the
+reply can't be read. Email notification is the one channel that needs
+a server — it returns when the client moves to real hosting.
 
 ---
 
-## Any other host
+## When the client buys hosting
 
-It's a standard Next.js app:
+The site is a standard Next.js app; nothing here is locked to Pages.
+
+**Any Node host** (cPanel with Node, VPS, Railway, Render):
 
 ```bash
 npm ci
-npm run build
-npm run start      # serves on :3000
+npm run build     # no STATIC_EXPORT — full server build
+npm start         # serves on :3000
 ```
 
-Point a reverse proxy at port 3000. Needs Node 20+.
+Then re-mount the lead API: [`docs/api-lead-route.ts.reference`](docs/api-lead-route.ts.reference)
+is the original route handler, preserved intact. Drop it back at
+`src/app/api/lead/route.ts`, point the forms at `/api/lead`, and set
+`RESEND_API_KEY` + `LEAD_NOTIFY_EMAIL` to restore email notifications.
+
+**Static hosting** (most cPanel plans, Netlify, Cloudflare Pages):
+
+```bash
+STATIC_EXPORT=1 npm run build     # no BASE_PATH when served from a root domain
+```
+
+Upload the contents of `out/`.
+
+### Pointing doctorsbuild.com at it
+
+GitHub Pages supports custom domains free, including HTTPS:
+
+1. Repo → **Settings → Pages → Custom domain** → `doctorsbuild.com`
+2. At the registrar, add:
+   - `A` on `@` → `185.199.108.153`, `.109.153`, `.110.153`, `.111.153`
+   - `CNAME` on `www` → `lytevoice.github.io`
+3. Tick **Enforce HTTPS** once the certificate is issued.
+
+With a custom domain there is no sub-path, so drop `BASE_PATH` and
+`NEXT_PUBLIC_BASE_PATH` from the workflow and set
+`NEXT_PUBLIC_SITE_URL` to `https://doctorsbuild.com` — canonicals, the
+sitemap and JSON-LD all follow it.
+
+---
+
+## Two things worth knowing
+
+**The repo is public.** GitHub Pages is paid-only on private repos.
+No credentials are in it — `.env.local` is gitignored and I checked the
+committed content for the Pexels key before the first push. But the
+source is readable by anyone with the URL.
+
+**`npm run share` still exists** for showing work-in-progress before
+committing. It builds, serves, and opens a Cloudflare tunnel. That link
+dies when you close the terminal — the Pages URL above does not.
