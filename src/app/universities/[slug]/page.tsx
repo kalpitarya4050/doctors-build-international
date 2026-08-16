@@ -22,14 +22,20 @@ import {
   getUniversity,
   PACKAGE_INCLUDES,
   ADDITIONAL_COSTS,
+  NMC_VERIFY_NOTE,
+  PRIORITY_TIERS,
   type University,
 } from "@/lib/data/universities";
 import { getCountry } from "@/lib/data/countries";
 import { FAQS } from "@/lib/data/faq";
 import { SITE } from "@/lib/site";
-import { uniCaption, uniHeroCaption } from "@/lib/data/media-map";
+import {
+  uniCityCaption,
+  uniHero,
+  uniHeroCaption,
+  uniSlotImage,
+} from "@/lib/data/media-map";
 import { uniCampusImages, uniCityImages } from "@/lib/data/university-images";
-import { uniImageId } from "@/lib/images";
 import { PageHero } from "@/components/layout/PageHero";
 import { LeadSection } from "@/components/sections/LeadSection";
 import { UniversityMedia } from "@/components/sections/UniversityMedia";
@@ -41,7 +47,7 @@ import { Chip } from "@/components/ui/Surface";
 import { Accordion } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { UniversityCard, formatTotal, formatTuition } from "@/components/ui/UniversityCard";
-import { inr, num } from "@/lib/utils";
+import { cn, inr, num } from "@/lib/utils";
 
 export function generateStaticParams() {
   return UNIVERSITIES.map((u) => ({ slug: u.slug }));
@@ -56,13 +62,24 @@ export async function generateMetadata({
   const u = getUniversity(slug);
   if (!u) return { title: "University not found" };
 
-  const cost = u.totalExpenseInr
-    ? `₹${(u.totalExpenseInr / 100000).toFixed(2)} lakh`
-    : "affordable fees";
+  // Only claim figures we actually hold. Metadata is the one place a
+  // fabricated number would also end up in search results.
+  const facts = [
+    u.totalExpenseInr
+      ? `Total ₹${(u.totalExpenseInr / 100000).toFixed(2)} lakh for ${u.duration}.`
+      : u.duration
+        ? `${u.duration}, English medium.`
+        : "English-medium MBBS.",
+    u.fmgePassRate ? `${u.fmgePassRate} FMGE pass rate.` : "",
+    u.indianStudents ? `${u.indianStudents} Indian students.` : "",
+    u.affiliatedHospitals ? `${u.affiliatedHospitals}.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return {
     title: `${u.name}, ${u.country} — MBBS Fees ${SITE.admissionYear}, Eligibility & Admission`,
-    description: `MBBS at ${u.name} in ${u.city}, ${u.country}. ${u.recognitionText}. Total ${cost} for ${u.duration}. ${u.fmgePassRate} FMGE pass rate, ${u.indianStudents} Indian students. Free counselling — ${SITE.phoneDisplay}.`,
+    description: `MBBS at ${u.name} in ${u.city}, ${u.country}. ${u.recognitionText}. ${facts} Free counselling — ${SITE.phoneDisplay}.`,
     alternates: { canonical: `/universities/${u.slug}` },
     openGraph: {
       title: `${u.name} — MBBS Fees & Admission ${SITE.admissionYear}`,
@@ -126,7 +143,13 @@ export default async function UniversityPage({
   if (!u) notFound();
 
   const country = getCountry(u.countrySlug);
-  const related = UNIVERSITIES.filter((x) => x.slug !== u.slug).slice(0, 3);
+  // Siblings in the same country first — that is what a student
+  // comparing options actually wants — then fill from elsewhere.
+  const others = UNIVERSITIES.filter((x) => x.slug !== u.slug);
+  const related = [
+    ...others.filter((x) => x.countrySlug === u.countrySlug),
+    ...others.filter((x) => x.countrySlug !== u.countrySlug),
+  ].slice(0, 3);
   const pageFaqs = FAQS.filter((f) =>
     ["Eligibility", "Fees & Funding", "Recognition & Licensing"].includes(f.category),
   ).slice(0, 8);
@@ -150,10 +173,12 @@ export default async function UniversityPage({
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "onsite",
-      courseWorkload: u.duration,
+      ...(u.duration ? { courseWorkload: u.duration } : {}),
       location: { "@type": "Place", name: `${u.city}, ${u.country}` },
     },
-    ...(u.totalExpense
+    // Only emit an Offer where we hold a published tuition figure —
+    // structured data carrying an invented price is worse than none.
+    ...(u.hasPublishedFees && u.tuitionTotal !== null
       ? {
           offers: {
             "@type": "Offer",
@@ -195,7 +220,7 @@ export default async function UniversityPage({
       />
 
       <PageHero
-        eyebrow={`${u.country} · Admissions ${SITE.admissionYear}`}
+        eyebrow={`${PRIORITY_TIERS[u.priority].sub} · ${u.country}`}
         title={u.name}
         flagCountry={u.countrySlug}
         accent={u.accent}
@@ -204,25 +229,39 @@ export default async function UniversityPage({
           { label: u.shortName },
         ]}
         lead={u.blurb}
-        image={uniImageId(u.slug, "City/01_Skyline")}
-        imageCaption={`${uniHeroCaption(u.slug)} — photograph of the host city, not of the campus`}
+        image={uniHero(u.slug)}
+        imageCaption={
+          uniHeroCaption(u.slug)
+            ? `${uniHeroCaption(u.slug)} — photograph of the region, not of the campus`
+            : undefined
+        }
       >
         <Reveal direction="up" delay={0.22}>
           <div className="mt-8 flex flex-wrap gap-2">
             {u.recognition.map((r) => (
               <Chip key={r} tone="green">
                 <ShieldCheck className="size-3" />
-                {r} Recognized
+                {r}
               </Chip>
             ))}
-            <Chip tone="gold">
-              <TrendingUp className="size-3" />
-              {u.fmgePassRate} FMGE pass rate
-            </Chip>
-            <Chip tone="default">
-              <Users className="size-3" />
-              {u.indianStudents} Indian students
-            </Chip>
+            {u.fmgePassRate && (
+              <Chip tone="gold">
+                <TrendingUp className="size-3" />
+                {u.fmgePassRate} FMGE pass rate
+              </Chip>
+            )}
+            {u.indianStudents && (
+              <Chip tone="default">
+                <Users className="size-3" />
+                {u.indianStudents} Indian students
+              </Chip>
+            )}
+            {u.affiliatedHospitals && (
+              <Chip tone="default">
+                <ShieldCheck className="size-3" />
+                {u.affiliatedHospitals}
+              </Chip>
+            )}
             <Chip tone="default">No IELTS required</Chip>
           </div>
         </Reveal>
@@ -247,6 +286,8 @@ export default async function UniversityPage({
             className="grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-3 lg:grid-cols-6"
             stagger={0.045}
           >
+            {/* Facts render only where the brochure gives us the value,
+                so the strip is short and true rather than padded. */}
             <Fact icon={<MapPin className="size-4" />} label="City" value={u.city} />
             <Fact icon={<Clock className="size-4" />} label="Duration" value={u.duration} />
             <Fact icon={<Calendar className="size-4" />} label="Intake" value={u.intake} />
@@ -254,22 +295,24 @@ export default async function UniversityPage({
             <Fact
               icon={<Plane className="size-4" />}
               label="Nearest airport"
-              value={`${u.airportCode} · ${u.airportDistance}`}
+              value={
+                u.airportCode
+                  ? [u.airportCode, u.airportDistance, u.airportDrive]
+                      .filter(Boolean)
+                      .join(" · ")
+                  : null
+              }
             />
             <Fact
               icon={<Wallet className="size-4" />}
               label="Living cost"
-              value={`${u.livingCost} / month`}
+              value={u.livingCost ? `${u.livingCost} / month` : null}
             />
-            <Fact
-              icon={<Thermometer className="size-4" />}
-              label="Climate"
-              value={u.climate}
-            />
+            <Fact icon={<Thermometer className="size-4" />} label="Climate" value={u.climate} />
             <Fact
               icon={<Star className="size-4" />}
               label="Safety rating"
-              value={`${u.safetyRating} / 5`}
+              value={u.safetyRating !== null ? `${u.safetyRating.toFixed(1)} / 5` : null}
             />
             <Fact
               icon={<Users className="size-4" />}
@@ -288,10 +331,11 @@ export default async function UniversityPage({
               value={u.recognition.join(" · ")}
             />
             <Fact
-              icon={<Plane className="size-4" />}
-              label="Airport"
-              value={u.airport}
+              icon={<ShieldCheck className="size-4" />}
+              label="Teaching hospitals"
+              value={u.affiliatedHospitals}
             />
+            <Fact icon={<Plane className="size-4" />} label="Airport" value={u.airport} />
           </RevealGroup>
         </div>
       </section>
@@ -330,41 +374,59 @@ export default async function UniversityPage({
           {/* Sticky cost summary */}
           <Reveal direction="left">
             <RevealMedia
-              id={uniImageId(u.slug, "City/03_City_Centre")}
+              id={uniSlotImage(u.slug, "city")}
               from="bottom"
               className="mb-5 aspect-[16/10] w-full rounded-[var(--radius-lg)] border border-line shadow-[var(--shadow-md)]"
               sizes="(max-width: 1024px) 100vw, 24rem"
               overlay={
-                <>
-                  <Scrim strength="medium" />
-                  <p className="absolute inset-x-0 bottom-0 p-4 text-[0.8125rem] font-semibold text-white">
-                    {uniCaption(u.slug)}
-                  </p>
-                </>
+                uniCityCaption(u.slug) ? (
+                  <>
+                    <Scrim strength="medium" />
+                    <p className="absolute inset-x-0 bottom-0 p-4 text-[0.8125rem] font-semibold text-white">
+                      {uniCityCaption(u.slug)}
+                    </p>
+                  </>
+                ) : undefined
               }
             />
             <aside className="material-card sticky top-28 rounded-[var(--radius-lg)] p-7">
               <p className="t-eyebrow text-[var(--accent)]">Cost Summary</p>
-              <p className="mt-4 text-[0.75rem] font-semibold tracking-[0.05em] text-ink-muted uppercase">
-                Total for the full course
-              </p>
-              <p className="t-num mt-1.5 font-[family-name:var(--font-playfair)] text-[2.25rem] font-bold leading-none text-brand">
-                {u.totalExpenseInr ? `₹${inr(u.totalExpenseInr)}` : "On request"}
-              </p>
-              <p className="t-num mt-2 text-[0.875rem] text-ink-muted">
-                {formatTotal(u)}
-                {u.totalExpense !== null && " · approximate INR"}
-              </p>
+
+              {u.hasPublishedFees ? (
+                <>
+                  <p className="mt-4 text-[0.75rem] font-semibold tracking-[0.05em] text-ink-muted uppercase">
+                    Total for the full course
+                  </p>
+                  <p className="t-num mt-1.5 font-[family-name:var(--font-playfair)] text-[2.25rem] font-bold leading-none text-brand">
+                    {u.totalExpenseInr ? `₹${inr(u.totalExpenseInr)}` : "On request"}
+                  </p>
+                  <p className="t-num mt-2 text-[0.875rem] text-ink-muted">
+                    {formatTotal(u)}
+                    {u.totalExpense !== null && " · approximate INR"}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="mt-4 font-[family-name:var(--font-playfair)] text-[1.5rem] font-bold leading-tight text-brand">
+                    Fees confirmed on request
+                  </p>
+                  <p className="t-small mt-2.5 leading-relaxed">
+                    Our current brochure does not publish a fee table for {u.shortName}. Rather than
+                    print an estimate, we confirm the exact tuition, hostel and living costs with the
+                    university and send them to you in writing.
+                  </p>
+                </>
+              )}
 
               <dl className="mt-6 flex flex-col gap-3.5 border-t border-hairline pt-6 text-[0.875rem]">
                 <Row label="Tuition (total)" value={formatTuition(u)} />
-                <Row
-                  label="Tuition in INR"
-                  value={u.tuitionInr ? `₹${inr(u.tuitionInr)}` : "As per University"}
-                />
-                <Row label="Living cost" value={`${u.livingCost} / month`} />
+                {u.tuitionInr !== null && (
+                  <Row label="Tuition in INR" value={`₹${inr(u.tuitionInr)}`} />
+                )}
+                <Row label="Living cost" value={u.livingCost ? `${u.livingCost} / month` : null} />
                 <Row label="Duration" value={u.duration} />
                 <Row label="Next intake" value={u.intake} />
+                <Row label="Medium" value={u.medium} />
               </dl>
 
               <div className="mt-6 rounded-[var(--radius)] bg-[var(--green-600)]/8 p-3.5">
@@ -375,7 +437,7 @@ export default async function UniversityPage({
               </div>
 
               <Button href="#counselling" variant="gold" size="md" fullWidth className="mt-6">
-                Get the full fee breakdown
+                {u.hasPublishedFees ? "Get the full fee breakdown" : "Request the fee structure"}
               </Button>
             </aside>
           </Reveal>
@@ -407,7 +469,7 @@ export default async function UniversityPage({
 
             <div className="flex flex-col gap-5">
               <RevealMedia
-                id={uniImageId(u.slug, "University/04_Hospital_Clinical")}
+                id={uniSlotImage(u.slug, "hospital")}
                 from="bottom"
                 className="aspect-[4/5] rounded-[var(--radius-lg)] border border-line shadow-[var(--shadow-md)]"
                 sizes="(max-width: 1024px) 100vw, 20rem"
@@ -421,7 +483,7 @@ export default async function UniversityPage({
                 }
               />
               <RevealMedia
-                id={uniImageId(u.slug, "University/02_Laboratory")}
+                id={uniSlotImage(u.slug, "laboratory")}
                 from="bottom"
                 className="aspect-[4/3] rounded-[var(--radius-lg)] border border-line shadow-[var(--shadow-md)]"
                 sizes="(max-width: 1024px) 100vw, 20rem"
@@ -441,7 +503,7 @@ export default async function UniversityPage({
 
       {/* ---------------- Photographic band ---------------- */}
       <ParallaxMedia
-        id={uniImageId(u.slug, "University/05_Students_Indian_Students")}
+        id={uniSlotImage(u.slug, "students")}
         strength={12}
         className="h-[15rem] w-full sm:h-[20rem]"
         sizes="100vw"
@@ -450,7 +512,9 @@ export default async function UniversityPage({
             <Scrim strength="medium" from="bottom" />
             <div className="shell absolute inset-x-0 bottom-0 pb-8">
               <p className="font-[family-name:var(--font-playfair)] text-[clamp(1.25rem,2.6vw,2rem)] leading-tight tracking-[-0.02em] text-white [text-shadow:0_2px_20px_rgba(5,15,34,0.5)]">
-                {u.indianStudents} Indian students already on campus.
+                {u.indianStudents
+                  ? `${u.indianStudents} Indian students already on campus.`
+                  : "You will not be the only Indian student there."}
               </p>
               <p className="mt-2 text-[0.8125rem] text-white/65">
                 Seniors, societies and an Indian mess waiting when you land.
@@ -503,6 +567,15 @@ export default async function UniversityPage({
                 <Info className="mt-0.5 size-4 shrink-0 text-[var(--accent)]" />
                 We issue a destination-specific checklist and verify every document before it is
                 submitted, so nothing is discovered missing at the embassy.
+              </p>
+            </Reveal>
+
+            {/* The brochure footnotes NMC eligibility rather than
+                asserting it flatly. We carry the caveat. */}
+            <Reveal direction="up" delay={0.26}>
+              <p className="t-small mt-4 flex items-start gap-2 rounded-[var(--radius)] border border-[var(--accent)]/25 bg-[var(--accent-soft)] p-4">
+                <ShieldCheck className="mt-0.5 size-4 shrink-0 text-[var(--accent)]" />
+                {NMC_VERIFY_NOTE}
               </p>
             </Reveal>
           </div>
@@ -616,7 +689,9 @@ export default async function UniversityPage({
             Ready to apply to <span className="gold-text">{u.shortName}</span>?
           </>
         }
-        lead={`Tell us your NEET score and we will confirm within one call whether you are eligible for ${u.name} — and what the complete ${u.duration.toLowerCase()} budget looks like for your family.`}
+        lead={`Tell us your NEET score and we will confirm within one call whether you are eligible for ${u.name} — and what the complete ${
+          u.duration ? u.duration.toLowerCase() : "course"
+        } budget looks like for your family.`}
       />
     </>
   );
@@ -632,9 +707,12 @@ function Fact({
 }: {
   icon: React.ReactNode;
   label: string;
-  value: string;
+  value: string | null;
   highlight?: boolean;
 }) {
+  // An unpublished fact is omitted, not shown as an empty row.
+  if (!value) return null;
+
   return (
     <RevealItem>
       <div className="flex flex-col gap-1.5">
@@ -656,11 +734,16 @@ function Fact({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value }: { label: string; value: string | null }) {
+  if (!value) return null;
   return (
     <div className="flex items-baseline justify-between gap-4">
-      <dt className="text-ink-muted">{label}</dt>
-      <dd className="t-num shrink-0 text-right font-semibold text-ink">{value}</dd>
+      <dt className="shrink-0 text-ink-muted">{label}</dt>
+      {/* The China records carry a long duration string — "6 Years
+          (5 Years + 1 Year Internship)" — which pushed this row past
+          the viewport when the value could not shrink. It wraps now;
+          the label holds its width instead. */}
+      <dd className="t-num min-w-0 text-right font-semibold text-balance text-ink">{value}</dd>
     </div>
   );
 }
@@ -677,11 +760,21 @@ function FeeBreakdown({ university: u }: { university: University }) {
         <SectionHeading
           eyebrow={`Fee Structure ${SITE.admissionYear}`}
           title={
-            <>
-              The complete cost, <span className="gold-text">published</span>
-            </>
+            u.hasPublishedFees ? (
+              <>
+                The complete cost, <span className="gold-text">published</span>
+              </>
+            ) : (
+              <>
+                What this will <span className="gold-text">actually</span> cost
+              </>
+            )
           }
-          lead="Exactly as printed in our official Admission Portfolio. No donation, no capitation, and no figure that appears only after you have committed."
+          lead={
+            u.hasPublishedFees
+              ? "Exactly as printed in our official Admission Portfolio. No donation, no capitation, and no figure that appears only after you have committed."
+              : `Our current brochure does not publish a fee table for ${u.shortName}, so we are not going to print one. What follows is what the cost is actually made up of — and a counsellor will confirm every line of it in writing before you commit to anything.`
+          }
         />
 
         <Reveal direction="up" className="mt-12">
@@ -742,9 +835,11 @@ function FeeBreakdown({ university: u }: { university: University }) {
                 </div>
               ) : (
                 <div className="px-6 py-10 text-center">
-                  <p className="t-body">
-                    Fees at Nepali universities vary by institution. Our counsellors will share the
-                    exact structure for the university shortlisted against your profile.
+                  <p className="t-body mx-auto max-w-[52ch]">
+                    The instalment schedule for {u.shortName} is confirmed with the university for
+                    each intake and is not published in our current brochure. Ask us and we will
+                    send you the exact structure — tuition, hostel, living costs and the payment
+                    dates — on university letterhead.
                   </p>
                   <Button href="#counselling" variant="gold" size="sm" className="mt-5">
                     Request the fee structure
@@ -766,22 +861,31 @@ function FeeBreakdown({ university: u }: { university: University }) {
             {/* Totals */}
             <div className="flex flex-col gap-5">
               <div className="rounded-[var(--radius-lg)] bg-[var(--navy-900)] p-7 text-white">
-                <p className="t-eyebrow text-[var(--gold-300)]">Total expense · {u.duration}</p>
+                <p className="t-eyebrow text-[var(--gold-300)]">
+                  Total expense{u.duration ? ` · ${u.duration}` : ""}
+                </p>
                 <p className="t-num mt-4 font-[family-name:var(--font-playfair)] text-[2.5rem] font-bold leading-none">
                   {u.totalExpenseInr ? `₹${inr(u.totalExpenseInr)}` : "On request"}
                 </p>
-                <p className="t-num mt-2.5 text-[0.9375rem] text-white/60">{formatTotal(u)}</p>
+                {u.totalExpense !== null && (
+                  <p className="t-num mt-2.5 text-[0.9375rem] text-white/60">{formatTotal(u)}</p>
+                )}
                 <p className="mt-5 border-t border-white/12 pt-5 text-[0.8125rem] leading-relaxed text-white/60">
-                  Includes tuition plus the university&rsquo;s quoted associated costs. Airfare,
-                  personal spending, insurance and the annual residence permit are additional — see
-                  the breakdown below.
+                  {u.hasPublishedFees
+                    ? "Includes tuition plus the university’s quoted associated costs. Airfare, personal spending, insurance and the annual residence permit are additional — see the breakdown below."
+                    : "We will confirm the total in writing before you commit. Whatever the tuition figure turns out to be, airfare, personal spending, insurance and the annual residence permit sit on top of it — see the breakdown below."}
                 </p>
               </div>
 
               <div className="material-card rounded-[var(--radius-lg)] p-6">
                 <p className="t-eyebrow text-[var(--accent)]">Monthly living</p>
-                <p className="t-num mt-3 text-[1.75rem] font-bold leading-none text-brand">
-                  {u.livingCost}
+                <p
+                  className={cn(
+                    "t-num mt-3 text-[1.75rem] font-bold leading-none",
+                    u.livingCost ? "text-brand" : "text-ink-muted",
+                  )}
+                >
+                  {u.livingCost ?? "On request"}
                 </p>
                 <p className="t-small mt-2">
                   Hostel accommodation and food. Indian mess available on or near campus.

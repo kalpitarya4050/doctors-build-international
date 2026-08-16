@@ -9,17 +9,18 @@ import { FeeTable } from "@/components/ui/FeeTable";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Partner Medical Universities ${SITE.admissionYear} — NMC Approved MBBS Abroad`,
+  title: `Partner Medical Universities ${SITE.admissionYear} — NMC Eligible MBBS Abroad`,
   description:
-    "Seven NMC and WHO approved medical universities across Georgia, Russia, Uzbekistan, Kyrgyzstan and Nepal. Compare fees from ₹15.91 lakh, FMGE pass rates up to 65%, duration and intake — all published.",
+    "23 NMC-eligible, WHO recognized medical universities across Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Compare fees from ₹15.91 lakh, FMGE pass rates up to 65%, duration and intake.",
   alternates: { canonical: "/universities" },
   keywords: [
     "NMC approved medical universities abroad",
     "MBBS universities for Indian students",
     "WHO listed medical colleges",
     "GEOMEDI University fees",
-    "Kemerovo State Medical University",
-    "Ingush State University MBBS",
+    "Kazan Federal University MBBS",
+    "Nanjing Medical University MBBS",
+    "Kazakh National Medical University",
   ],
 };
 
@@ -45,12 +46,12 @@ export default function UniversitiesPage() {
 
       <PageHero
         eyebrow={`Admission Portfolio ${SITE.admissionYear}`}
-        title="Seven universities. Every figure published."
-        highlight={["published."]}
+        title={`${UNIVERSITIES.length} universities. Chosen, not listed.`}
+        highlight={["Chosen,"]}
         crumbs={[{ label: "Universities" }]}
         image="lecture-hall"
         imageCaption="Illustrative of teaching abroad"
-        lead="These are the universities we place students into — not a directory of everything that exists. Each one is here because of its recognition status, its FMGE outcomes and the support already in place for Indian students on campus."
+        lead="These are the universities we place students into — not a directory of everything that exists. Each one is here because of its recognition status, its clinical exposure and the support already in place for Indian students on campus."
       />
 
       <section className="section" aria-label="All universities">
@@ -71,7 +72,7 @@ export default function UniversitiesPage() {
             eyebrow="Full Comparison"
             title={
               <>
-                Compare all seven, <span className="gold-text">side by side</span>
+                Compare all {UNIVERSITIES.length}, <span className="gold-text">side by side</span>
               </>
             }
             lead="Sort by total cost, FMGE pass rate, Indian student numbers or safety rating. Toggle between local currency and rupees."

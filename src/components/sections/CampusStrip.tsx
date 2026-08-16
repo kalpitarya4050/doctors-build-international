@@ -1,4 +1,6 @@
 import { MARQUEE_TOP, MARQUEE_BOTTOM, MARQUEE_CAPTIONS } from "@/lib/data/media-map";
+import { COUNTRIES } from "@/lib/data/countries";
+import { UNIVERSITIES } from "@/lib/data/universities";
 import { MediaMarquee } from "@/components/ui/MediaMotion";
 
 /** Two bands of photography rolling in opposite directions. Pauses on
@@ -16,7 +18,8 @@ export function CampusStrip() {
           <span aria-hidden className="h-px w-8 bg-[linear-gradient(270deg,transparent,var(--gold-500))]" />
         </span>
         <p className="t-lead max-w-[54ch]">
-          Seven countries, seven universities, and six years that decide the rest of your career.
+          {COUNTRIES.length} countries, {UNIVERSITIES.length} universities, and six years that decide
+          the rest of your career.
         </p>
       </div>
 

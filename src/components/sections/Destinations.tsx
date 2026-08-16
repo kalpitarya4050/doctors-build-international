@@ -18,10 +18,10 @@ export function Destinations() {
           eyebrow="Study in Top Destinations"
           title={
             <>
-              Seven countries. One <span className="gold-text">honest</span> shortlist.
+              {COUNTRIES.length} countries. One <span className="gold-text">honest</span> shortlist.
             </>
           }
-          lead="Every destination below is NMC or WHO recognized, taught entirely in English, and requires no IELTS. We tell you the trade-offs of each — climate, cost, food, FMGE outcomes — before you choose."
+          lead="Every destination below is NMC-eligible or WHO recognized, taught entirely in English, and requires no IELTS. We tell you the trade-offs of each — climate, cost, food, clinical exposure — before you choose."
         />
 
         <RevealGroup
@@ -125,8 +125,8 @@ export function Destinations() {
                   Looking for a country not listed here?
                 </h3>
                 <p className="mt-3 text-[0.875rem] leading-relaxed text-white/65">
-                  We work with recognized medical universities beyond these seven. Tell us your NEET
-                  score and budget and we will find the honest match.
+                  We work with recognized medical universities beyond these {COUNTRIES.length}. Tell
+                  us your NEET score and budget and we will find the honest match.
                 </p>
               </div>
               <Button variant="gold" size="sm" className="relative mt-7 w-fit" href="/contact">

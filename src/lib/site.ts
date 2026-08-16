@@ -10,7 +10,7 @@ export const SITE = {
    *  actually served from. Set it to the real domain at go-live. */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://doctorsbuild.com",
   description:
-    "Doctors Build International helps Indian students secure MBBS admission in NMC-approved medical universities in Georgia, Russia, Uzbekistan, Kyrgyzstan, Nepal and beyond — with doctor-led counselling, transparent fees and end-to-end support.",
+    "Doctors Build International helps Indian students secure MBBS admission at NMC-eligible medical universities in Georgia, Russia, Kazakhstan, China and beyond — with doctor-led counselling, transparent fees and end-to-end support.",
   phone: "+917746000015",
   phoneDisplay: "+91 77460 00015",
   phoneRaw: "7746000015",

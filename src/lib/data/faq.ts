@@ -48,7 +48,7 @@ export const FAQS: FaqItem[] = [
   {
     category: "Eligibility",
     q: "Do I need IELTS or TOEFL?",
-    a: "No. None of the universities in our portfolio require IELTS or TOEFL for admission to their English-medium MBBS programmes. This applies to Georgia, Russia, Uzbekistan, Kyrgyzstan and Nepal. Some Western destinations do require English proficiency tests, which is one reason these destinations are more accessible for Indian students.",
+    a: "No. None of the universities in our portfolio require IELTS or TOEFL for admission to their English-medium MBBS programmes. This applies to Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Some Western destinations do require English proficiency tests, which is one reason these destinations are more accessible for Indian students.",
   },
   {
     category: "Eligibility",
@@ -61,7 +61,7 @@ export const FAQS: FaqItem[] = [
     category: "Fees & Funding",
     featured: true,
     q: "What is the total cost of MBBS abroad, honestly?",
-    a: "Across our portfolio, the complete six-year cost including tuition and living expenses ranges from approximately ₹15.91 lakh at Ingush State University in Russia to around ₹30.53 lakh at GEOMEDI University in Georgia. Our Fee Comparison page shows every university side by side with tuition, total expense and the semester-wise payment schedule from the official brochure. Budget separately for airfare, personal spending, medical insurance and the annual residence permit.",
+    a: "For the universities where we hold a published fee table, the complete six-year cost including tuition and living expenses ranges from approximately ₹15.91 lakh at Ingush State University in Russia to around ₹30.53 lakh at GEOMEDI University in Georgia. Our Fee Comparison page shows those side by side with tuition, total expense and the semester-wise payment schedule from the official brochure. For the newer universities in our lineup the fee table is confirmed directly with the institution for each intake — we will send it to you in writing rather than publish an estimate. Budget separately in every case for airfare, personal spending, medical insurance and the annual residence permit.",
   },
   {
     category: "Fees & Funding",
@@ -106,7 +106,7 @@ export const FAQS: FaqItem[] = [
   {
     category: "Recognition & Licensing",
     q: "What FMGE pass rates do your universities achieve?",
-    a: "Across our portfolio: GEOMEDI University in Georgia leads at 65%+, followed by Ingush State University at 62%+, Nepal universities at 60%+, Kemerovo State and University of South Asia at 58%+, and North Caucasian State Medical Academy and Fergana Medical Institute at 55%+. These are materially above the national average for Indian students studying abroad, which is why we place students into these institutions specifically.",
+    a: "Where we hold verified figures: GEOMEDI University in Georgia leads at 65%+, followed by Ingush State University at 62%+, Kemerovo State and University of South Asia at 58%+, and North Caucasian State Medical Academy and Fergana Medical Institute at 55%+. These are materially above the national average for Indian students studying abroad. For the universities added to our lineup more recently we do not yet publish a pass rate, and we would rather tell you that than quote a number we cannot stand behind — ask a counsellor and we will share whatever verified outcome data the university itself provides.",
   },
   {
     category: "Recognition & Licensing",
@@ -139,17 +139,17 @@ export const FAQS: FaqItem[] = [
   {
     category: "Life Abroad",
     q: "What is the language of instruction, and will I struggle with patients?",
-    a: "All teaching is in English across every university in our portfolio. For clinical rotations you will need conversational ability in the local language — Russian, Georgian, Uzbek or Kyrgyz — and each university teaches this as a compulsory subject in the first two years specifically for that purpose. In Nepal, Hindi is widely understood and this is not an issue at all.",
+    a: "All teaching is in English across every university in our portfolio. For clinical rotations you will need conversational ability in the local language — Russian, Georgian, Kazakh, Mandarin or Uzbek depending on where you study — and each university teaches this as a compulsory subject in the early years specifically for that purpose. In China this matters more than most students expect, which is why Mandarin runs alongside the English-medium curriculum there.",
   },
   {
     category: "Life Abroad",
     q: "How cold does it actually get?",
-    a: "It varies considerably and it is worth taking seriously over six years. Kemerovo in Siberia has genuinely severe winters. North Caucasian and Ingush in southern Russia are markedly milder. Georgia and Uzbekistan have moderate continental climates with warm summers, and Nepal is very similar to northern India. Our counsellors flag this explicitly during shortlisting because it matters more than most students expect.",
+    a: "It varies considerably and it is worth taking seriously over six years. Kemerovo in Siberia has genuinely severe winters. North Caucasian, Kabardino-Balkarian and Ingush in southern Russia are markedly milder. Georgia and Uzbekistan have moderate continental climates with warm summers, and Batumi on Georgia's Black Sea coast is mild year-round. In China, Nanjing and Guangzhou are humid subtropical with mild winters, while Beijing and Tianjin get properly cold. Our counsellors flag this explicitly during shortlisting because it matters more than most students expect.",
   },
   {
     category: "Life Abroad",
     q: "Can my parents visit me?",
-    a: "Yes. All our destinations issue tourist visas to Indian nationals, and Nepal requires no visa at all. Many families visit during the summer break. We assist with invitation letters from the university where these are needed for the visa application.",
+    a: "Yes. All our destinations issue tourist visas to Indian nationals, and many families visit during the summer break. Georgia and Kazakhstan are the easiest to reach on a short flight. We assist with invitation letters from the university where these are needed for the visa application.",
   },
   {
     category: "Life Abroad",
@@ -172,12 +172,12 @@ export const FAQS: FaqItem[] = [
   {
     category: "Process & Visa",
     q: "What is your visa success rate?",
-    a: "Our visa success rate is high because we do not submit incomplete files. Every application is verified internally before it goes to the embassy, students are briefed for interviews where they are required, and we track each file through to issuance. Nepal requires no visa for Indian nationals at all.",
+    a: "Our visa success rate is high because we do not submit incomplete files. Every application is verified internally before it goes to the embassy, students are briefed for interviews where they are required, and we track each file through to issuance. Georgia has the lightest documentation requirement of our destinations; China's X1 visa needs the JW202 form alongside the admission letter and takes the longest to prepare.",
   },
   {
     category: "Process & Visa",
     q: "When are the intakes?",
-    a: "Most universities have a September/October intake, which is the main cycle. GEOMEDI University in Georgia and the University of South Asia in Kyrgyzstan additionally offer a February intake, and Nepal universities run September/November depending on the institution. We recommend beginning the process at least three months before your target intake.",
+    a: "Most universities have a September/October intake, which is the main cycle — all five Chinese universities admit in September only. GEOMEDI University in Georgia and the University of South Asia in Kyrgyzstan additionally offer a February intake. We recommend beginning the process at least three months before your target intake, and earlier for China because the visa file takes longest to assemble.",
   },
   {
     category: "Process & Visa",

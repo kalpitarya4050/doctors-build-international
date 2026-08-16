@@ -10,9 +10,9 @@ import { SITE } from "@/lib/site";
 import { inrShort } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: `MBBS Abroad Fee Comparison ${SITE.admissionYear} — All Seven Universities`,
+  title: `MBBS Abroad Fee Comparison ${SITE.admissionYear} — All Partner Universities`,
   description:
-    "Compare MBBS abroad fees across seven NMC-approved universities in Georgia, Russia, Uzbekistan, Kyrgyzstan and Nepal. Tuition, total six-year cost, living expenses and FMGE pass rates — sortable, in USD or INR.",
+    "Compare MBBS abroad fees across our NMC-eligible partner universities in Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Tuition, total six-year cost, living expenses and FMGE pass rates — sortable, in USD or INR.",
   alternates: { canonical: "/fee-comparison" },
   keywords: [
     "MBBS abroad fees comparison",
@@ -23,30 +23,34 @@ export const metadata: Metadata = {
   ],
 };
 
-const cheapest = [...UNIVERSITIES]
-  .filter((u) => u.totalExpenseInr !== null)
-  .sort((a, b) => (a.totalExpenseInr ?? 0) - (b.totalExpenseInr ?? 0))[0];
+const priced = UNIVERSITIES.filter((u) => u.hasPublishedFees && u.totalExpenseInr !== null);
 
-const dearest = [...UNIVERSITIES]
-  .filter((u) => u.totalExpenseInr !== null)
-  .sort((a, b) => (b.totalExpenseInr ?? 0) - (a.totalExpenseInr ?? 0))[0];
+const cheapest = [...priced].sort(
+  (a, b) => (a.totalExpenseInr ?? 0) - (b.totalExpenseInr ?? 0),
+)[0];
+
+const dearest = [...priced].sort(
+  (a, b) => (b.totalExpenseInr ?? 0) - (a.totalExpenseInr ?? 0),
+)[0];
+
+const onRequestCount = UNIVERSITIES.length - priced.length;
 
 export default function FeeComparisonPage() {
   return (
     <>
       <PageHero
         eyebrow={`Admission Portfolio ${SITE.admissionYear}`}
-        title="Every fee, on one page."
-        highlight={["fee,"]}
+        title="Every fee we hold, on one page."
+        highlight={["we hold,"]}
         crumbs={[{ label: "Fee Comparison" }]}
         image="documents"
-        lead="This is our official Admission Portfolio, made interactive. Tuition, total six-year expense, monthly living costs, duration, intake, FMGE pass rates and safety ratings for all seven universities — sortable and switchable between local currency and rupees."
+        lead={`Tuition, total six-year expense, monthly living costs, duration, intake, FMGE pass rates and safety ratings — sortable, and switchable between local currency and rupees. We publish figures for ${priced.length} of our ${UNIVERSITIES.length} universities. For the other ${onRequestCount} the fee table is confirmed with the institution for each intake, and we will send it to you in writing rather than print an estimate here.`}
       />
 
       {/* Headline numbers */}
       <section className="border-y border-hairline bg-[var(--bg-sunken)] py-12" aria-label="Cost range">
         <div className="shell">
-          <RevealGroup className="grid gap-8 sm:grid-cols-3" stagger={0.07}>
+          <RevealGroup className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4" stagger={0.07}>
             <RevealItem>
               <div className="flex flex-col gap-2">
                 <span className="flex items-center gap-2 text-[0.6875rem] font-bold tracking-[0.06em] text-ink-muted uppercase">
@@ -85,6 +89,20 @@ export default function FeeComparisonPage() {
                   Zero
                 </span>
                 <span className="t-small">At every university, at every stage</span>
+              </div>
+            </RevealItem>
+            <RevealItem>
+              <div className="flex flex-col gap-2">
+                <span className="flex items-center gap-2 text-[0.6875rem] font-bold tracking-[0.06em] text-ink-muted uppercase">
+                  <Info className="size-4 text-[var(--accent)]" />
+                  Published figures
+                </span>
+                <span className="t-num font-[family-name:var(--font-playfair)] text-[2.25rem] font-bold leading-none text-brand">
+                  {priced.length} of {UNIVERSITIES.length}
+                </span>
+                <span className="t-small">
+                  The rest are confirmed in writing during counselling
+                </span>
               </div>
             </RevealItem>
           </RevealGroup>

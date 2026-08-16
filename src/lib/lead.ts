@@ -52,10 +52,9 @@ export function whatsappFromLead(lead: Partial<LeadInput>): string {
 export const INTEREST_OPTIONS = [
   "MBBS in Georgia",
   "MBBS in Russia",
+  "MBBS in Kazakhstan",
+  "MBBS in China",
   "MBBS in Uzbekistan",
   "MBBS in Kyrgyzstan",
-  "MBBS in Nepal",
-  "MBBS in China",
-  "MBBS in Kazakhstan",
   "Not sure — please advise me",
 ] as const;

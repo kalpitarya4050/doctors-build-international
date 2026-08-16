@@ -29,6 +29,10 @@ const args = process.argv.slice(2);
 const BASE = (args.find((a) => a.startsWith("--url=")) ?? "--url=http://localhost:3000").slice(6);
 const ONLY = args.find((a) => a.startsWith("--only="))?.slice(7);
 
+/** One page of each shape, not all 46 — a university page with a
+ *  published fee table lays out differently from one without, and a
+ *  destination with manifest photography differently from one on
+ *  country imagery. Those are the cases worth re-checking. */
 const ROUTES = [
   "/",
   "/about",
@@ -37,10 +41,15 @@ const ROUTES = [
   "/destinations",
   "/destinations/georgia",
   "/destinations/russia",
+  "/destinations/kazakhstan",
   "/destinations/china",
   "/universities",
+  // Published fees + full manifest photography
   "/universities/geomedi-university-georgia",
-  "/universities/nepal-mbbs-universities",
+  // No published fees, no manifest photography, richest China facts
+  "/universities/nanjing-medical-university",
+  // No published fees, sparsest record in the lineup
+  "/universities/kazakh-russian-medical-university",
   "/fee-comparison",
   "/faq",
   "/contact",

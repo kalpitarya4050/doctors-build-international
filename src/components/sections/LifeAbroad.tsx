@@ -1,4 +1,5 @@
 import { LIFE_GALLERY } from "@/lib/data/media-map";
+import { UNIVERSITIES } from "@/lib/data/universities";
 import { Gallery } from "@/components/ui/Gallery";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -35,7 +36,7 @@ export function LifeAbroad() {
         <Reveal direction="up" delay={0.16}>
           <div className="mt-10 flex justify-center">
             <Button href="/universities" variant="outline" size="lg">
-              Explore all seven universities
+              Explore all {UNIVERSITIES.length} universities
             </Button>
           </div>
         </Reveal>

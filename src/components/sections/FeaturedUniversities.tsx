@@ -17,10 +17,11 @@ export function FeaturedUniversities() {
             eyebrow="Partner Universities"
             title={
               <>
-                Seven universities. <span className="gold-text">Every number</span> on the table.
+                {UNIVERSITIES.length} universities.{" "}
+                <span className="gold-text">Every number</span> we hold.
               </>
             }
-            lead="Fees, duration, intake, FMGE pass rates, Indian student numbers and safety ratings — exactly as published in our official Admission Portfolio. Drag to explore."
+            lead="Fees, duration, intake, FMGE pass rates, Indian student numbers and safety ratings — exactly as published in our official brochures, and marked “on request” where a university has not published them. Drag to explore."
             className="max-w-3xl"
           />
           <Reveal direction="up" delay={0.1}>

@@ -374,7 +374,7 @@ export function Globe({ className }: { className?: string }) {
       ref={canvasRef}
       className={cn("size-full", className)}
       role="img"
-      aria-label="Rotating globe showing flight paths from India to Georgia, Russia, Uzbekistan, Kyrgyzstan, Nepal, China and Kazakhstan"
+      aria-label="Rotating globe showing flight paths from India to Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan"
     />
   );
 }

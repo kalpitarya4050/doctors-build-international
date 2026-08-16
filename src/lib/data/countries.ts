@@ -1,3 +1,18 @@
+/* ============================================================
+   Destinations.
+
+   Georgia, Russia, Kazakhstan and China are the client's current
+   four priority bands, and their copy is taken from the "Top MBBS
+   Universities for Indian Students" brochure — highlights and
+   "Why <country>?" points are the client's own wording.
+
+   Uzbekistan and Kyrgyzstan are retained from the earlier
+   2026-27 portfolio at the client's instruction; they keep their
+   verified fee data but sit outside the priority bands.
+
+   NEPAL was removed — the client no longer places students there.
+   ============================================================ */
+
 export interface Country {
   slug: string;
   name: string;
@@ -7,7 +22,10 @@ export interface Country {
   lng: number;
   accent: string;
   tagline: string;
+  /** Lowest PUBLISHED total for this country, or "On request"
+   *  where the current brochure prints no fee table. */
   startingFrom: string;
+  feeStatus: "published" | "on-request";
   duration: string;
   intake: string;
   recognition: string[];
@@ -15,7 +33,13 @@ export interface Country {
   ieltsRequired: boolean;
   order: number;
   featured: boolean;
+  /** Brochure priority band. 5 = retained, outside the bands. */
+  priority: number;
+  /** The band's own strapline, as printed. */
+  priorityLabel: string;
   intro: string[];
+  /** The brochure's HIGHLIGHTS block, verbatim. */
+  brochureHighlights: string[];
   advantages: { title: string; body: string }[];
   livingCost: string;
   climate: string;
@@ -31,8 +55,9 @@ export const COUNTRIES: Country[] = [
     lat: 41.72,
     lng: 44.78,
     accent: "#1E7A4C",
-    tagline: "European standards. Asian affordability.",
+    tagline: "The Perfect Start for Your Medical Journey",
     startingFrom: "USD 36,150",
+    feeStatus: "published",
     duration: "5 + 1 Years",
     intake: "Feb / Sept",
     recognition: ["NMC", "WHO"],
@@ -40,35 +65,45 @@ export const COUNTRIES: Country[] = [
     ieltsRequired: false,
     order: 1,
     featured: true,
+    priority: 1,
+    priorityLabel: "Best for Easy Adaptation",
+    brochureHighlights: [
+      "English-medium MBBS, European-style education",
+      "Pleasant climate, affordable living",
+      "Safer environment, easier adaptation",
+      "Modern infrastructure & growing hospital exposure",
+      "NMC-compliant universities (where applicable)",
+      "One of the most preferred destinations for Indian students",
+    ],
     intro: [
-      "Georgia sits at the crossroads of Europe and Asia, and its medical universities follow European education standards while charging a fraction of Western European fees. For Indian students, it has become one of the most reliable routes to a recognized medical degree.",
-      "All programmes are taught entirely in English, no IELTS or TOEFL is required, and Georgian medical degrees are recognized by the National Medical Commission of India and the World Health Organization — meaning graduates are eligible to sit FMGE and NExT and practise in India.",
-      "Georgia consistently produces the strongest FMGE outcomes in our portfolio. GEOMEDI University alone posts a pass rate above 65%, well ahead of the national average for Indian students studying abroad.",
+      "Georgia sits at the crossroads of Europe and Asia, and its medical universities follow European education standards while charging a fraction of Western European fees. The client places it first for a specific reason: of all the destinations, it is the one Indian students adapt to most easily.",
+      "All programmes are taught entirely in English and no IELTS or TOEFL is required. Six universities make up the Georgian lineup — GEOMEDI, Avicenna Batumi, Georgian American (GAU), Georgian National (SEU), East-West and David Tvildiani — five in Tbilisi and one on the Black Sea coast at Batumi.",
+      "The practical case is straightforward: a three to four hour flight from India, a pleasant climate, a low cost of living, Indian food widely available, and a straightforward visa with light documentation. GEOMEDI also posts the strongest FMGE outcome in our portfolio, above 65%.",
     ],
     advantages: [
       {
-        title: "Highest FMGE success rate",
-        body: "Georgian universities in our portfolio return 65%+ FMGE pass rates — the strongest of any destination we place into.",
+        title: "Easy visa process & low documentation",
+        body: "One of the most straightforward student visa routes of any destination we place into, with a short document list and a high approval rate.",
       },
       {
-        title: "European curriculum",
-        body: "Georgia is part of the Bologna Process, so the degree structure and credit system align with European higher education.",
+        title: "Low living cost",
+        body: "Day-to-day costs sit well below Western Europe, which is a large part of why Georgia has become so heavily preferred by Indian families.",
       },
       {
-        title: "No entrance exam beyond NEET",
-        body: "A qualifying NEET score is all that is required. No IELTS, no TOEFL, no university entrance test.",
+        title: "Indian food & cultural similarity",
+        body: "Tbilisi and Batumi both have established Indian restaurants, grocery supply and a settled Indian student community to arrive into.",
       },
       {
-        title: "Safe and welcoming",
-        body: "Georgia ranks among the safest countries in the region, with a large and well-settled Indian student community in Tbilisi.",
+        title: "Closer to India",
+        body: "Three to four hours' flying time — the shortest of any European-standard destination, and it matters when families want to visit.",
       },
       {
-        title: "Simple visa process",
-        body: "A straightforward student visa with a high approval rate and a short processing window.",
+        title: "High student satisfaction & safety",
+        body: "Georgia ranks among the safest countries in the region, and student feedback consistently reflects that.",
       },
       {
-        title: "Gateway to Europe",
-        body: "Georgian degrees open pathways to postgraduate training across Europe as well as back home in India.",
+        title: "A beautiful country with rich culture",
+        body: "Mountains, a Black Sea coast and a food and wine culture that students genuinely enjoy living in for six years.",
       },
     ],
     livingCost: "USD 150 – 200 / month",
@@ -83,8 +118,9 @@ export const COUNTRIES: Country[] = [
     lat: 55.75,
     lng: 37.62,
     accent: "#B33636",
-    tagline: "Government universities. Seventy years of Indian graduates.",
+    tagline: "Tradition. Quality. Excellence.",
     startingFrom: "₹15.91 Lakh",
+    feeStatus: "published",
     duration: "6 Years",
     intake: "Sept / Oct",
     recognition: ["NMC", "WHO", "WDOMS"],
@@ -92,42 +128,177 @@ export const COUNTRIES: Country[] = [
     ieltsRequired: false,
     order: 2,
     featured: true,
+    priority: 2,
+    priorityLabel: "Best for Clinical Experience & Value",
+    brochureHighlights: [
+      "Globally reputed medical education",
+      "Extensive clinical exposure & experienced faculty",
+      "Research opportunities & strong alumni network",
+      "Affordable tuition & living",
+      "WHO listed, NMC-recognized universities",
+      "Excellent infrastructure & large teaching hospitals",
+    ],
     intro: [
       "Russia has been the single largest destination for Indian medical students for over five decades. Its government medical universities are state-funded, state-regulated and charge no donation or capitation fee whatsoever — the published tuition is the entire tuition.",
-      "Doctors Build International places students into three Russian government universities: Kemerovo State Medical University, North Caucasian State Medical Academy and Ingush State University. All three are recognized by the National Medical Commission of India and approved by the World Health Organization.",
-      "Russian medical education is six years including a one-year clinical internship, delivered in English for international students. Combined with living costs of USD 100 – 150 a month, Russia remains the most cost-effective route to a globally recognized MBBS.",
+      "Eight universities make up the Russian lineup: Kazan Federal, Bashkir State (BSMU), Ulyanovsk State, Chuvash State, Kemerovo State, North Caucasian State Medical Academy, Kabardino-Balkarian State and Ingush State. They span the Volga region, Siberia and the northern Caucasus, which gives real choice on climate and cost.",
+      "This is the client's value band. Russian medical education is six years including a one-year clinical internship, delivered in English for international students, attached to large state hospital networks that produce the patient volume behind the clinical training.",
     ],
     advantages: [
       {
-        title: "Zero donation, zero capitation",
-        body: "Government universities charge only regulated tuition. There is no under-the-table payment at any stage.",
+        title: "Large number of teaching hospitals",
+        body: "Substantial state hospital systems attached to each university — this is what produces the patient volume and case variety.",
       },
       {
-        title: "Lowest total cost",
-        body: "Ingush State University completes at approximately ₹15.91 lakh for the full six years including living expenses.",
+        title: "High quality education at affordable fees",
+        body: "State-regulated tuition with no donation and no capitation at any stage. Ingush State completes at approximately ₹15.91 lakh across six years including living costs.",
       },
       {
-        title: "Largest Indian community",
-        body: "Thousands of Indian students across Russian campuses, with established Indian mess facilities and senior networks.",
+        title: "Experienced faculty & practical training",
+        body: "Long-established MBBS programmes with faculty used to teaching international cohorts, weighted towards practical training in the later years.",
       },
       {
-        title: "Strong clinical exposure",
-        body: "Large state hospital networks give students high patient volume and broad case variety during rotations.",
+        title: "Safe & student-friendly environment",
+        body: "Secure campuses in cities with established Indian student communities and Indian mess facilities.",
       },
       {
-        title: "Seventy years of precedent",
-        body: "Indian doctors have graduated from Russian universities since the 1950s — this is a proven, well-trodden pathway.",
+        title: "Great value for money",
+        body: "The lowest total six-year cost of any destination in the portfolio sits in this group.",
       },
       {
-        title: "WDOMS listed",
-        body: "Listing in the World Directory of Medical Schools supports licensure applications well beyond India.",
+        title: "Strong global recognition",
+        body: "WHO listing and World Directory of Medical Schools entries support licensure pathways well beyond India.",
       },
     ],
     livingCost: "USD 100 – 150 / month",
-    climate: "Cold winters; southern campuses are considerably milder",
+    climate: "Cold winters; southern and Volga campuses are considerably milder",
     language: "English medium; basic Russian taught in first year",
     visaNote: "Student visa via invitation letter from the Ministry of Education. Typically 3 – 5 weeks.",
   },
+  {
+    slug: "kazakhstan",
+    name: "Kazakhstan",
+    flag: "🇰🇿",
+    lat: 43.24,
+    lng: 76.89,
+    accent: "#1D8FBE",
+    tagline: "Quality Education. Affordable Future.",
+    startingFrom: "On request",
+    feeStatus: "on-request",
+    duration: "5 + 1 Years",
+    intake: "Sept",
+    recognition: ["NMC", "WHO"],
+    neetRequired: true,
+    ieltsRequired: false,
+    order: 3,
+    featured: true,
+    priority: 3,
+    priorityLabel: "Affordable & Emerging Choice",
+    brochureHighlights: [
+      "Affordable tuition & living, modern curriculum",
+      "NMC eligible universities, comfortable climate",
+      "Good clinical exposure, Indian food available",
+      "Safe environment, international student friendly, proximity to India",
+    ],
+    intro: [
+      "Kazakhstan is the client's affordable and emerging choice — Central Asia's largest economy, with substantial recent investment in higher education and a medical sector that now attracts Indian students in growing numbers.",
+      "Two universities make up the lineup, both in Almaty: Kazakh National Medical University and Kazakh Russian Medical University. Almaty is the country's largest city and commercial centre, set against the Tian Shan mountains.",
+      "The practical appeal is economy without distance. Tuition and living costs are modest, the climate is comfortable through much of the year, Indian food is available in the city, and the flight from India is markedly shorter than to Siberia or East Asia.",
+    ],
+    advantages: [
+      {
+        title: "Very economical for Indian students",
+        body: "Among the most economical routes to a medical degree, on both tuition and day-to-day living.",
+      },
+      {
+        title: "High-quality medical education",
+        body: "A modern curriculum with good clinical exposure, backed by substantial state investment in the sector.",
+      },
+      {
+        title: "Recognized by NMC & WHO",
+        body: "NMC eligible and WHO recognized — confirm the current status of any specific university before you apply, as we do in writing during counselling.",
+      },
+      {
+        title: "Shorter flight time from India",
+        body: "A genuinely short journey, which makes both arrival and family visits considerably easier.",
+      },
+      {
+        title: "Peaceful & student-friendly country",
+        body: "A stable country with a reputation for being welcoming to international students — worth weighing across a six-year course.",
+      },
+      {
+        title: "Indian food available",
+        body: "Almaty has Indian food supply and a student community used to receiving international arrivals.",
+      },
+    ],
+    livingCost: "On request — confirmed per university",
+    climate: "Continental — comfortable summers, cold winters",
+    language: "English medium; Kazakh and Russian spoken locally",
+    visaNote: "Student visa on invitation letter. Typically 3 – 4 weeks.",
+  },
+  {
+    slug: "china",
+    name: "China",
+    flag: "🇨🇳",
+    lat: 39.9,
+    lng: 116.4,
+    accent: "#C7332B",
+    tagline: "Innovation. Technology. Future.",
+    startingFrom: "On request",
+    feeStatus: "on-request",
+    duration: "6 Years (5 + 1)",
+    intake: "September",
+    recognition: ["NMC", "WHO"],
+    neetRequired: true,
+    ieltsRequired: false,
+    order: 4,
+    featured: true,
+    priority: 4,
+    priorityLabel: "Best for Infrastructure & Technology",
+    brochureHighlights: [
+      "World-class campuses & advanced simulation labs",
+      "Internationally affiliated hospitals",
+      "Strong research ecosystem & smart cities",
+      "English-medium MBBS & modern infrastructure",
+      "Global exposure & high-quality clinical training",
+    ],
+    intro: [
+      "China is the client's infrastructure and technology band. Its medical universities operate at a scale and level of investment few other destinations in this price range can match — advanced simulation laboratories, large internationally affiliated hospitals and a serious research ecosystem.",
+      "Five universities make up the lineup: Nanjing Medical, Southern Medical in Guangzhou, Chongqing Medical, Tianjin Medical and Capital Medical in Beijing. Each runs a six-year English-medium MBBS — five academic years plus a one-year internship — with a September intake.",
+      "The affiliated hospital networks are the clinical case: 30+ teaching hospitals at Nanjing and Capital Medical, 20+ at the other three. All five sit in major cities with modern transport and direct international connectivity.",
+    ],
+    advantages: [
+      {
+        title: "Advanced technology & modern facilities",
+        body: "World-class campuses with advanced simulation laboratories — infrastructure on a scale that is genuinely difficult to match elsewhere at this cost.",
+      },
+      {
+        title: "High global ranking universities",
+        body: "Several Chinese medical universities appear in international rankings, with the research output and funding that go with that.",
+      },
+      {
+        title: "Great clinical training in top hospitals",
+        body: "Internationally affiliated teaching hospitals with very high patient volumes and modern diagnostic technology.",
+      },
+      {
+        title: "Safe environment with global exposure",
+        body: "Secure campuses in major smart cities, with international student communities and strong connectivity.",
+      },
+      {
+        title: "Bright future career opportunities",
+        body: "A degree from a globally recognised institution, in an environment oriented towards international careers.",
+      },
+      {
+        title: "English-medium MBBS",
+        body: "Taught entirely in English, with Mandarin alongside for clinical communication during hospital rotations.",
+      },
+    ],
+    livingCost: "On request — confirmed per university",
+    climate: "Varies by city — subtropical in the south, temperate monsoon in the north",
+    language: "English medium; Mandarin taught for clinical practice",
+    visaNote: "X1 student visa. Requires JW202 form and admission letter.",
+  },
+
+  /* ---------- Retained from the 2026-27 portfolio ---------- */
   {
     slug: "uzbekistan",
     name: "Uzbekistan",
@@ -137,22 +308,32 @@ export const COUNTRIES: Country[] = [
     accent: "#0E7C7B",
     tagline: "Central Asia's fastest-rising medical destination.",
     startingFrom: "USD 25,850",
+    feeStatus: "published",
     duration: "5 + 1 Years",
     intake: "Sept / Oct",
     recognition: ["NMC", "WHO", "WDOMS"],
     neetRequired: true,
     ieltsRequired: false,
-    order: 3,
+    order: 5,
     featured: true,
+    priority: 5,
+    priorityLabel: "Retained from our 2026-27 portfolio",
+    brochureHighlights: [
+      "USD-denominated fees — no local-currency exposure",
+      "NMC, WHO and WDOMS recognized",
+      "Moderate climate year-round",
+      "Culturally close to India",
+      "Rapidly modernising medical infrastructure",
+    ],
     intro: [
-      "Uzbekistan has invested heavily in its medical education infrastructure over the past decade, and its universities now attract Indian students in growing numbers. Fees are denominated in US dollars, which removes the exchange-rate risk that affects programmes priced in volatile local currencies.",
+      "Uzbekistan has invested heavily in its medical education infrastructure over the past decade. Fees are denominated in US dollars, which removes the exchange-rate risk that affects programmes priced in volatile local currencies over a six-year horizon.",
       "Fergana Medical Institute of Public Health is recognized by the National Medical Commission of India, approved by the World Health Organization, and listed in the World Directory of Medical Schools. The programme runs five academic years plus a one-year internship, entirely in English.",
-      "Of all our destinations, Uzbekistan is the closest to India culturally. The food, the spices, the hospitality and the moderate climate mean the adjustment period is genuinely shorter than anywhere else outside Nepal.",
+      "Of all our destinations, Uzbekistan is among the closest to India culturally. The food, the spices, the hospitality and the moderate climate mean the adjustment period is genuinely shorter than most alternatives.",
     ],
     advantages: [
       {
         title: "USD-denominated fees",
-        body: "Your six-year budget is fixed in dollars — no rouble volatility to plan around.",
+        body: "Your six-year budget is fixed in dollars — no local-currency volatility to plan around.",
       },
       {
         title: "Culturally close to India",
@@ -189,15 +370,25 @@ export const COUNTRIES: Country[] = [
     accent: "#C1512E",
     tagline: "The most affordable path to a medical degree.",
     startingFrom: "USD 20,400",
+    feeStatus: "published",
     duration: "5.5 Years",
     intake: "Feb / Sept",
     recognition: ["ECFMG", "WHO"],
     neetRequired: true,
     ieltsRequired: false,
-    order: 4,
+    order: 6,
     featured: true,
+    priority: 5,
+    priorityLabel: "Retained from our 2026-27 portfolio",
+    brochureHighlights: [
+      "Lowest total published fee in the portfolio",
+      "ECFMG approved — supports the USMLE pathway",
+      "Shorter 5.5-year programme",
+      "Two intakes a year",
+      "Large established Indian community in Bishkek",
+    ],
     intro: [
-      "Kyrgyzstan offers the lowest-cost route to a recognized medical degree in our entire portfolio. The University of South Asia in Bishkek completes at USD 20,400 total — less than a third of most Indian private medical colleges, with no donation at any stage.",
+      "Kyrgyzstan offers the lowest published cost of any option in our portfolio. The University of South Asia in Bishkek completes at USD 20,400 total — less than a third of most Indian private medical colleges, with no donation at any stage.",
       "The university is approved by the World Health Organization and recognized by the Educational Commission for Foreign Medical Graduates, the body that governs entry to US medical licensure. The programme runs 5.5 years including a one-year internship, taught entirely in English.",
       "Bishkek has hosted Indian medical students for over two decades, which means an established ecosystem of Indian restaurants, grocery stores, student associations and senior support is already in place when you arrive.",
     ],
@@ -232,146 +423,6 @@ export const COUNTRIES: Country[] = [
     language: "English medium; Kyrgyz and Russian spoken locally",
     visaNote: "Student visa, straightforward process. Typically 2 – 3 weeks.",
   },
-  {
-    slug: "nepal",
-    name: "Nepal",
-    flag: "🇳🇵",
-    lat: 27.72,
-    lng: 85.32,
-    accent: "#8C3A5E",
-    tagline: "No visa. No language barrier. No culture shock.",
-    startingFrom: "As per University",
-    duration: "5.5 Years",
-    intake: "Sept / Nov",
-    recognition: ["NMC", "WHO"],
-    neetRequired: true,
-    ieltsRequired: false,
-    order: 5,
-    featured: true,
-    intro: [
-      "Nepal is the closest destination to India in every meaningful sense — geographically, culturally and linguistically. Indian nationals require no visa, Hindi is widely understood, and the food, festivals and climate are entirely familiar.",
-      "Nepali medical universities recognized by the National Medical Commission of India and the World Health Organization are spread across Kathmandu, Pokhara, Chitwan and Biratnagar. Doctors Build International shortlists the specific institution that best fits each student's NEET score and budget.",
-      "The most significant academic advantage is syllabus alignment: Nepal's medical curriculum tracks the Indian syllabus closely, which shows directly in a consistent 60%+ FMGE pass rate across the 2500+ Indian students studying there.",
-    ],
-    advantages: [
-      {
-        title: "No visa required",
-        body: "Indian nationals travel to Nepal without a visa — the simplest entry of any destination.",
-      },
-      {
-        title: "Syllabus alignment",
-        body: "The curriculum tracks the Indian medical syllabus closely, directly supporting FMGE and NExT preparation.",
-      },
-      {
-        title: "No language barrier",
-        body: "Teaching is in English and Hindi is widely understood — including with patients during clinical postings.",
-      },
-      {
-        title: "Familiar food and culture",
-        body: "Indian food is standard, not an accommodation. Festivals, climate and customs are the ones you grew up with.",
-      },
-      {
-        title: "Easy family visits",
-        body: "Parents can visit for a fraction of the cost and time of any other destination.",
-      },
-      {
-        title: "60%+ FMGE rate",
-        body: "Among the strongest pass rates in the portfolio, driven by curriculum alignment and clinical familiarity.",
-      },
-    ],
-    livingCost: "USD 120 – 180 / month",
-    climate: "Moderate — very similar to northern India",
-    language: "English medium; Hindi and Nepali widely spoken",
-    visaNote: "No visa required for Indian nationals.",
-  },
-  {
-    slug: "china",
-    name: "China",
-    flag: "🇨🇳",
-    lat: 39.9,
-    lng: 116.4,
-    accent: "#C7332B",
-    tagline: "World-ranked universities. Advanced clinical infrastructure.",
-    startingFrom: "On Request",
-    duration: "6 Years",
-    intake: "Sept",
-    recognition: ["NMC", "WHO"],
-    neetRequired: true,
-    ieltsRequired: false,
-    order: 6,
-    featured: false,
-    intro: [
-      "China hosts a number of medical universities that appear in global university rankings, with clinical infrastructure and research funding on a scale few other destinations can match. Several are approved by the National Medical Commission of India and the World Health Organization for English-medium MBBS programmes.",
-      "Programmes run six years including internship and are delivered in English, with Mandarin taught alongside so that students can communicate during clinical rotations — an important practical requirement in Chinese teaching hospitals.",
-      "Doctors Build International advises on Chinese admissions on a case-by-case basis. Speak to our counsellors for current university availability, fee structures and intake timelines for the 2026-27 session.",
-    ],
-    advantages: [
-      {
-        title: "Globally ranked institutions",
-        body: "Several Chinese medical universities appear in international rankings, with corresponding research output.",
-      },
-      {
-        title: "Advanced hospital infrastructure",
-        body: "Very large teaching hospitals with high patient volumes and modern diagnostic technology.",
-      },
-      {
-        title: "Substantial research funding",
-        body: "Well-funded departments give students genuine exposure to clinical and laboratory research.",
-      },
-      {
-        title: "English-medium programmes",
-        body: "MBBS delivered in English with Mandarin taught alongside for clinical communication.",
-      },
-    ],
-    livingCost: "USD 200 – 350 / month",
-    climate: "Varies widely by region",
-    language: "English medium; Mandarin taught for clinical practice",
-    visaNote: "X1 student visa. Requires JW202 form and admission letter.",
-  },
-  {
-    slug: "kazakhstan",
-    name: "Kazakhstan",
-    flag: "🇰🇿",
-    lat: 51.16,
-    lng: 71.47,
-    accent: "#1D8FBE",
-    tagline: "Modern campuses. Central Asian value.",
-    startingFrom: "On Request",
-    duration: "5 + 1 Years",
-    intake: "Sept",
-    recognition: ["NMC", "WHO"],
-    neetRequired: true,
-    ieltsRequired: false,
-    order: 7,
-    featured: false,
-    intro: [
-      "Kazakhstan is Central Asia's largest economy and has invested substantially in higher education, producing modern medical university campuses with contemporary teaching facilities. Several institutions are recognized by the National Medical Commission of India and approved by the World Health Organization.",
-      "MBBS programmes run five years plus a one-year internship and are taught in English. Living costs sit comfortably in the Central Asian range, and the country's strong Indian diaspora makes settling in straightforward.",
-      "Doctors Build International advises on Kazakh admissions on request. Contact our counsellors for current university options, fee structures and the 2026-27 intake calendar.",
-    ],
-    advantages: [
-      {
-        title: "Modern campuses",
-        body: "Recent state investment has produced contemporary teaching and laboratory facilities.",
-      },
-      {
-        title: "Strong economy, stable environment",
-        body: "Central Asia's largest economy, with correspondingly stable infrastructure and services.",
-      },
-      {
-        title: "Affordable living",
-        body: "Costs comparable to the rest of Central Asia — well below European or Chinese equivalents.",
-      },
-      {
-        title: "Established Indian diaspora",
-        body: "An existing Indian community makes food, accommodation and social settling considerably easier.",
-      },
-    ],
-    livingCost: "USD 150 – 250 / month",
-    climate: "Continental — cold winters, warm summers",
-    language: "English medium; Kazakh and Russian spoken locally",
-    visaNote: "Student visa on invitation letter. Typically 3 – 4 weeks.",
-  },
 ];
 
 export const COUNTRY_SLUGS = COUNTRIES.map((c) => c.slug);
@@ -381,6 +432,11 @@ export function getCountry(slug: string): Country | undefined {
 }
 
 export const FEATURED_COUNTRIES = COUNTRIES.filter((c) => c.featured);
+
+/** The four brochure priority bands, in order. */
+export const PRIORITY_COUNTRIES = COUNTRIES.filter((c) => c.priority <= 4).sort(
+  (a, b) => a.priority - b.priority,
+);
 
 /** Origin point for the hero globe's flight arcs. */
 export const ORIGIN = { name: "India", lat: 20.59, lng: 78.96 };

@@ -366,6 +366,6 @@ export const TESTIMONIALS: Testimonial[] = [
 export const STATS = [
   { value: 10, suffix: "+", label: "Years of Experience", sub: "In medical education" },
   { value: 5000, suffix: "+", label: "Students & Parents", sub: "Trust Doctors Build" },
-  { value: 7, suffix: "", label: "Countries Served", sub: "Across Europe & Asia" },
+  { value: 23, suffix: "", label: "Partner Universities", sub: "Across six countries" },
   { value: 4.5, suffix: "/5", label: "Average Rating", sub: "From student families", decimal: true },
 ] as const;

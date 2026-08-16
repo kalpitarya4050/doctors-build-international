@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Destinations } from "@/components/sections/Destinations";
+import { UNIVERSITIES } from "@/lib/data/universities";
 import { PageHero } from "@/components/layout/PageHero";
 import { LeadSection } from "@/components/sections/LeadSection";
 import { FeeTable } from "@/components/ui/FeeTable";
@@ -8,9 +9,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `MBBS Abroad Destinations ${SITE.admissionYear} — Seven Countries Compared`,
+  title: `MBBS Abroad Destinations ${SITE.admissionYear} — Six Countries Compared`,
   description:
-    "Compare MBBS abroad destinations for Indian students: Georgia, Russia, Uzbekistan, Kyrgyzstan, Nepal, China and Kazakhstan. Fees from ₹15.91 lakh, NMC approved, English medium, no IELTS.",
+    "Compare MBBS abroad destinations for Indian students: Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Fees from ₹15.91 lakh, NMC eligible, English medium, no IELTS.",
   alternates: { canonical: "/destinations" },
 };
 
@@ -19,12 +20,12 @@ export default function DestinationsPage() {
     <>
       <PageHero
         eyebrow="Study MBBS Abroad"
-        title="Seven destinations. One honest comparison."
+        title="Six destinations. One honest comparison."
         highlight={["honest"]}
         crumbs={[{ label: "Destinations" }]}
         image="students-campus"
         imageCaption="Illustrative of student life abroad"
-        lead="Every country below offers NMC or WHO recognized medical universities teaching entirely in English, with no IELTS requirement. What differs is cost, climate, course length, FMGE outcomes and how far you will be from home — and we will tell you plainly which of those matters most for you."
+        lead="Every country below offers NMC-eligible, WHO recognized medical universities teaching entirely in English, with no IELTS requirement. What differs is cost, climate, course length, clinical exposure and how far you will be from home — and we will tell you plainly which of those matters most for you."
       />
 
       <Destinations />
@@ -35,7 +36,7 @@ export default function DestinationsPage() {
             eyebrow="Side by Side"
             title={
               <>
-                All seven universities, <span className="gold-text">every number</span>
+                All {UNIVERSITIES.length} universities, <span className="gold-text">side by side</span>
               </>
             }
             lead="Sort by cost, FMGE pass rate, Indian student numbers or safety. Switch between local currency and rupees."

@@ -89,10 +89,10 @@ export default function AboutPage() {
               <Reveal direction="up" delay={0.1}>
                 <p className="t-body max-w-[68ch]">
                   Over ten years we have placed students into medical universities across Georgia,
-                  Russia, Uzbekistan, Kyrgyzstan and Nepal. Five thousand families have made this
-                  decision with us. Most of our enquiries now arrive through parents who have already
-                  sent one child abroad and are sending the next — which is the only endorsement that
-                  has ever mattered to us.
+                  Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Five thousand families have
+                  made this decision with us. Most of our enquiries now arrive through parents who
+                  have already sent one child abroad and are sending the next — which is the only
+                  endorsement that has ever mattered to us.
                 </p>
               </Reveal>
             </div>

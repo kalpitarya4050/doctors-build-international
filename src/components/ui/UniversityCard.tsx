@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, MapPin, Clock, TrendingUp, Users } from "lucide-react";
+import { ArrowUpRight, MapPin, Clock, TrendingUp, Users, Building2 } from "lucide-react";
 import type { University } from "@/lib/data/universities";
 import { uniImage, uniCaption } from "@/lib/data/media-map";
 import { Media, Scrim } from "./Media";
@@ -7,20 +7,20 @@ import { Flag } from "./Flag";
 import { Chip } from "./Surface";
 import { cn, inrShort, num } from "@/lib/utils";
 
-/** Formats a currency total for display, tolerating the Nepal
- *  record where fees vary by institution. */
+/** Formats a currency total, tolerating the records whose fees the
+ *  current brochure does not publish. */
 export function formatTotal(u: University): string {
-  if (u.totalExpense === null) return "As per University";
+  if (u.totalExpense === null) return "On request";
   if (u.currency === "USD") return `USD ${num(u.totalExpense)}`;
   if (u.currency === "RUB") return `RUB ${new Intl.NumberFormat("en-IN").format(u.totalExpense)}`;
-  return "As per University";
+  return "On request";
 }
 
 export function formatTuition(u: University): string {
-  if (u.tuitionTotal === null) return "As per University";
+  if (u.tuitionTotal === null) return "On request";
   if (u.currency === "USD") return `USD ${num(u.tuitionTotal)}`;
   if (u.currency === "RUB") return `RUB ${new Intl.NumberFormat("en-IN").format(u.tuitionTotal)}`;
-  return "As per University";
+  return "On request";
 }
 
 export function UniversityCard({
@@ -87,13 +87,20 @@ export function UniversityCard({
         </p>
         <p className="t-small line-clamp-3 leading-relaxed">{u.blurb}</p>
 
-        {/* Key figures */}
+        {/* Key figures. Where the brochure publishes no fee table we
+            show what it does give — intake and clinical network —
+            rather than leaving two empty slots or inventing a number. */}
         <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3.5 border-t border-hairline pt-5">
           <div>
             <dt className="text-[0.625rem] font-semibold tracking-[0.06em] text-ink-muted uppercase">
               Total (6 yrs)
             </dt>
-            <dd className="t-num mt-1 text-[0.9375rem] font-bold leading-tight text-brand">
+            <dd
+              className={cn(
+                "t-num mt-1 text-[0.9375rem] font-bold leading-tight",
+                u.totalExpense === null ? "text-ink-muted" : "text-brand",
+              )}
+            >
               {formatTotal(u)}
               {u.totalExpenseInr && (
                 <span className="ml-1 block text-[0.75rem] font-medium text-ink-muted">
@@ -104,24 +111,40 @@ export function UniversityCard({
           </div>
           <div>
             <dt className="text-[0.625rem] font-semibold tracking-[0.06em] text-ink-muted uppercase">
-              FMGE pass rate
+              {u.fmgePassRate ? "FMGE pass rate" : u.intake ? "Intake" : "Medium"}
             </dt>
-            <dd className="t-num mt-1 flex items-center gap-1.5 text-[0.9375rem] font-bold text-[var(--green-600)]">
-              <TrendingUp className="size-4" />
-              {u.fmgePassRate}
-            </dd>
+            {u.fmgePassRate ? (
+              <dd className="t-num mt-1 flex items-center gap-1.5 text-[0.9375rem] font-bold text-[var(--green-600)]">
+                <TrendingUp className="size-4" />
+                {u.fmgePassRate}
+              </dd>
+            ) : (
+              <dd className="mt-1 text-[0.9375rem] font-bold leading-tight text-ink">
+                {u.intake ?? u.medium}
+              </dd>
+            )}
           </div>
         </dl>
 
         <div className="mt-5 flex flex-wrap gap-1.5">
-          <Chip tone="default">
-            <Clock className="size-3" />
-            {u.durationYears} yrs
-          </Chip>
-          <Chip tone="default">
-            <Users className="size-3" />
-            {u.indianStudents} Indians
-          </Chip>
+          {u.durationYears !== null && (
+            <Chip tone="default">
+              <Clock className="size-3" />
+              {u.durationYears} yrs
+            </Chip>
+          )}
+          {u.indianStudents && (
+            <Chip tone="default">
+              <Users className="size-3" />
+              {u.indianStudents} Indians
+            </Chip>
+          )}
+          {u.affiliatedHospitals && (
+            <Chip tone="default">
+              <Building2 className="size-3" />
+              {u.affiliatedHospitals.match(/\d+\+/)?.[0] ?? "Multiple"} hospitals
+            </Chip>
+          )}
           {u.recognition.slice(0, 2).map((r) => (
             <Chip key={r} tone="green">
               {r}
@@ -130,7 +153,7 @@ export function UniversityCard({
         </div>
 
         <span className="mt-6 inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-[var(--accent)]">
-          View fees & details
+          {u.hasPublishedFees ? "View fees & details" : "View details"}
           <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </span>
       </div>

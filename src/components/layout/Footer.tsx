@@ -80,9 +80,9 @@ export function Footer() {
               {SITE.tagline}
             </p>
             <p className="mt-4 max-w-[40ch] text-[0.875rem] leading-relaxed text-white/60">
-              Helping Indian students secure MBBS admission at NMC-approved medical universities
-              across Georgia, Russia, Uzbekistan, Kyrgyzstan, Nepal and beyond — with complete
-              transparency at every step.
+              Helping Indian students secure MBBS admission at NMC-eligible medical universities
+              across Georgia, Russia, Kazakhstan, China and beyond — with complete transparency at
+              every step.
             </p>
 
             <ul className="mt-6 flex flex-col gap-2.5 text-[0.875rem]">

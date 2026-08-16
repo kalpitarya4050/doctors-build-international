@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/Button";
 import { formatTotal } from "@/components/ui/UniversityCard";
 import { inrShort } from "@/lib/utils";
 
-/** The three cheapest options, as a hook into the full table. */
-const CHEAPEST = [...UNIVERSITIES]
-  .filter((u) => u.totalExpenseInr !== null)
+/** The three cheapest PUBLISHED options, as a hook into the full
+ *  table. Universities without a published fee table are excluded —
+ *  a teaser is the last place to imply a price we do not hold. */
+const CHEAPEST = UNIVERSITIES.filter((u) => u.hasPublishedFees && u.totalExpenseInr !== null)
   .sort((a, b) => (a.totalExpenseInr ?? 0) - (b.totalExpenseInr ?? 0))
   .slice(0, 3);
 
@@ -24,10 +25,10 @@ export function FeeTeaser() {
           eyebrow="Transparent Pricing"
           title={
             <>
-              Every fee, <span className="gold-text">published</span>. Nothing discovered later.
+              Nothing <span className="gold-text">discovered later</span>.
             </>
           }
-          lead="Zero donation. Zero capitation. The published tuition is the entire tuition — and we show you the six-year total, not just the first instalment."
+          lead="Zero donation. Zero capitation. Where a university publishes its fees we show you the whole six-year total, not just the first instalment — and where it does not, we say so and confirm the figure with you in writing."
         />
 
         <RevealGroup className="mt-14 grid gap-5 md:grid-cols-3" stagger={0.08}>
@@ -88,7 +89,9 @@ export function FeeTeaser() {
                 <Table2 className="size-5" />
               </span>
               <div>
-                <p className="t-h4 text-brand">Compare all seven, side by side.</p>
+                <p className="t-h4 text-brand">
+                  Compare all {UNIVERSITIES.length}, side by side.
+                </p>
                 <p className="t-small mt-1.5">
                   Tuition, total expense, duration, intake, FMGE pass rate, Indian student numbers
                   and safety rating — sortable, filterable, in USD or rupees.

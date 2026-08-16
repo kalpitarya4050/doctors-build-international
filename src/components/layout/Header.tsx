@@ -245,7 +245,7 @@ function DestinationsMega() {
       <div className="rounded-[var(--radius-lg)] bg-[var(--navy-900)] p-6 text-white">
         <p className="t-eyebrow text-[var(--gold-300)]">Not sure which?</p>
         <p className="mt-3 font-[family-name:var(--font-playfair)] text-[1.375rem] leading-[1.2] tracking-[-0.018em]">
-          Compare all seven side by side.
+          Compare all {UNIVERSITIES.length} side by side.
         </p>
         <p className="mt-2.5 text-[0.8125rem] leading-relaxed text-white/70">
           Fees, duration, intake, FMGE pass rates and safety ratings — one table, no sales pitch.
@@ -258,7 +258,15 @@ function DestinationsMega() {
   );
 }
 
+/** Grouped by country. A flat list of 23 overflows the viewport and
+ *  loses the brochure's own structure; the columns mirror the
+ *  priority bands a student is actually choosing between. */
 function UniversitiesMega() {
+  const groups = COUNTRIES.map((c) => ({
+    country: c,
+    unis: UNIVERSITIES.filter((u) => u.countrySlug === c.slug),
+  })).filter((g) => g.unis.length > 0);
+
   return (
     <div className="p-7">
       <div className="mb-5 flex items-baseline justify-between">
@@ -267,31 +275,45 @@ function UniversitiesMega() {
           href="/universities"
           className="text-[0.8125rem] font-semibold text-[var(--accent)] hover:underline"
         >
-          View all seven →
+          View all {UNIVERSITIES.length} →
         </Link>
       </div>
-      <ul className="grid gap-1.5 md:grid-cols-2 xl:grid-cols-3">
-        {UNIVERSITIES.map((u) => (
-          <li key={u.slug}>
+
+      <div className="grid max-h-[min(30rem,65vh)] gap-x-6 gap-y-5 overflow-y-auto md:grid-cols-2 xl:grid-cols-3">
+        {groups.map(({ country, unis }) => (
+          <div key={country.slug}>
             <Link
-              href={`/universities/${u.slug}`}
-              className="group flex items-start gap-3 rounded-[var(--radius)] p-3 transition-colors duration-200 hover:bg-[var(--bg-sunken)]"
+              href={`/destinations/${country.slug}`}
+              className="mb-2 flex items-center gap-2 rounded-[var(--radius-sm)] px-3 py-1.5 transition-colors hover:bg-[var(--bg-sunken)]"
             >
-              <span aria-hidden className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-[var(--radius-sm)]" style={{ background: `color-mix(in srgb, ${u.accent} 14%, transparent)` }}><Flag country={u.countrySlug} className="h-4 w-6" /></span>
-              <span className="min-w-0">
-                <span className="block truncate text-[0.875rem] font-semibold text-ink group-hover:text-[var(--accent)] transition-colors">
-                  {u.name}
-                </span>
-                <span className="block truncate text-[0.75rem] text-ink-muted">
-                  {u.city}, {u.country} ·{" "}
-                  {u.totalExpenseInr ? inrShort(u.totalExpenseInr) : "On request"} ·{" "}
-                  {u.fmgePassRate} FMGE
-                </span>
+              <Flag country={country.slug} className="h-4 w-6 shrink-0" />
+              <span className="text-[0.8125rem] font-bold text-ink">{country.name}</span>
+              <span className="text-[0.6875rem] text-ink-muted">
+                {unis.length} {unis.length === 1 ? "university" : "universities"}
               </span>
             </Link>
-          </li>
+            <ul className="flex flex-col gap-0.5">
+              {unis.map((u) => (
+                <li key={u.slug}>
+                  <Link
+                    href={`/universities/${u.slug}`}
+                    className="group block rounded-[var(--radius-sm)] px-3 py-2 transition-colors duration-200 hover:bg-[var(--bg-sunken)]"
+                  >
+                    <span className="block truncate text-[0.8125rem] font-semibold text-ink transition-colors group-hover:text-[var(--accent)]">
+                      {u.shortName}
+                    </span>
+                    <span className="block truncate text-[0.6875rem] text-ink-muted">
+                      {u.city}
+                      {u.totalExpenseInr ? ` · ${inrShort(u.totalExpenseInr)}` : ""}
+                      {u.fmgePassRate ? ` · ${u.fmgePassRate} FMGE` : ""}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

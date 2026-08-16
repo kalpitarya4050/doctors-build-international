@@ -11,23 +11,46 @@ import { Chip } from "./Surface";
 import { Flag } from "./Flag";
 import { cn, inr, inrShort } from "@/lib/utils";
 
+/* ============================================================
+   Two generations of client material feed this table.
+
+   Six universities carry a published fee table from the 2026-27
+   Admission Portfolio. The seventeen added from the current
+   brochure have none — that brochure prints its fee rows blank.
+
+   So every cell here is null-tolerant, and unpublished values
+   render as "On request" in muted type rather than as a dash the
+   reader might mistake for zero. Sorting pushes unknowns last
+   in every direction; they never sort as if they were free, or
+   as if they scored zero.
+   ============================================================ */
+
 type SortKey = "rank" | "cost" | "fmge" | "students" | "safety";
 type Money = "native" | "inr";
 
 const SORTS: { key: SortKey; label: string }[] = [
-  { key: "rank", label: "Portfolio order" },
+  { key: "rank", label: "Brochure order" },
   { key: "cost", label: "Lowest total cost" },
   { key: "fmge", label: "Highest FMGE rate" },
   { key: "students", label: "Most Indian students" },
   { key: "safety", label: "Safety rating" },
 ];
 
-function pct(v: string): number {
-  return parseInt(v.replace(/\D/g, ""), 10) || 0;
+const ON_REQUEST = "On request";
+
+function pct(v: string | null): number {
+  if (!v) return -1;
+  return parseInt(v.replace(/\D/g, ""), 10) || -1;
 }
 
-function studentCount(v: string): number {
-  return parseInt(v.replace(/\D/g, ""), 10) || 0;
+function studentCount(v: string | null): number {
+  if (!v) return -1;
+  return parseInt(v.replace(/\D/g, ""), 10) || -1;
+}
+
+/** Muted "On request" so an unknown never reads as a real value. */
+function Unknown() {
+  return <span className="text-ink-muted/70">{ON_REQUEST}</span>;
 }
 
 export function FeeTable({
@@ -40,6 +63,7 @@ export function FeeTable({
   const [sort, setSort] = useState<SortKey>("rank");
   const [money, setMoney] = useState<Money>("native");
   const [country, setCountry] = useState<string>("all");
+  const [pricedOnly, setPricedOnly] = useState(false);
   const reduced = useReducedMotion();
 
   const countries = useMemo(
@@ -47,17 +71,20 @@ export function FeeTable({
     [],
   );
 
+  const pricedCount = useMemo(
+    () => UNIVERSITIES.filter((u) => u.hasPublishedFees).length,
+    [],
+  );
+
   const rows = useMemo(() => {
     let list = [...UNIVERSITIES];
     if (country !== "all") list = list.filter((u) => u.country === country);
+    if (pricedOnly) list = list.filter((u) => u.hasPublishedFees);
 
     switch (sort) {
       case "cost":
-        // Nepal has no published figure — it sorts last rather than
-        // pretending to be free.
-        list.sort(
-          (a, b) => (a.totalExpenseInr ?? Infinity) - (b.totalExpenseInr ?? Infinity),
-        );
+        // Unpublished figures sort last rather than pretending to be free.
+        list.sort((a, b) => (a.totalExpenseInr ?? Infinity) - (b.totalExpenseInr ?? Infinity));
         break;
       case "fmge":
         list.sort((a, b) => pct(b.fmgePassRate) - pct(a.fmgePassRate));
@@ -66,27 +93,31 @@ export function FeeTable({
         list.sort((a, b) => studentCount(b.indianStudents) - studentCount(a.indianStudents));
         break;
       case "safety":
-        list.sort((a, b) => b.safetyRating - a.safetyRating);
+        list.sort((a, b) => (b.safetyRating ?? -1) - (a.safetyRating ?? -1));
         break;
       default:
         list.sort((a, b) => a.rank - b.rank);
     }
     return list;
-  }, [sort, country]);
+  }, [sort, country, pricedOnly]);
 
   const cost = (u: University) =>
     money === "inr"
       ? u.totalExpenseInr
         ? `₹${inr(u.totalExpenseInr)}`
-        : "As per University"
-      : formatTotal(u);
+        : null
+      : u.totalExpense !== null
+        ? formatTotal(u)
+        : null;
 
   const tuition = (u: University) =>
     money === "inr"
       ? u.tuitionInr
         ? `₹${inr(u.tuitionInr)}`
-        : "As per University"
-      : formatTuition(u);
+        : null
+      : u.tuitionTotal !== null
+        ? formatTuition(u)
+        : null;
 
   return (
     <div className={className}>
@@ -152,6 +183,24 @@ export function FeeTable({
             </button>
           ))}
         </div>
+
+        {/* Only the universities we can actually quote a price for */}
+        <button
+          type="button"
+          onClick={() => setPricedOnly((v) => !v)}
+          aria-pressed={pricedOnly}
+          className={cn(
+            "tap-min inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[0.75rem] font-bold transition-colors duration-200",
+            pricedOnly
+              ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
+              : "border-line-strong bg-[var(--bg-elevated)] text-ink-muted hover:text-ink",
+          )}
+        >
+          Published fees only
+          <span className="rounded-full bg-[var(--navy-900)] px-1.5 py-0.5 text-[0.625rem] text-white">
+            {pricedCount}
+          </span>
+        </button>
       </div>
 
       {/* Desktop table — scrolls inside its own container */}
@@ -159,7 +208,8 @@ export function FeeTable({
         <table className="w-full min-w-[62rem] border-collapse text-left">
           <caption className="sr-only">
             Comparison of MBBS universities: country, city, duration, intake, recognition, FMGE pass
-            rate, Indian students, safety rating, tuition and total expense.
+            rate, Indian students, safety rating, tuition and total expense. Values shown as &ldquo;on
+            request&rdquo; are not published in the current brochure.
           </caption>
           <thead>
             <tr className="bg-[var(--navy-900)] text-white">
@@ -207,8 +257,8 @@ export function FeeTable({
                     <span className="text-ink-muted">· {u.city}</span>
                   </span>
                 </Td>
-                <Td>{u.duration}</Td>
-                <Td>{u.intake}</Td>
+                <Td>{u.duration ?? <Unknown />}</Td>
+                <Td>{u.intake ?? <Unknown />}</Td>
                 <Td>
                   <span className="flex flex-wrap gap-1">
                     {u.recognition.map((r) => (
@@ -218,21 +268,28 @@ export function FeeTable({
                     ))}
                   </span>
                 </Td>
-                <Td align="right" className="font-bold text-[var(--green-600)]">
-                  {u.fmgePassRate}
+                <Td
+                  align="right"
+                  className={u.fmgePassRate ? "font-bold text-[var(--green-600)]" : ""}
+                >
+                  {u.fmgePassRate ?? <Unknown />}
                 </Td>
-                <Td align="right">{u.indianStudents}</Td>
+                <Td align="right">{u.indianStudents ?? <Unknown />}</Td>
                 <Td align="right">
-                  <span className="inline-flex items-center gap-1">
-                    <Star className="size-3.5 fill-[var(--gold-500)] text-[var(--gold-500)]" />
-                    {u.safetyRating}
-                  </span>
+                  {u.safetyRating !== null ? (
+                    <span className="inline-flex items-center gap-1">
+                      <Star className="size-3.5 fill-[var(--gold-500)] text-[var(--gold-500)]" />
+                      {u.safetyRating.toFixed(1)}
+                    </span>
+                  ) : (
+                    <Unknown />
+                  )}
                 </Td>
                 <Td align="right" className="t-num">
-                  {tuition(u)}
+                  {tuition(u) ?? <Unknown />}
                 </Td>
                 <Td align="right" className="t-num font-bold text-brand">
-                  {cost(u)}
+                  {cost(u) ?? <Unknown />}
                   {money === "native" && u.totalExpenseInr && (
                     <span className="block text-[0.6875rem] font-medium text-ink-muted">
                       ≈ {inrShort(u.totalExpenseInr)}
@@ -266,13 +323,16 @@ export function FeeTable({
                       {u.shortName}
                     </p>
                     <p className="mt-0.5 text-[0.75rem] text-ink-muted">
-                      <Flag country={u.countrySlug} className="mr-1.5 h-3 w-[1.125rem]" />{u.city}, {u.country}
+                      <Flag country={u.countrySlug} className="mr-1.5 h-3 w-[1.125rem]" />
+                      {u.city}, {u.country}
                     </p>
                   </div>
                 </div>
-                <span className="shrink-0 rounded-full bg-[var(--green-600)]/12 px-2.5 py-1 text-[0.75rem] font-bold text-[var(--green-600)]">
-                  {u.fmgePassRate}
-                </span>
+                {u.fmgePassRate && (
+                  <span className="shrink-0 rounded-full bg-[var(--green-600)]/12 px-2.5 py-1 text-[0.75rem] font-bold text-[var(--green-600)]">
+                    {u.fmgePassRate}
+                  </span>
+                )}
               </div>
 
               <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-hairline pt-4 text-[0.8125rem]">
@@ -281,7 +341,10 @@ export function FeeTable({
                 <Cell label="Tuition" value={tuition(u)} />
                 <Cell label="Total (6 yrs)" value={cost(u)} strong />
                 <Cell label="Indian students" value={u.indianStudents} />
-                <Cell label="Safety" value={`${u.safetyRating} / 5`} />
+                <Cell
+                  label="Safety"
+                  value={u.safetyRating !== null ? `${u.safetyRating.toFixed(1)} / 5` : null}
+                />
               </dl>
             </Link>
           </li>
@@ -291,11 +354,13 @@ export function FeeTable({
       {!compact && (
         <p className="mt-5 flex items-start gap-2 text-[0.75rem] leading-relaxed text-ink-muted">
           <Info className="mt-0.5 size-3.5 shrink-0" />
-          Fees are as per official university brochures for 2026-27. INR conversions are approximate
-          and vary with the prevailing exchange rate. Total expense includes tuition plus the
-          university&rsquo;s quoted associated costs; airfare, personal spending, insurance and the
-          annual residence permit are additional. Confirm the latest figures with the university or
-          its official representative before applying.
+          Figures are published for {pricedCount} of the {UNIVERSITIES.length} universities, taken
+          from official brochures for 2026-27. Where a row reads &ldquo;on request&rdquo;, the
+          university has not published that figure in our current material and we will confirm it in
+          writing during counselling — we would rather leave it blank than print a number we cannot
+          stand behind. INR conversions are approximate and vary with the prevailing exchange rate.
+          Total expense includes tuition plus the university&rsquo;s quoted associated costs;
+          airfare, personal spending, insurance and the annual residence permit are additional.
         </p>
       )}
     </div>
@@ -347,7 +412,15 @@ function Td({
   );
 }
 
-function Cell({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+function Cell({
+  label,
+  value,
+  strong,
+}: {
+  label: string;
+  value: string | null;
+  strong?: boolean;
+}) {
   return (
     <div>
       <dt className="text-[0.625rem] font-semibold tracking-[0.05em] text-ink-muted uppercase">
@@ -356,10 +429,14 @@ function Cell({ label, value, strong }: { label: string; value: string; strong?:
       <dd
         className={cn(
           "t-num mt-0.5 leading-tight",
-          strong ? "font-bold text-brand" : "text-ink-secondary",
+          value === null
+            ? "text-ink-muted/70"
+            : strong
+              ? "font-bold text-brand"
+              : "text-ink-secondary",
         )}
       >
-        {value}
+        {value ?? ON_REQUEST}
       </dd>
     </div>
   );
