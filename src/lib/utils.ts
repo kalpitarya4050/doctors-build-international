@@ -22,6 +22,19 @@ export function inrShort(value: number): string {
   return `₹${inr(value)}`;
 }
 
+/** Pastel wash a card fades to on hover, read by `.hover-pastel`.
+ *
+ *  Passed as a CSS variable rather than a class so a card can carry
+ *  its own tint without a variant per colour. Lives here rather
+ *  than beside the surface components because most callers are
+ *  server components, and a "use client" module cannot export a
+ *  function they are allowed to call. */
+export type PastelTint = "gold" | "mint" | "sky" | "lilac" | "blush";
+
+export function tint(t: PastelTint): React.CSSProperties {
+  return { "--hover-tint": `var(--pastel-${t})` } as React.CSSProperties;
+}
+
 export function slugify(input: string): string {
   return input
     .toLowerCase()

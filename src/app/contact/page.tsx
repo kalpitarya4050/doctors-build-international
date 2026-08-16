@@ -103,7 +103,7 @@ export default function ContactPage() {
             <Reveal direction="up" delay={0.2}>
               <div className="mt-6 rounded-[var(--radius-lg)] bg-[var(--navy-900)] p-7 text-white">
                 <p className="t-eyebrow text-[var(--gold-300)]">Prefer to talk right now?</p>
-                <p className="mt-3 font-[family-name:var(--font-playfair)] text-[1.5rem] leading-[1.2] tracking-[-0.02em]">
+                <p className="mt-3 text-[1.5rem] leading-[1.2] tracking-[-0.02em]">
                   Message us on WhatsApp and get options within the hour.
                 </p>
                 <Button
@@ -123,7 +123,7 @@ export default function ContactPage() {
                   variant="ghost"
                   size="lg"
                   fullWidth
-                  className="mt-2.5 border border-white/25 bg-white/5 text-white hover:bg-white/10"
+                  className="mt-2.5 border border-on-dark-line-strong bg-on-dark-fill text-white hover:bg-on-dark-fill-hover"
                 >
                   <Phone className="size-4" />
                   {SITE.phoneDisplay}

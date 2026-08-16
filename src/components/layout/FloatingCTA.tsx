@@ -27,7 +27,7 @@ export function WhatsAppFAB() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat with us on WhatsApp"
-          className="group fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-4 z-40 flex items-center gap-0 overflow-hidden rounded-full bg-[var(--green-500)] pl-0 text-[#062611] shadow-[0_10px_34px_rgba(37,211,102,0.38)] md:bottom-6 md:right-6"
+          className="group fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-4 z-40 flex items-center gap-0 overflow-hidden rounded-full bg-[var(--green-500)] pl-0 text-[#062611] shadow-[var(--shadow-whatsapp)] md:bottom-6 md:right-6"
           initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6, y: 16 }}
           animate={reduced ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
           exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6, y: 16 }}
@@ -56,21 +56,27 @@ export function WhatsAppFAB() {
  *  is always visible so a second one would be noise. */
 export function MobileCTABar() {
   return (
-    <div className="material-chrome safe-b fixed inset-x-0 bottom-0 z-40 border-t border-line md:hidden">
+    <div className="material-chrome safe-b fixed inset-x-0 bottom-0 z-40 overflow-hidden border-t border-line md:hidden">
+      {/* `min-w-0` on both cells is load-bearing. A grid track is
+          `minmax(auto, 1fr)` by default, so its floor is the child's
+          min-content width — an unbreakable label plus an icon. At
+          360px that floor exceeds half the bar and the whole fixed
+          element measures wider than the viewport, which is a real
+          sideways scroll on the smallest phones. */}
       <div className="grid grid-cols-2 gap-2 px-3 py-2.5">
         <a
           href={telLink()}
-          className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-line-strong text-[0.875rem] font-semibold text-ink active:scale-[0.98]"
+          className="flex h-12 min-w-0 items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-line-strong text-[0.875rem] font-semibold text-ink active:scale-[0.98]"
         >
-          <Phone className="size-4" />
-          Call Now
+          <Phone className="size-4 shrink-0" />
+          <span className="truncate">Call Now</span>
         </a>
         <Link
           href="/apply"
-          className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[linear-gradient(100deg,var(--gold-600),var(--gold-300)_45%,var(--gold-500))] text-[0.875rem] font-bold text-[var(--navy-950)] active:scale-[0.98]"
+          className="flex h-12 min-w-0 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[linear-gradient(100deg,var(--gold-600),var(--gold-300)_45%,var(--gold-500))] text-[0.875rem] font-bold text-[var(--navy-950)] active:scale-[0.98]"
         >
-          <CalendarCheck className="size-4" />
-          Apply Now
+          <CalendarCheck className="size-4 shrink-0" />
+          <span className="truncate">Apply Now</span>
         </Link>
       </div>
     </div>
@@ -220,11 +226,11 @@ export function LeadModal() {
               </p>
               <h2
                 id="lead-modal-title"
-                className="mt-2.5 font-[family-name:var(--font-playfair)] text-[1.625rem] leading-[1.15] tracking-[-0.02em]"
+                className="mt-2.5 text-[1.625rem] leading-[1.15] tracking-[-0.02em]"
               >
-                Comparing universities? <span className="gold-text">Let us shortlist for you.</span>
+                Comparing universities? <em>Let us shortlist for you.</em>
               </h2>
-              <p className="mt-2 text-[0.875rem] leading-relaxed text-white/65">
+              <p className="mt-2 text-[0.875rem] leading-relaxed text-on-dark-secondary">
                 Send your NEET score and budget. A doctor-led counsellor will come back with two or
                 three genuine matches — and tell you honestly if none of them fit. Free, no
                 obligation, and we will only ask once.

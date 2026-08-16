@@ -25,23 +25,29 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-auto overflow-hidden bg-[var(--navy-950)] text-white grain">
+    <footer
+      data-ground="navy"
+      className="relative mt-auto overflow-hidden grain"
+    >
       {/* Ambient gold bloom */}
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/4 size-[36rem] rounded-full opacity-[0.16] blur-[130px]"
-        style={{ background: "radial-gradient(circle, #C9A227, transparent 70%)" }}
+        style={{
+          background:
+            "radial-gradient(circle, color-mix(in srgb, var(--gold-500) 90%, transparent), transparent 70%)",
+        }}
       />
 
       <div className="relative">
         {/* CTA band */}
-        <div className="border-b border-white/10">
+        <div className="border-b border-line">
           <div className="shell flex flex-col items-center gap-6 py-14 text-center md:flex-row md:justify-between md:text-left">
             <div>
-              <h2 className="font-[family-name:var(--font-playfair)] text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.15] tracking-[-0.02em]">
-                Building Futures. <span className="gold-text">Changing Lives.</span>
+              <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.15] tracking-[-0.02em]">
+                Building Futures. <em>Changing Lives.</em>
               </h2>
-              <p className="mt-2.5 max-w-[52ch] text-[0.9375rem] leading-relaxed text-white/65">
+              <p className="mt-2.5 max-w-[52ch] text-[0.9375rem] leading-relaxed text-on-dark-secondary">
                 Speak to a doctor-led counsellor today. Free, honest and with no obligation —
                 including telling you if studying abroad is the wrong call for you.
               </p>
@@ -54,7 +60,7 @@ export function Footer() {
                 href={telLink()}
                 external
                 size="lg"
-                className="border border-white/25 bg-white/5 text-white hover:bg-white/10"
+                className="material-chip-dark !rounded-[var(--radius)]"
                 variant="ghost"
               >
                 <Phone className="size-4" />
@@ -70,16 +76,16 @@ export function Footer() {
             <div className="flex items-center gap-3">
               <LogoMark className="size-12" id="footer" />
               <span className="flex flex-col leading-none">
-                <span className="font-[family-name:var(--font-playfair)] text-[1.125rem] font-bold tracking-[-0.015em]">
+                <span className="font-accent text-[1.25rem] tracking-[0.01em]">
                   Doctors <span className="gold-text">Build</span>
                 </span>
-                <span className="t-eyebrow mt-1 text-[0.5rem] text-white/45">International</span>
+                <span className="t-eyebrow mt-1 text-[0.5rem] text-on-dark-muted">International</span>
               </span>
             </div>
-            <p className="mt-3 font-[family-name:var(--font-playfair)] text-[0.9375rem] italic text-[var(--gold-300)]">
+            <p className="font-accent mt-3 text-[1.125rem] italic text-[var(--gold-300)]">
               {SITE.tagline}
             </p>
-            <p className="mt-4 max-w-[40ch] text-[0.875rem] leading-relaxed text-white/60">
+            <p className="mt-4 max-w-[40ch] text-[0.875rem] leading-relaxed text-on-dark-secondary">
               Helping Indian students secure MBBS admission at NMC-eligible medical universities
               across Georgia, Russia, Kazakhstan, China and beyond — with complete transparency at
               every step.
@@ -89,7 +95,7 @@ export function Footer() {
               <li>
                 <a
                   href={telLink()}
-                  className="flex items-center gap-2.5 text-white/70 transition-colors hover:text-[var(--gold-300)]"
+                  className="flex items-center gap-2.5 text-on-dark-secondary transition-colors hover:text-[var(--gold-300)]"
                 >
                   <Phone className="size-4 shrink-0 text-[var(--gold-500)]" />
                   {SITE.phoneDisplay}
@@ -98,13 +104,13 @@ export function Footer() {
               <li>
                 <a
                   href={`mailto:${SITE.email}`}
-                  className="flex items-center gap-2.5 text-white/70 transition-colors hover:text-[var(--gold-300)]"
+                  className="flex items-center gap-2.5 text-on-dark-secondary transition-colors hover:text-[var(--gold-300)]"
                 >
                   <Mail className="size-4 shrink-0 text-[var(--gold-500)]" />
                   {SITE.email}
                 </a>
               </li>
-              <li className="flex items-center gap-2.5 text-white/70">
+              <li className="flex items-center gap-2.5 text-on-dark-secondary">
                 <Globe className="size-4 shrink-0 text-[var(--gold-500)]" />
                 {SITE.domain}
               </li>
@@ -118,7 +124,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="tap grid size-9 place-items-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-[var(--gold-500)] hover:bg-white/5 hover:text-[var(--gold-300)]"
+                  className="tap grid size-9 place-items-center rounded-full border border-line text-on-dark-secondary transition-colors hover:border-[var(--gold-500)] hover:bg-on-dark-fill hover:text-[var(--gold-300)]"
                 >
                   <Icon className="size-4" />
                 </a>
@@ -166,7 +172,7 @@ export function Footer() {
         </div>
 
         {/* Offices */}
-        <div className="border-t border-white/10">
+        <div className="border-t border-line">
           <div className="shell py-8">
             <p className="t-eyebrow mb-4 text-[var(--gold-300)]">Our Offices</p>
             <ul className="grid gap-4 sm:grid-cols-3">
@@ -182,7 +188,7 @@ export function Footer() {
                         </span>
                       )}
                     </span>
-                    <span className="block text-[0.8125rem] text-white/55">{o.region}</span>
+                    <span className="block text-[0.8125rem] text-on-dark-muted">{o.region}</span>
                   </span>
                 </li>
               ))}
@@ -190,33 +196,52 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Legal */}
-        <div className="border-t border-white/10">
-          <div className="shell flex flex-col items-center justify-between gap-3 py-6 text-[0.8125rem] text-white/50 sm:flex-row">
+        {/* Legal.
+
+            Demoted to one quiet line rather than a row of peers
+            beside the nav columns. The pages themselves stay live
+            and stay in the sitemap — the site takes names, phone
+            numbers and email addresses from students, so a reachable
+            privacy notice is not optional, and ad platforms reject
+            landing pages without one. This is a visual demotion,
+            not a removal. */}
+        <div className="border-t border-line">
+          <div className="shell flex flex-col items-center justify-between gap-2 py-6 text-[0.75rem] text-on-dark-faint sm:flex-row">
             <p>
               © {year} {SITE.name}. All rights reserved.
             </p>
-            <div className="flex items-center gap-5">
-              <Link href="/privacy-policy" className="tap inline-flex min-h-11 items-center transition-colors hover:text-white">
-                Privacy Policy
+            <div className="flex items-center gap-4">
+              <Link
+                href="/privacy-policy"
+                className="tap inline-flex min-h-11 items-center transition-colors hover:text-on-dark-secondary"
+              >
+                Privacy
               </Link>
-              <Link href="/terms" className="tap inline-flex min-h-11 items-center transition-colors hover:text-white">
-                Terms of Use
+              <span aria-hidden>·</span>
+              <Link
+                href="/terms"
+                className="tap inline-flex min-h-11 items-center transition-colors hover:text-on-dark-secondary"
+              >
+                Terms
               </Link>
-              <Link href="/contact" className="tap inline-flex min-h-11 items-center transition-colors hover:text-white">
+              <span aria-hidden>·</span>
+              <Link
+                href="/contact"
+                className="tap inline-flex min-h-11 items-center transition-colors hover:text-on-dark-secondary"
+              >
                 Contact
               </Link>
             </div>
           </div>
           <div className="shell flex flex-col gap-3 pb-8">
             {HAS_IMAGES && (
-              <p className="text-[0.6875rem] leading-relaxed text-white/35">
+              <p className="text-[0.6875rem] leading-relaxed text-on-dark-faint">
                 Photography is illustrative and sourced from{" "}
                 <a
                   href="https://www.pexels.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline transition-colors hover:text-white/60"
+                  className="underline transition-colors hover:text-on-dark-secondary"
                 >
                   Pexels
                 </a>
@@ -225,7 +250,7 @@ export function Footer() {
                 current photographs and video of any campus.
               </p>
             )}
-            <p className="text-[0.6875rem] leading-relaxed text-white/35">
+            <p className="text-[0.6875rem] leading-relaxed text-on-dark-faint">
               Disclaimer: Fees shown are as per official university brochures for {SITE.admissionYear}.
               INR conversions are approximate and vary with the prevailing exchange rate. Students
               are advised to confirm the latest details with the university or its official
@@ -254,7 +279,7 @@ function FooterColumn({
           <li key={l.href + l.label}>
             <Link
               href={l.href}
-              className="text-[0.875rem] text-white/65 transition-colors hover:text-[var(--gold-300)]"
+              className="text-[0.875rem] text-on-dark-secondary transition-colors hover:text-[var(--gold-300)]"
             >
               {l.label}
             </Link>

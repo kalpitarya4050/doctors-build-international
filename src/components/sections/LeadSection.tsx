@@ -41,7 +41,7 @@ export function LeadSection({
             <h2 className="t-h2 mt-5 text-brand">
               {heading ?? (
                 <>
-                  Talk to a doctor-led counsellor <span className="gold-text">today</span>.
+                  Talk to a doctor-led counsellor <em>today</em>.
                 </>
               )}
             </h2>

@@ -1,24 +1,51 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFAB, MobileCTABar, LeadModal, ScrollProgress } from "@/components/layout/FloatingCTA";
+import { IntroProvider } from "@/components/intro/Intro";
+import { INTRO_SEEN_KEY, INTRO_T0 } from "@/components/intro/keys";
 import { SITE } from "@/lib/site";
 import { OFFICES } from "@/lib/data/content";
 import "./globals.css";
 
-const inter = Inter({
+/* ============================================================
+   Type pairing.
+
+   Sans carries EVERYTHING — headings included. The serif appears
+   only as an italic accent word inside a heading (see the `em`
+   rule in globals.css), which is what gives the page its
+   editorial voice rather than a formal one.
+
+   This is the inverse of the previous pairing, where a display
+   serif set every heading and the result read as stiff.
+
+   Geist replaced DM Sans here: it is a touch more geometric, its
+   tabular figures are better for the fee tables, and it ships a
+   matching mono for the admission console.
+   ============================================================ */
+const sans = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans-brand",
   display: "swap",
 });
 
-const playfair = Playfair_Display({
+/** Accent only. One weight, and the italic is the point — it is
+ *  never used for body copy or for a whole heading. */
+const serif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-serif-accent",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: "400",
+  style: ["normal", "italic"],
+});
+
+/** The admission console and nothing else. */
+const mono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono-brand",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -72,9 +99,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // Must track --bg in globals.css, in both schemes.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FBFBFD" },
-    { media: "(prefers-color-scheme: dark)", color: "#060D1C" },
+    { media: "(prefers-color-scheme: light)", color: "#FCFBF8" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B1020" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -143,8 +171,24 @@ const orgSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" suppressHydrationWarning className={`${inter.variable} ${playfair.variable}`}>
+    <html
+      lang="en-IN"
+      suppressHydrationWarning
+      className={`${sans.variable} ${serif.variable} ${mono.variable}`}
+    >
       <body className="flex min-h-dvh flex-col antialiased">
+        {/* Resolves the opening sequence before the first paint.
+            The curtain ships inside the static HTML, so without
+            this a returning visitor sees it flash before React can
+            pull it. Synchronous and first in <body>, so it runs
+            before anything below is painted — the same trick
+            next-themes uses for the palette. Fails open: if
+            storage throws, the curtain simply plays. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window[${JSON.stringify(INTRO_T0)}]=Date.now();try{if(sessionStorage.getItem(${JSON.stringify(INTRO_SEEN_KEY)})==="1"){document.documentElement.setAttribute("data-intro","skip")}}catch(e){}`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
@@ -161,12 +205,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Skip to content
           </a>
-          <ScrollProgress />
-          <Header />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          <IntroProvider>
+            <ScrollProgress />
+            <Header />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </IntroProvider>
           <WhatsAppFAB />
           <MobileCTABar />
           <LeadModal />

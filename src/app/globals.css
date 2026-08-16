@@ -31,19 +31,24 @@
   --green-600: #1e8e3e;
   --green-500: #25d366; /* WhatsApp */
 
-  /* Semantic — LIGHT (default) */
-  --bg: #fbfbfd;
+  /* Semantic — LIGHT (default)
+     Warm ground, not cool. The previous #fbfbfd / #f4f5f8 pair sat
+     on the blue side of neutral and read clinical; these are the
+     same lightness rotated warm, which is most of what separates
+     an editorial page from a corporate one. */
+  --bg: #fcfbf8;
   --bg-elevated: #ffffff;
-  --bg-sunken: #f4f5f8;
-  --bg-inverse: var(--navy-900);
+  --bg-sunken: #f2efe9;
+  --bg-inverse: var(--navy-950);
 
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.9);
   --surface-solid: #ffffff;
 
-  --text: #0b1220;
-  --text-secondary: #414b5e;
-  --text-muted: #6b7789;
+  /* Softened from near-black. Still ~11:1 on --bg. */
+  --text: #262d3d;
+  --text-secondary: #4a5365;
+  --text-muted: #6f7889;
   --text-inverse: #ffffff;
 
   --accent: var(--gold-600);
@@ -55,11 +60,42 @@
   --border-strong: rgba(10, 31, 68, 0.18);
   --hairline: rgba(10, 31, 68, 0.07);
 
+  /* ----------------------------------------------------------
+     ON-DARK SET.
+
+     Deliberately NOT scheme-dependent: these describe text and
+     surfaces sitting on a navy slab or a photograph, which look
+     the same whichever scheme the page is in.
+
+     Before this existed, every such surface hand-rolled its own
+     `text-white/65` and `bg-white/14` — ~95 sites across ten
+     files, and they had drifted out of step with each other.
+     ---------------------------------------------------------- */
+  --on-dark: #ffffff;
+  --on-dark-secondary: rgba(255, 255, 255, 0.74);
+  --on-dark-muted: rgba(255, 255, 255, 0.56);
+  --on-dark-faint: rgba(255, 255, 255, 0.38);
+  --on-dark-line: rgba(255, 255, 255, 0.14);
+  --on-dark-line-strong: rgba(255, 255, 255, 0.26);
+  --on-dark-fill: rgba(255, 255, 255, 0.07);
+  --on-dark-fill-hover: rgba(255, 255, 255, 0.13);
+
+  /* Photo scrims. Every image caption on the site reads through
+     one of these, so they live here rather than in Media.tsx. */
+  --scrim-light: rgba(5, 15, 34, 0.58), rgba(5, 15, 34, 0.16) 45%, transparent 75%;
+  --scrim-medium: rgba(5, 15, 34, 0.84), rgba(5, 15, 34, 0.36) 50%, transparent 82%;
+  --scrim-heavy: rgba(5, 15, 34, 0.93), rgba(5, 15, 34, 0.62) 45%, rgba(5, 15, 34, 0.28) 82%;
+
   --shadow-sm: 0 1px 2px rgba(10, 31, 68, 0.06), 0 1px 3px rgba(10, 31, 68, 0.05);
   --shadow-md: 0 4px 12px rgba(10, 31, 68, 0.07), 0 2px 4px rgba(10, 31, 68, 0.04);
   --shadow-lg: 0 12px 32px rgba(10, 31, 68, 0.1), 0 4px 8px rgba(10, 31, 68, 0.05);
   --shadow-xl: 0 24px 64px rgba(10, 31, 68, 0.14), 0 8px 16px rgba(10, 31, 68, 0.06);
   --shadow-glow: 0 8px 40px rgba(201, 162, 39, 0.28);
+  /* Badge/flag lift over a photograph. Was copy-pasted three times
+     with a drifting alpha (0.35 / 0.4 / 0.35). */
+  --shadow-badge: 0 2px 8px rgba(0, 0, 0, 0.38);
+  /* WhatsApp green glow — was duplicated between Button and FloatingCTA. */
+  --shadow-whatsapp: 0 8px 28px rgba(37, 211, 102, 0.32);
 
   /* Material blur — bigger surfaces read thicker (Apple §12) */
   --blur-chip: 12px;
@@ -74,24 +110,102 @@
   --radius: 0.875rem;
   --radius-lg: 1.25rem;
   --radius-xl: 1.75rem;
-  --radius-2xl: 2.25rem;
+  --radius-2xl: 2.75rem;
+  /* Large soft corners and true pills — the reference leans on
+     these heavily and they are most of its "softness". */
+  --radius-3xl: 4rem;
+  --radius-pill: 20rem;
+
+  /* Fluid page gutter, replacing three separate clamp() values
+     that had drifted apart across .shell / .shell-wide / .section. */
+  --page-pad: clamp(1.125rem, 3.5vw, 3.25rem);
+
+  /* ----------------------------------------------------------
+     VIOLET — the third accent.
+
+     Lifted from the Fergana / Uzbekistan column of the client's
+     Admission Portfolio poster, so it is already part of the
+     brand's printed vocabulary rather than a web invention. It
+     sits between navy and gold and is used sparingly: gradient
+     mid-stops, orb fields, the Uzbekistan destination tint.
+     ---------------------------------------------------------- */
+  --violet-700: #3a2668;
+  --violet-600: #4b3184;
+  --violet-500: #5b3a94;
+  --violet-300: #a48fd6;
+
+  /* ----------------------------------------------------------
+     DESTINATION SPECTRUM.
+
+     One hue per country, every one sampled from the client's own
+     "Top MBBS Universities" poster where each destination already
+     carries a colour. This is the site's full-chroma range —
+     nothing outside these six plus navy/gold/red is a brand colour.
+     ---------------------------------------------------------- */
+  --dest-georgia: #1e7a4d;
+  --dest-russia: #1b4a9c;
+  --dest-kazakhstan: #0f7a8a;
+  --dest-china: #9b1c2e;
+  --dest-uzbekistan: #5b3a94;
+  --dest-kyrgyzstan: #b5651d;
+
+  /* Gradients. High-contrast on purpose — these carry the brand
+     onto flat surfaces where a single fill would read cheap. */
+  --grad-brand: linear-gradient(135deg, var(--navy-950), var(--navy-600) 45%, var(--gold-500));
+  --grad-gold: linear-gradient(100deg, var(--gold-600), var(--gold-300) 40%, var(--gold-500));
+  --grad-violet: linear-gradient(140deg, var(--navy-900), var(--violet-500) 60%, var(--gold-400));
+  --grad-spectrum: linear-gradient(
+    90deg,
+    var(--dest-georgia),
+    var(--dest-russia),
+    var(--dest-kazakhstan),
+    var(--dest-china),
+    var(--dest-uzbekistan),
+    var(--dest-kyrgyzstan)
+  );
+
+  /* Offset "hard" shadows — the printed-card look from the poster.
+     Deliberately not blurred; they read as a second plate rather
+     than as depth. Paired with a 1px border at the same colour. */
+  --shadow-hard: 6px 6px 0 var(--navy-900);
+  --shadow-hard-sm: 3px 3px 0 var(--navy-900);
+  --shadow-hard-gold: 6px 6px 0 var(--gold-500);
+
+  /* Hover systems. Neon for dark grounds and primary actions,
+     pastel washes for light grounds and secondary cards. */
+  --neon-gold: 0 0 0 1px var(--gold-400), 0 0 24px rgba(201, 162, 39, 0.55),
+    0 0 56px rgba(201, 162, 39, 0.25);
+  --neon-navy: 0 0 0 1px var(--navy-500), 0 0 24px rgba(42, 85, 159, 0.5),
+    0 0 56px rgba(42, 85, 159, 0.22);
+  --neon-green: 0 0 0 1px var(--green-500), 0 0 24px rgba(37, 211, 102, 0.45);
+
+  --pastel-gold: #fbf3dc;
+  --pastel-mint: #e6f4ec;
+  --pastel-sky: #e7effb;
+  --pastel-lilac: #efeafb;
+  --pastel-blush: #fdeceb;
+
+  /* Dot-grid backdrop */
+  --dot-color: var(--hairline);
+  --dot-size: 1px;
+  --dot-gap: 22px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #060d1c;
-    --bg-elevated: #0c1730;
-    --bg-sunken: #030814;
+    --bg: #0b1020;
+    --bg-elevated: #131a2e;
+    --bg-sunken: #060a16;
     --bg-inverse: #ffffff;
 
-    --surface: rgba(20, 40, 82, 0.5);
-    --surface-strong: rgba(20, 40, 82, 0.72);
-    --surface-solid: #0f1e3d;
+    --surface: rgba(28, 40, 68, 0.52);
+    --surface-strong: rgba(28, 40, 68, 0.74);
+    --surface-solid: #141c31;
 
-    --text: #f2f5fb;
-    --text-secondary: #b7c2d6;
-    --text-muted: #8593ab;
-    --text-inverse: #06101f;
+    --text: #f4f3ef;
+    --text-secondary: #bcc2d0;
+    --text-muted: #8b93a6;
+    --text-inverse: #0b1020;
 
     --accent: var(--gold-400);
     --accent-bright: var(--gold-300);
@@ -109,6 +223,25 @@
     --shadow-glow: 0 8px 48px rgba(233, 199, 102, 0.22);
 
     --ring: rgba(233, 199, 102, 0.6);
+
+    /* A navy plate is invisible on a navy ground — the offset
+       shadow has to lighten instead of darken here. */
+    --shadow-hard: 6px 6px 0 var(--navy-600);
+    --shadow-hard-sm: 3px 3px 0 var(--navy-600);
+    --shadow-hard-gold: 6px 6px 0 var(--gold-600);
+
+    --neon-gold: 0 0 0 1px var(--gold-300), 0 0 28px rgba(233, 199, 102, 0.6),
+      0 0 64px rgba(233, 199, 102, 0.28);
+    --neon-navy: 0 0 0 1px var(--navy-500), 0 0 28px rgba(42, 85, 159, 0.65),
+      0 0 64px rgba(42, 85, 159, 0.3);
+
+    /* Pastels invert to deep tints — same hues, carried at the
+       other end of the lightness scale so hover still reads. */
+    --pastel-gold: #2a2213;
+    --pastel-mint: #10251a;
+    --pastel-sky: #121d33;
+    --pastel-lilac: #1e1733;
+    --pastel-blush: #2b1618;
   }
 }
 
@@ -143,6 +276,21 @@
   --shadow-glow: 0 8px 48px rgba(233, 199, 102, 0.22);
 
   --ring: rgba(233, 199, 102, 0.6);
+
+  --shadow-hard: 6px 6px 0 var(--navy-600);
+  --shadow-hard-sm: 3px 3px 0 var(--navy-600);
+  --shadow-hard-gold: 6px 6px 0 var(--gold-600);
+
+  --neon-gold: 0 0 0 1px var(--gold-300), 0 0 28px rgba(233, 199, 102, 0.6),
+    0 0 64px rgba(233, 199, 102, 0.28);
+  --neon-navy: 0 0 0 1px var(--navy-500), 0 0 28px rgba(42, 85, 159, 0.65),
+    0 0 64px rgba(42, 85, 159, 0.3);
+
+  --pastel-gold: #2a2213;
+  --pastel-mint: #10251a;
+  --pastel-sky: #121d33;
+  --pastel-lilac: #1e1733;
+  --pastel-blush: #2b1618;
 }
 
 /* ============================================================
@@ -162,6 +310,25 @@
   --color-gold-300: var(--gold-300);
   --color-gold-200: var(--gold-200);
   --color-gold-100: var(--gold-100);
+
+  --color-violet-700: var(--violet-700);
+  --color-violet-600: var(--violet-600);
+  --color-violet-500: var(--violet-500);
+  --color-violet-300: var(--violet-300);
+
+  /* Destination hues — `bg-dest-georgia`, `text-dest-china`, … */
+  --color-dest-georgia: var(--dest-georgia);
+  --color-dest-russia: var(--dest-russia);
+  --color-dest-kazakhstan: var(--dest-kazakhstan);
+  --color-dest-china: var(--dest-china);
+  --color-dest-uzbekistan: var(--dest-uzbekistan);
+  --color-dest-kyrgyzstan: var(--dest-kyrgyzstan);
+
+  --color-pastel-gold: var(--pastel-gold);
+  --color-pastel-mint: var(--pastel-mint);
+  --color-pastel-sky: var(--pastel-sky);
+  --color-pastel-lilac: var(--pastel-lilac);
+  --color-pastel-blush: var(--pastel-blush);
 
   --color-signal-red: var(--red-600);
   --color-signal-green: var(--green-600);
@@ -188,14 +355,30 @@
   --color-line-strong: var(--border-strong);
   --color-hairline: var(--hairline);
 
+  /* On-dark set — gives `text-on-dark-secondary`, `border-on-dark-line`,
+     `bg-on-dark-fill` instead of hand-rolled white/NN alphas. */
+  --color-on-dark: var(--on-dark);
+  --color-on-dark-secondary: var(--on-dark-secondary);
+  --color-on-dark-muted: var(--on-dark-muted);
+  --color-on-dark-faint: var(--on-dark-faint);
+  --color-on-dark-line: var(--on-dark-line);
+  --color-on-dark-line-strong: var(--on-dark-line-strong);
+  --color-on-dark-fill: var(--on-dark-fill);
+  --color-on-dark-fill-hover: var(--on-dark-fill-hover);
+
   --radius-sm: var(--radius-sm);
   --radius-DEFAULT: var(--radius);
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
   --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
+  --radius-pill: var(--radius-pill);
 
-  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Sans carries everything; the serif is an accent face only.
+     Mono is used by the admission console and nothing else. */
+  --font-sans: var(--font-sans-brand), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-accent: var(--font-serif-accent), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-mono-brand), ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 /* ============================================================
@@ -214,7 +397,7 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-sans-brand), system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 100%;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -313,48 +496,47 @@ textarea {
    want a positive bump for legibility.
    ============================================================ */
 .t-display {
-  font-family: var(--font-playfair), Georgia, serif;
-  font-size: clamp(2.5rem, 6.5vw, 5.25rem);
-  line-height: 1.02;
-  letter-spacing: -0.028em;
-  font-weight: 700;
-  font-optical-sizing: auto;
+  font-size: clamp(2.75rem, 7.2vw, 5.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-weight: 500;
 }
 
 .t-h1 {
-  font-family: var(--font-playfair), Georgia, serif;
   font-size: clamp(2.125rem, 5vw, 3.75rem);
-  line-height: 1.08;
-  letter-spacing: -0.022em;
-  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  font-weight: 500;
 }
 
 .t-h2 {
-  font-family: var(--font-playfair), Georgia, serif;
-  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
-  line-height: 1.14;
-  letter-spacing: -0.018em;
-  font-weight: 700;
+  font-size: clamp(1.875rem, 3.8vw, 2.875rem);
+  line-height: 1.1;
+  letter-spacing: -0.026em;
+  font-weight: 500;
 }
 
+/* Previously the first sans step after two serif ones, which left a
+   gap that 29 call sites filled by reaching for the display face by
+   hand. Now it is simply the next size down. */
 .t-h3 {
-  font-size: clamp(1.25rem, 2.1vw, 1.625rem);
-  line-height: 1.28;
-  letter-spacing: -0.012em;
-  font-weight: 650;
+  font-size: clamp(1.375rem, 2.3vw, 1.875rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 600;
 }
 
 .t-h4 {
-  font-size: clamp(1.0625rem, 1.5vw, 1.1875rem);
-  line-height: 1.38;
-  letter-spacing: -0.006em;
-  font-weight: 620;
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  line-height: 1.34;
+  letter-spacing: -0.012em;
+  font-weight: 600;
 }
 
 .t-lead {
   font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
   line-height: 1.62;
-  letter-spacing: -0.003em;
+  letter-spacing: -0.008em;
   color: var(--text-secondary);
 }
 
@@ -372,6 +554,23 @@ textarea {
   color: var(--text-muted);
 }
 
+/* The two steps below t-small. 229 call sites were setting these
+   inline as text-[0.8125rem] / text-[0.75rem]; they are a real part
+   of the scale and belong in it. */
+.t-caption {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  letter-spacing: 0.006em;
+  color: var(--text-muted);
+}
+
+.t-micro {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--text-muted);
+}
+
 /* Eyebrow / small-caps label — positive tracking at small size */
 .t-eyebrow {
   font-size: 0.75rem;
@@ -379,6 +578,52 @@ textarea {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 640;
+}
+
+/* ============================================================
+   THE ACCENT RULE.
+
+   A serif italic emphasis word inside an otherwise sans heading,
+   set larger and in the accent colour. This single rule is what
+   makes a headline read as editorial rather than corporate, and
+   it is the reference's strongest signature.
+
+      <h2>Every fee, <em>published</em>.</h2>
+
+   Applied via `em` so the markup stays semantic, plus an explicit
+   class for cases where emphasis is not the right semantics.
+   ============================================================ */
+:where(h1, h2, h3, .t-display, .t-h1, .t-h2, .t-h3) em,
+.t-accent {
+  font-family: var(--font-serif-accent), Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.14em;
+  line-height: 0.92;
+  letter-spacing: -0.005em;
+  color: var(--accent);
+  /* The italic's overhang would otherwise clip against a following
+     word or an overflow-hidden reveal wrapper. */
+  padding-inline-end: 0.06em;
+}
+
+/* Editorial figure — the serif face for numbers, deliberately with
+   NO font-size so a call site keeps whatever size it already sets.
+   Pair with .t-figure-xl for the headline stat treatment. */
+.t-figure {
+  font-family: var(--font-serif-accent), Georgia, serif;
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* The big one — large enough that the face's contrast actually
+   reads. Used for headline statistics, not for figures in a card. */
+.t-figure-xl {
+  font-size: clamp(3.25rem, 8vw, 6.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.025em;
 }
 
 /* ============================================================
@@ -447,6 +692,203 @@ textarea {
   backdrop-filter: blur(var(--blur-chip)) saturate(160%);
   -webkit-backdrop-filter: blur(var(--blur-chip)) saturate(160%);
   border: 1px solid var(--border);
+}
+
+/* ------------------------------------------------------------
+   ON-DARK MATERIALS.
+
+   The light materials above assume a light ground. Anything
+   sitting on a navy slab or a photograph needs the inverse, and
+   until now every such surface invented its own — which is why
+   the footer, both lightboxes, the testimonials and the on-photo
+   chips had all drifted to slightly different alphas.
+   ------------------------------------------------------------ */
+.material-card-dark {
+  background: var(--on-dark-fill);
+  backdrop-filter: blur(var(--blur-card)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--blur-card)) saturate(140%);
+  border: 1px solid var(--on-dark-line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.material-chip-dark {
+  background: var(--on-dark-fill);
+  backdrop-filter: blur(var(--blur-chip)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--blur-chip)) saturate(140%);
+  border: 1px solid var(--on-dark-line);
+  color: var(--on-dark);
+}
+
+.material-chip-dark:is(:hover, :focus-visible) {
+  background: var(--on-dark-fill-hover);
+}
+
+/* ------------------------------------------------------------
+   LIQUID GLASS.
+
+   A thicker material than .material-card, for cards that float
+   over photography or a navy slab. Three things separate it from
+   a plain blur: a specular top edge, a gradient rim (drawn as a
+   masked pseudo-element because border-image cannot follow a
+   border-radius), and a slow sheen that sweeps across on hover.
+   ------------------------------------------------------------ */
+.liquid-glass {
+  position: relative;
+  isolation: isolate;
+  background: var(--surface);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    var(--shadow-lg);
+}
+
+/* Gradient rim */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(201, 162, 39, 0.35)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Sheen — parked off-screen left, swept across on hover */
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  background-position: 180% 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition:
+    opacity 200ms ease,
+    background-position 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.liquid-glass:is(:hover, :focus-within)::after {
+  opacity: 1;
+  background-position: -80% 0;
+}
+
+:root[data-theme="dark"] .liquid-glass,
+[data-ground="navy"] .liquid-glass {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    var(--shadow-lg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .liquid-glass {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+      var(--shadow-lg);
+  }
+}
+
+/* ============================================================
+   PER-SECTION THEMING.
+
+   A section can declare its own ground and the semantic tokens
+   re-point inside it, so descendants keep using --text / --border
+   and simply come out right. This is what lets the page read as a
+   rhythm of grounds rather than one flat sheet.
+
+       <section data-ground="linen"> … </section>
+   ============================================================ */
+[data-ground] {
+  background: var(--bg);
+  color: var(--text);
+  transition:
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+[data-ground="linen"] {
+  --bg: var(--bg-sunken);
+}
+
+/* Pure white — colder and brighter than the default warm --bg.
+   Reserved for sections that need maximum separation from the
+   band above and below them. In dark mode it resolves to the
+   elevated slab, because a white band there would be a flashbang. */
+[data-ground="white"] {
+  --bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-ground="white"] {
+    --bg: var(--bg-elevated);
+  }
+}
+
+:root[data-theme="dark"] [data-ground="white"] {
+  --bg: var(--bg-elevated);
+}
+
+[data-ground="navy"] {
+  --bg: var(--navy-950);
+  --bg-elevated: var(--navy-900);
+  --bg-sunken: var(--navy-950);
+  --text: var(--on-dark);
+  --text-secondary: var(--on-dark-secondary);
+  --text-muted: var(--on-dark-muted);
+  --brand: var(--on-dark);
+  --accent: var(--gold-300);
+  --accent-bright: var(--gold-200);
+  --accent-soft: rgba(201, 162, 39, 0.16);
+  --border: var(--on-dark-line);
+  --border-strong: var(--on-dark-line-strong);
+  --hairline: rgba(255, 255, 255, 0.09);
+  --surface: var(--on-dark-fill);
+  --surface-strong: var(--on-dark-fill-hover);
+  --surface-solid: var(--navy-800);
+}
+
+/* Inside a navy ground the light material would be a white smear;
+   swap it for the dark one without touching the call site. */
+[data-ground="navy"] .material-card {
+  background: var(--on-dark-fill);
+  border-color: var(--on-dark-line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), var(--shadow-md);
+}
+
+/* Same swap for the glass rim — a white-to-gold rim on navy is
+   right, but the white end has to come down or it glares. */
+[data-ground="navy"] .liquid-glass::before {
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.28),
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(233, 199, 102, 0.4)
+  );
 }
 
 /* ============================================================
@@ -531,6 +973,241 @@ textarea {
   );
 }
 
+/* ============================================================
+   Gradients as fills and as text
+   ============================================================ */
+.grad-brand {
+  background: var(--grad-brand);
+}
+.grad-gold {
+  background: var(--grad-gold);
+}
+.grad-violet {
+  background: var(--grad-violet);
+}
+.grad-spectrum {
+  background: var(--grad-spectrum);
+}
+
+.grad-text {
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* On a navy ground the navy end of --grad-brand disappears;
+   lift the whole ramp into gold instead. */
+[data-ground="navy"] .grad-text {
+  background: var(--grad-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ============================================================
+   The colour stripe — the band that closes every printed piece
+   the client puts out. A 3px spectrum rule over a navy strip.
+   ============================================================ */
+.color-stripe {
+  height: 3px;
+  background: var(--grad-spectrum);
+  background-size: 200% 100%;
+  animation: stripe-slide 18s linear infinite;
+}
+
+/* ============================================================
+   Dot grid — a printed-paper backdrop for light sections.
+   Always decorative; pair with aria-hidden.
+   ============================================================ */
+.dot-grid {
+  background-image: radial-gradient(var(--dot-color) var(--dot-size), transparent var(--dot-size));
+  background-size: var(--dot-gap) var(--dot-gap);
+}
+
+.dot-grid-fade {
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+
+/* ============================================================
+   Shadows & hover systems
+
+   Two hover languages, applied per ground: neon on dark slabs and
+   primary actions, pastel washes on light cards. Both move the
+   card 2px and both settle on the same 260ms curve, so mixing
+   them on one page still reads as one system.
+   ============================================================ */
+.hard-shadow {
+  box-shadow: var(--shadow-hard);
+  border: 1px solid var(--navy-900);
+}
+
+.hard-shadow-sm {
+  box-shadow: var(--shadow-hard-sm);
+  border: 1px solid var(--navy-900);
+}
+
+.hard-shadow-gold {
+  box-shadow: var(--shadow-hard-gold);
+  border: 1px solid var(--gold-500);
+}
+
+[data-ground="navy"] .hard-shadow,
+[data-ground="navy"] .hard-shadow-sm {
+  border-color: var(--navy-600);
+}
+
+.hover-lift,
+.hover-neon,
+.hover-pastel {
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 260ms ease,
+    border-color 260ms ease;
+}
+
+.hover-lift:is(:hover, :focus-visible, :focus-within) {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.hover-neon:is(:hover, :focus-visible, :focus-within) {
+  transform: translateY(-2px);
+  box-shadow: var(--neon-gold);
+}
+
+.hover-neon-navy:is(:hover, :focus-visible, :focus-within) {
+  box-shadow: var(--neon-navy);
+}
+
+.hover-neon-green:is(:hover, :focus-visible, :focus-within) {
+  box-shadow: var(--neon-green);
+}
+
+.hover-pastel:is(:hover, :focus-visible, :focus-within) {
+  transform: translateY(-2px);
+  background-color: var(--hover-tint, var(--pastel-gold));
+  border-color: color-mix(in srgb, var(--hover-tint, var(--pastel-gold)) 60%, var(--border));
+  box-shadow: var(--shadow-lg);
+}
+
+/* Hard-shadow cards press into their own shadow rather than
+   lifting away from it — the plate stays put, the card moves. */
+.hard-shadow.hover-lift:is(:hover, :focus-visible, :focus-within),
+.hard-shadow-gold.hover-lift:is(:hover, :focus-visible, :focus-within) {
+  transform: translate(3px, 3px);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+/* Sparkle + arrow motion, used by the ui primitives */
+.sparkle {
+  animation: sparkle-twinkle 3.2s ease-in-out infinite;
+}
+
+.group:is(:hover, :focus-visible) .arrow-nudge {
+  transform: translateX(4px);
+}
+
+.arrow-nudge {
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   OPENING SEQUENCE.
+
+   The curtain is server-rendered into the static HTML so it is
+   present in the very first painted frame — a curtain that mounts
+   after hydration shows the hero first and then covers it, which
+   is worse than no curtain at all.
+
+   Two escapes, both resolved in CSS before React runs:
+     data-intro="skip"  — set by a blocking <head> script when
+                          sessionStorage says it has already played
+     prefers-reduced-motion — never play it at all
+
+   The component reads the same signals and unmounts itself, so
+   nothing is left in the tree or the accessibility layer.
+   ============================================================ */
+#intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--navy-950);
+  will-change: transform;
+  /* Hold, then wipe up. Driven by CSS rather than by the motion
+     library on purpose: a JS timeline cannot start until hydration
+     finishes, and on a mid-range phone that is a second or more of
+     the user staring at a static panel. This starts at first
+     paint, every time, and React only clears up afterwards. */
+  animation: intro-wipe 1.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+#intro-curtain .intro-lockup {
+  animation: intro-lockup-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+#intro-curtain .intro-rule {
+  animation: intro-rule-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+#intro-curtain .intro-tagline {
+  animation: intro-fade-in 0.4s ease-out 0.46s both;
+}
+
+:root[data-intro="skip"] #intro-curtain {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #intro-curtain {
+    display: none;
+  }
+}
+
+@keyframes intro-wipe {
+  0%,
+  59% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@keyframes intro-lockup-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes intro-rule-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes intro-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .grain::before {
   content: "";
   position: absolute;
@@ -541,14 +1218,14 @@ textarea {
 }
 
 .section {
-  padding-block: clamp(3.5rem, 8vw, 7.5rem);
+  padding-block: clamp(4rem, 9vw, 8.5rem);
 }
 
 .shell {
   width: 100%;
   max-width: 80rem;
   margin-inline: auto;
-  padding-inline: clamp(1.125rem, 4vw, 2.5rem);
+  padding-inline: var(--page-pad);
 }
 
 /* ============================================================
@@ -594,9 +1271,9 @@ textarea {
 
 .shell-wide {
   width: 100%;
-  max-width: 90rem;
+  max-width: 96rem;
   margin-inline: auto;
-  padding-inline: clamp(1.125rem, 4vw, 2.5rem);
+  padding-inline: var(--page-pad);
 }
 
 /* Wide content (fee tables) scrolls inside its own container —
@@ -669,6 +1346,55 @@ textarea {
   }
 }
 
+/* The spectrum stripe drifting sideways under its own band. */
+@keyframes stripe-slide {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Orb fields — two axes at different periods so a cluster of orbs
+   never falls into visible lockstep. */
+@keyframes orb-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(3%, -5%, 0) scale(1.06);
+  }
+  66% {
+    transform: translate3d(-4%, 3%, 0) scale(0.96);
+  }
+}
+
+@keyframes sparkle-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1) rotate(18deg);
+  }
+}
+
+/* Terminal caret. Steps, not ease — a caret that fades is wrong. */
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
 .animate-marquee {
   animation: marquee var(--marquee-duration, 42s) linear infinite;
 }
@@ -677,6 +1403,12 @@ textarea {
 }
 .animate-pulse-ring {
   animation: pulse-ring 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.animate-orb-drift {
+  animation: orb-drift var(--orb-duration, 22s) ease-in-out infinite;
+}
+.animate-caret {
+  animation: caret-blink 1.05s steps(1, end) infinite;
 }
 
 .shimmer {
@@ -708,18 +1440,46 @@ textarea {
   .animate-marquee,
   .animate-float-slow,
   .animate-pulse-ring,
-  .shimmer {
+  .animate-orb-drift,
+  .animate-caret,
+  .shimmer,
+  .sparkle,
+  .color-stripe {
     animation: none !important;
+  }
+  /* The caret is the one thing that must stay visible once the
+     animation is off — otherwise it can freeze on the blank half. */
+  .animate-caret {
+    opacity: 1 !important;
+  }
+  /* Travel comes off hover; the colour change stays, so the
+     affordance survives without anything moving. */
+  .hover-lift:is(:hover, :focus-visible, :focus-within),
+  .hover-neon:is(:hover, :focus-visible, :focus-within),
+  .hover-pastel:is(:hover, :focus-visible, :focus-within),
+  .hard-shadow.hover-lift:is(:hover, :focus-visible, :focus-within),
+  .hard-shadow-gold.hover-lift:is(:hover, :focus-visible, :focus-within) {
+    transform: none !important;
+  }
+  .group:is(:hover, :focus-visible) .arrow-nudge {
+    transform: none !important;
+  }
+  .liquid-glass::after {
+    display: none;
   }
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .material-chrome,
   .material-card,
-  .material-chip {
+  .material-chip,
+  .liquid-glass {
     background: var(--surface-solid) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+  .liquid-glass::after {
+    display: none;
   }
 }
 
@@ -738,8 +1498,13 @@ textarea {
   }
   .material-chrome,
   .material-card,
-  .material-chip {
+  .material-chip,
+  .liquid-glass {
     background: var(--surface-solid) !important;
     backdrop-filter: none !important;
+  }
+  /* A gradient rim is not a border at high contrast. */
+  .liquid-glass::before {
+    background: var(--border-strong) !important;
   }
 }

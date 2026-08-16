@@ -12,7 +12,7 @@ export function TrustBar() {
       <Marquee speed={38} className="mb-6">
         {ACCREDITORS.map((a) => (
           <div key={a.code} className="flex shrink-0 items-center gap-3 px-9">
-            <span className="font-[family-name:var(--font-playfair)] text-[1.5rem] font-bold tracking-[-0.02em] text-brand/85">
+            <span className="t-figure text-[1.5rem] font-bold tracking-[-0.02em] text-brand/85">
               {a.code}
             </span>
             <span className="hidden max-w-[15rem] text-[0.6875rem] leading-tight text-ink-muted sm:block">

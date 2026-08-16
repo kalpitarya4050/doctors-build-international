@@ -13,7 +13,7 @@ export function LifeAbroad() {
           eyebrow="Life As A Student"
           title={
             <>
-              Six years is a long time. <span className="gold-text">Know what it looks like.</span>
+              Six years is a long time. <em>Know what it looks like.</em>
             </>
           }
           lead="Lectures in English, clinical rotations from year three, an Indian mess on or near every campus, and a community of Indian students already there when you arrive."

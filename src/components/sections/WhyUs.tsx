@@ -6,22 +6,34 @@ import { Media, Scrim } from "@/components/ui/Media";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
-/** Bento layout — the first card spans two columns on large
- *  screens so the grid has a clear focal point rather than seven
- *  equal tiles competing for attention. */
+/** Bento layout, 4 columns × 3 rows.
+ *
+ *  Seven cards plus a photo tile is eight items, which does not
+ *  divide into four. The previous spans put a 2-wide card at index 0
+ *  and 4, leaving the photo tile to fall into whatever single cell
+ *  was left over — it came out as a cramped square with its caption
+ *  crushed against the edge.
+ *
+ *  Instead: card 0 spans two, so rows one and two fill exactly, and
+ *  the photo runs the full width as a closing banner where its
+ *  caption has room. */
 const SPANS = [
-  "lg:col-span-2 lg:row-span-1",
+  "sm:col-span-2",
   "",
   "",
   "",
-  "lg:col-span-2",
+  "",
   "",
   "",
 ];
 
 export function WhyUs() {
   return (
-    <section className="section relative isolate overflow-hidden" aria-labelledby="why-title">
+    <section
+      data-ground="linen"
+      className="section relative isolate overflow-hidden"
+      aria-labelledby="why-title"
+    >
       <Bloom tone="gold" />
 
       <div className="shell">
@@ -29,7 +41,7 @@ export function WhyUs() {
           eyebrow="Why Choose Doctors Build"
           title={
             <>
-              The reasons families <span className="gold-text">refer us</span> to other families.
+              The reasons families <em>refer us</em> to other families.
             </>
           }
           lead="Most of our enquiries now arrive through parents who have already sent one child abroad with us. These are the seven reasons they give."
@@ -48,7 +60,7 @@ export function WhyUs() {
                       <Icon name={u.icon} className="size-5" strokeWidth={1.9} />
                     </span>
                     <span className="text-right">
-                      <span className="block font-[family-name:var(--font-playfair)] text-[1.75rem] font-bold leading-none text-brand">
+                      <span className="block t-figure text-[1.75rem] font-bold leading-none text-brand">
                         {u.stat}
                       </span>
                       <span className="mt-1 block text-[0.625rem] font-semibold tracking-[0.08em] text-ink-muted uppercase">
@@ -66,20 +78,20 @@ export function WhyUs() {
 
           {/* Photographic tile — fills the bento's last cell and stops
               the grid reading as seven identical boxes. */}
-          <RevealItem>
-            <div className="relative h-full min-h-[14rem] overflow-hidden rounded-[var(--radius-lg)] border border-line">
+          <RevealItem className="sm:col-span-2 lg:col-span-4">
+            <div className="relative h-full min-h-[16rem] overflow-hidden rounded-[var(--radius-lg)] border border-line lg:min-h-[20rem]">
               <Media
                 id="students-friends"
                 className="absolute inset-0"
                 imgClassName="transition-transform duration-[1100ms] ease-out hover:scale-[1.06]"
-                sizes="(max-width: 640px) 100vw, 25vw"
+                sizes="100vw"
               />
               <Scrim strength="heavy" />
-              <div className="absolute inset-x-0 bottom-0 p-6">
-                <p className="font-[family-name:var(--font-playfair)] text-[1.375rem] leading-tight tracking-[-0.02em] text-white">
-                  You will not be the <span className="gold-text">only Indian</span> there.
+              <div className="absolute inset-x-0 bottom-0 p-7 sm:p-9">
+                <p className="t-h3 max-w-[24ch] text-white">
+                  You will not be the <em className="t-accent">only Indian</em> there.
                 </p>
-                <p className="mt-2 text-[0.8125rem] leading-relaxed text-white/70">
+                <p className="mt-3 max-w-[52ch] text-[0.9375rem] leading-relaxed text-on-dark-secondary">
                   Between 800 and 2500 Indian students are already on every campus we place into.
                 </p>
               </div>

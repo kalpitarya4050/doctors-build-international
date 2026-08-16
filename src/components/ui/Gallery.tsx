@@ -99,7 +99,7 @@ export function Gallery({
                 <span className="text-[0.8125rem] font-semibold leading-tight tracking-[-0.005em] text-white">
                   {item.caption}
                 </span>
-                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-white/12 text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
+                <span className="grid size-7 shrink-0 place-items-center material-chip-dark rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <Expand className="size-3.5" />
                 </span>
               </span>
@@ -154,14 +154,14 @@ export function Gallery({
                     {active.caption}
                   </span>
                   {activeSrc && (
-                    <span className="mt-0.5 block text-[0.75rem] text-white/45">
+                    <span className="mt-0.5 block text-[0.75rem] text-on-dark-muted">
                       {isOwned(active.id)
                         ? `Photo: ${activeSrc.photographer}`
                         : `Illustrative · Photo: ${activeSrc.photographer} / Pexels`}
                     </span>
                   )}
                 </span>
-                <span className="text-[0.8125rem] tabular-nums text-white/45">
+                <span className="text-[0.8125rem] tabular-nums text-on-dark-muted">
                   {(open ?? 0) + 1} / {items.length}
                 </span>
               </figcaption>
@@ -172,7 +172,7 @@ export function Gallery({
               type="button"
               onClick={close}
               aria-label="Close"
-              className="absolute right-4 top-4 grid size-11 place-items-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur transition-colors hover:bg-white/16 sm:right-8 sm:top-8"
+              className="absolute right-4 top-4 grid size-11 place-items-center rounded-full material-chip-dark transition-colors hover:bg-on-dark-fill-hover sm:right-8 sm:top-8"
             >
               <X className="size-5" />
             </button>
@@ -180,7 +180,7 @@ export function Gallery({
               type="button"
               onClick={() => step(-1)}
               aria-label="Previous image"
-              className="absolute left-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur transition-colors hover:bg-white/16 sm:left-6"
+              className="absolute left-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full material-chip-dark transition-colors hover:bg-on-dark-fill-hover sm:left-6"
             >
               <ChevronLeft className="size-5" />
             </button>
@@ -188,7 +188,7 @@ export function Gallery({
               type="button"
               onClick={() => step(1)}
               aria-label="Next image"
-              className="absolute right-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur transition-colors hover:bg-white/16 sm:right-6"
+              className="absolute right-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full material-chip-dark transition-colors hover:bg-on-dark-fill-hover sm:right-6"
             >
               <ChevronRight className="size-5" />
             </button>

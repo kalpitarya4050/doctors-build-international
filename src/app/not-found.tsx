@@ -21,7 +21,7 @@ export default function NotFound() {
         <LogoMark className="size-16" id="nf" />
         <p className="t-eyebrow mt-8 text-[var(--accent)]">Error 404</p>
         <h1 className="t-h1 mt-4 text-brand">
-          This page took a <span className="gold-text">different route</span>.
+          This page took a <em>different route</em>.
         </h1>
         <p className="t-lead mt-5 max-w-[52ch]">
           The page you were looking for does not exist, or has moved. Here are the places most people

@@ -397,7 +397,7 @@ export default async function UniversityPage({
                   <p className="mt-4 text-[0.75rem] font-semibold tracking-[0.05em] text-ink-muted uppercase">
                     Total for the full course
                   </p>
-                  <p className="t-num mt-1.5 font-[family-name:var(--font-playfair)] text-[2.25rem] font-bold leading-none text-brand">
+                  <p className="t-num mt-1.5 t-figure text-[2.25rem] font-bold leading-none text-brand">
                     {u.totalExpenseInr ? `₹${inr(u.totalExpenseInr)}` : "On request"}
                   </p>
                   <p className="t-num mt-2 text-[0.875rem] text-ink-muted">
@@ -407,7 +407,7 @@ export default async function UniversityPage({
                 </>
               ) : (
                 <>
-                  <p className="mt-4 font-[family-name:var(--font-playfair)] text-[1.5rem] font-bold leading-tight text-brand">
+                  <p className="mt-4 text-[1.5rem] font-bold leading-tight text-brand">
                     Fees confirmed on request
                   </p>
                   <p className="t-small mt-2.5 leading-relaxed">
@@ -451,7 +451,7 @@ export default async function UniversityPage({
             eyebrow="Student Experience"
             title={
               <>
-                What studying at <span className="gold-text">{u.shortName}</span> is actually like
+                What studying at <em>{u.shortName}</em> is actually like
               </>
             }
           />
@@ -511,12 +511,12 @@ export default async function UniversityPage({
           <>
             <Scrim strength="medium" from="bottom" />
             <div className="shell absolute inset-x-0 bottom-0 pb-8">
-              <p className="font-[family-name:var(--font-playfair)] text-[clamp(1.25rem,2.6vw,2rem)] leading-tight tracking-[-0.02em] text-white [text-shadow:0_2px_20px_rgba(5,15,34,0.5)]">
+              <p className="text-[clamp(1.25rem,2.6vw,2rem)] leading-tight tracking-[-0.02em] text-white [text-shadow:0_2px_20px_rgba(5,15,34,0.5)]">
                 {u.indianStudents
                   ? `${u.indianStudents} Indian students already on campus.`
                   : "You will not be the only Indian student there."}
               </p>
-              <p className="mt-2 text-[0.8125rem] text-white/65">
+              <p className="mt-2 text-[0.8125rem] text-on-dark-secondary">
                 Seniors, societies and an Indian mess waiting when you land.
               </p>
             </div>
@@ -651,7 +651,7 @@ export default async function UniversityPage({
                 href="/faq"
                 className="tap inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
               >
-                Read all 30 questions
+                Read all {FAQS.length} questions
                 <ArrowRight className="size-4" />
               </Link>
             </div>
@@ -686,7 +686,7 @@ export default async function UniversityPage({
         defaultInterest={`MBBS in ${u.country}`}
         heading={
           <>
-            Ready to apply to <span className="gold-text">{u.shortName}</span>?
+            Ready to apply to <em>{u.shortName}</em>?
           </>
         }
         lead={`Tell us your NEET score and we will confirm within one call whether you are eligible for ${u.name} — and what the complete ${
@@ -762,11 +762,11 @@ function FeeBreakdown({ university: u }: { university: University }) {
           title={
             u.hasPublishedFees ? (
               <>
-                The complete cost, <span className="gold-text">published</span>
+                The complete cost, <em>published</em>
               </>
             ) : (
               <>
-                What this will <span className="gold-text">actually</span> cost
+                What this will <em>actually</em> cost
               </>
             )
           }
@@ -864,13 +864,13 @@ function FeeBreakdown({ university: u }: { university: University }) {
                 <p className="t-eyebrow text-[var(--gold-300)]">
                   Total expense{u.duration ? ` · ${u.duration}` : ""}
                 </p>
-                <p className="t-num mt-4 font-[family-name:var(--font-playfair)] text-[2.5rem] font-bold leading-none">
+                <p className="t-num mt-4 t-figure text-[2.5rem] font-bold leading-none">
                   {u.totalExpenseInr ? `₹${inr(u.totalExpenseInr)}` : "On request"}
                 </p>
                 {u.totalExpense !== null && (
-                  <p className="t-num mt-2.5 text-[0.9375rem] text-white/60">{formatTotal(u)}</p>
+                  <p className="t-num mt-2.5 text-[0.9375rem] text-on-dark-secondary">{formatTotal(u)}</p>
                 )}
-                <p className="mt-5 border-t border-white/12 pt-5 text-[0.8125rem] leading-relaxed text-white/60">
+                <p className="mt-5 border-t border-on-dark-line pt-5 text-[0.8125rem] leading-relaxed text-on-dark-secondary">
                   {u.hasPublishedFees
                     ? "Includes tuition plus the university’s quoted associated costs. Airfare, personal spending, insurance and the annual residence permit are additional — see the breakdown below."
                     : "We will confirm the total in writing before you commit. Whatever the tuition figure turns out to be, airfare, personal spending, insurance and the annual residence permit sit on top of it — see the breakdown below."}

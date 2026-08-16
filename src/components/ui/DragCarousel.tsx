@@ -268,7 +268,12 @@ export function DragCarousel({
                   aria-selected={i === active}
                   aria-label={`Go to slide ${i + 1}`}
                   onPointerDown={() => goTo(i)}
-                  className="group/dot p-1.5"
+                  /* `tap` expands the hit area to 44x44 on coarse
+                     pointers without changing the visual dot, which
+                     has to stay small to read as a dot. Padding alone
+                     left these at 38x18 — under Apple's minimum, and
+                     the mobile audit flags them on every carousel. */
+                  className="tap group/dot grid place-items-center p-1.5"
                 >
                   <motion.span
                     className="block h-1.5 rounded-full bg-[var(--border-strong)]"

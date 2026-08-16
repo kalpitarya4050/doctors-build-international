@@ -12,13 +12,14 @@ import { Button } from "@/components/ui/Button";
 
 export function Destinations() {
   return (
-    <section className="section relative bg-[var(--bg-sunken)]" aria-labelledby="destinations-title">
+    <section data-ground="linen"
+      className="section relative" aria-labelledby="destinations-title">
       <div className="shell">
         <SectionHeading
           eyebrow="Study in Top Destinations"
           title={
             <>
-              {COUNTRIES.length} countries. One <span className="gold-text">honest</span> shortlist.
+              {COUNTRIES.length} countries. One <em>honest</em> shortlist.
             </>
           }
           lead="Every destination below is NMC-eligible or WHO recognized, taught entirely in English, and requires no IELTS. We tell you the trade-offs of each — climate, cost, food, clinical exposure — before you choose."
@@ -35,8 +36,18 @@ export function Destinations() {
                 <TiltCard className="h-full" intensity={5}>
                   <Link
                     href={`/destinations/${c.slug}`}
-                    className="group material-card relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] transition-shadow duration-300 hover:shadow-[var(--shadow-lg)]"
+                    className="group material-card hover-lift relative flex h-full flex-col overflow-hidden rounded-[var(--radius-xl)]"
                   >
+                    {/* Country hue as a top rule. Each accent is the
+                        colour that destination already carries in the
+                        client's printed comparison sheets, so the six
+                        cards together read as their spectrum. */}
+                    <span
+                      aria-hidden
+                      className="h-1.5 w-full shrink-0"
+                      style={{ background: c.accent }}
+                    />
+
                     {/* Country photograph */}
                     <div className="relative aspect-[16/10] w-full overflow-hidden">
                       <Media
@@ -53,14 +64,17 @@ export function Destinations() {
                       />
 
                       <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-4 p-5">
-                        <Flag country={c.slug} className="h-7 w-[2.625rem] shadow-[0_2px_8px_rgba(0,0,0,0.35)]" />
-                        <span className="grid size-8 place-items-center rounded-full bg-white/14 text-white backdrop-blur-md transition-colors duration-300 group-hover:bg-[var(--accent-bright)] group-hover:text-[var(--navy-950)]">
-                          <ArrowUpRight className="size-4" strokeWidth={2.2} />
+                        <Flag country={c.slug} className="h-7 w-[2.625rem] shadow-[var(--shadow-badge)]" />
+                        <span className="grid size-8 place-items-center rounded-full material-chip-dark transition-all duration-300 group-hover:bg-[var(--accent-bright)] group-hover:text-[var(--navy-950)] group-hover:shadow-[var(--neon-gold)]">
+                          <ArrowUpRight
+                            className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                            strokeWidth={2.2}
+                          />
                         </span>
                       </div>
 
                       <div className="absolute inset-x-0 bottom-0 p-5">
-                        <h3 className="font-[family-name:var(--font-playfair)] text-[1.5rem] font-bold leading-tight tracking-[-0.02em] text-white">
+                        <h3 className="text-[1.5rem] font-bold leading-tight tracking-[-0.02em] text-white">
                           MBBS in {c.name}
                         </h3>
                         <p className="mt-1 text-[0.8125rem] font-medium italic text-[var(--gold-300)]">
@@ -121,10 +135,10 @@ export function Destinations() {
               />
               <div className="relative">
                 <p className="t-eyebrow text-[var(--gold-300)]">& More…</p>
-                <h3 className="mt-4 font-[family-name:var(--font-playfair)] text-[1.625rem] leading-[1.15] tracking-[-0.02em]">
+                <h3 className="mt-4 text-[1.625rem] leading-[1.15] tracking-[-0.02em]">
                   Looking for a country not listed here?
                 </h3>
-                <p className="mt-3 text-[0.875rem] leading-relaxed text-white/65">
+                <p className="mt-3 text-[0.875rem] leading-relaxed text-on-dark-secondary">
                   We work with recognized medical universities beyond these {COUNTRIES.length}. Tell
                   us your NEET score and budget and we will find the honest match.
                 </p>

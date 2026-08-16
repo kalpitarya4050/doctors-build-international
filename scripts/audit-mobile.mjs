@@ -77,7 +77,27 @@ const c = {
 /** Runs in the page. Returns the specific offenders, not just a count. */
 function audit() {
   const docWidth = document.documentElement.clientWidth;
-  const out = { docWidth, scrollWidth: document.documentElement.scrollWidth, overflow: [], smallTaps: [], tinyText: [] };
+
+  /* `scrollWidth > clientWidth` alone is not proof of a sideways
+     scroll. `body { overflow-x: clip }` — which this site sets —
+     stops the page scrolling but still reports the overflowing
+     content box in scrollWidth, so decorative blooms and full-bleed
+     bands showed up as failures on eight routes that a user can
+     never actually scroll. Ask the page to scroll instead: if it
+     will not move, there is nothing for a thumb to find either. */
+  const beforeX = window.scrollX;
+  window.scrollTo(200, window.scrollY);
+  const canScrollX = window.scrollX > 0;
+  window.scrollTo(beforeX, window.scrollY);
+
+  const out = {
+    docWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+    canScrollX,
+    overflow: [],
+    smallTaps: [],
+    tinyText: [],
+  };
 
   const describe = (el) => {
     const cls = (el.className || "").toString().split(/\s+/).slice(0, 3).join(".");
@@ -221,7 +241,7 @@ async function run() {
         await new Promise((r) => setTimeout(r, 600));
         const res = await page.evaluate(audit);
 
-        const overflowed = res.scrollWidth > res.docWidth + 1;
+        const overflowed = res.scrollWidth > res.docWidth + 1 && res.canScrollX;
         if (overflowed || res.overflow.length || res.smallTaps.length || res.tinyText.length) {
           problems.push({ vp, res, overflowed });
         }

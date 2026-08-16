@@ -55,23 +55,23 @@ export function UniversityCard({
           <div className="flex items-center gap-2">
             {showRank && (
               <span
-                className="grid size-7 shrink-0 place-items-center rounded-full text-[0.75rem] font-bold text-white shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
+                className="grid size-7 shrink-0 place-items-center rounded-full text-[0.75rem] font-bold text-white shadow-[var(--shadow-badge)]"
                 style={{ background: u.accent }}
               >
                 {u.rank}
               </span>
             )}
-            <span className="rounded-full bg-white/14 px-2.5 py-1 text-[0.6875rem] font-bold text-white backdrop-blur-md">
+            <span className="rounded-full material-chip-dark px-2.5 py-1 text-[0.6875rem] font-bold">
               <Flag country={u.countrySlug} className="mr-1.5 h-3 w-[1.125rem]" />
               {u.country}
             </span>
           </div>
-          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white/14 text-white backdrop-blur-md transition-colors duration-300 group-hover:bg-[var(--accent-bright)] group-hover:text-[var(--navy-950)]">
+          <span className="grid size-8 shrink-0 place-items-center rounded-full material-chip-dark transition-colors duration-300 group-hover:bg-[var(--accent-bright)] group-hover:text-[var(--navy-950)]">
             <ArrowUpRight className="size-4" strokeWidth={2.2} />
           </span>
         </div>
 
-        <p className="absolute inset-x-0 bottom-0 flex items-center gap-1.5 p-4 text-[0.75rem] font-medium text-white/85">
+        <p className="absolute inset-x-0 bottom-0 flex items-center gap-1.5 p-4 text-[0.75rem] font-medium text-on-dark-secondary">
           <MapPin className="size-3.5" />
           {uniCaption(u.slug) || `${u.city}, ${u.country}`}
         </p>

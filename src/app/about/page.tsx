@@ -64,7 +64,7 @@ export default function AboutPage() {
               eyebrow="Why We Exist"
               title={
                 <>
-                  Doctor-led counselling, <span className="gold-text">for a reason</span>
+                  Doctor-led counselling, <em>for a reason</em>
                 </>
               }
             />
@@ -159,7 +159,7 @@ export default function AboutPage() {
             eyebrow="What We Stand For"
             title={
               <>
-                Four commitments we do <span className="gold-text">not</span> bend
+                Four commitments we do <em>not</em> bend
               </>
             }
           />

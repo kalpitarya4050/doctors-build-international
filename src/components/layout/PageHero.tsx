@@ -101,7 +101,7 @@ export function PageHero({
             <ol
               className={cn(
                 "flex flex-wrap items-center gap-1.5 text-[0.8125rem]",
-                onPhoto ? "text-white/60" : "text-ink-muted",
+                onPhoto ? "text-on-dark-secondary" : "text-ink-muted",
                 align === "center" && "justify-center",
               )}
             >
@@ -120,7 +120,7 @@ export function PageHero({
                   ) : (
                     <span
                       aria-current="page"
-                      className={cn("font-medium", onPhoto ? "text-white/85" : "text-ink-secondary")}
+                      className={cn("font-medium", onPhoto ? "text-on-dark-secondary" : "text-ink-secondary")}
                     >
                       {c.label}
                     </span>
@@ -164,7 +164,7 @@ export function PageHero({
             <div
               className={cn(
                 "t-lead mt-6 max-w-[64ch]",
-                onPhoto && "!text-white/80",
+                onPhoto && "!text-on-dark-secondary",
                 align === "center" && "mx-auto",
               )}
             >
@@ -176,7 +176,7 @@ export function PageHero({
         {children}
 
         {onPhoto && imageCaption && (
-          <p className="mt-10 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[0.6875rem] font-medium text-white/70 backdrop-blur-md">
+          <p className="mt-10 inline-flex items-center gap-2 material-chip-dark rounded-full px-3.5 py-1.5 text-[0.6875rem] font-medium !text-on-dark-secondary">
             <Camera className="size-3.5" />
             {imageCaption}
           </p>

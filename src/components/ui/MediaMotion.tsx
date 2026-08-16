@@ -137,8 +137,20 @@ export function ParallaxMedia({
 
 /* ------------------------------------------------------------------ */
 
-/** Revealed by a clip-path wipe on scroll-in, with the photo
- *  counter-scaling so the image settles into place rather than sliding. */
+/** Revealed by a wipe on scroll-in, with the photo counter-moving so
+ *  the frame fills rather than the image sliding.
+ *
+ *  The wipe is built from transforms, NOT clip-path. It was written
+ *  with an animated `clipPath: inset(…)` and never once ran: the
+ *  browser normalises `inset(100% 0 0 0)` to the three-value
+ *  `inset(100% 0px 0px)`, which no longer matches the shape of the
+ *  target string, so Motion could not interpolate and silently left
+ *  every image pinned at its hidden value. Confirmed on the live
+ *  site — the photos were loading at full size behind a 100% inset.
+ *
+ *  Two nested translations give the same effect with values Motion
+ *  can actually drive, and keeps to the project's own rule of
+ *  animating transform and opacity only. */
 export function RevealMedia({
   id,
   className,
@@ -159,11 +171,16 @@ export function RevealMedia({
   const reduced = useReducedMotion();
   const src = img(id);
 
-  const clip = {
-    bottom: { hidden: "inset(100% 0 0 0)", visible: "inset(0% 0 0 0)" },
-    left: { hidden: "inset(0 100% 0 0)", visible: "inset(0 0% 0 0)" },
-    right: { hidden: "inset(0 0 0 100%)", visible: "inset(0 0 0 0%)" },
+  /* The mask slides in from `from`; the photo slides the opposite way
+     by the same amount, so it appears stationary while the frame
+     uncovers it. */
+  const wipe = {
+    bottom: { mask: { y: "100%" }, photo: { y: "-100%" } },
+    left: { mask: { x: "-100%" }, photo: { x: "100%" } },
+    right: { mask: { x: "100%" }, photo: { x: "-100%" } },
   }[from];
+
+  const EASE = { duration: 0.85, ease: [0.22, 1, 0.36, 1] } as const;
 
   return (
     <motion.div
@@ -174,41 +191,50 @@ export function RevealMedia({
       variants={
         reduced
           ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.35 } } }
-          : {
-              hidden: { clipPath: clip.hidden },
-              visible: {
-                clipPath: clip.visible,
-                transition: { type: "spring", bounce: 0, duration: 0.9 },
-              },
-            }
+          : { hidden: {}, visible: {} }
       }
     >
+      {/* Mask */}
       <motion.div
         className="absolute inset-0"
         variants={
           reduced
             ? {}
             : {
-                hidden: { scale: 1.16 },
-                visible: { scale: 1, transition: { type: "spring", bounce: 0, duration: 1.1 } },
+                hidden: wipe.mask,
+                visible: { x: "0%", y: "0%", transition: EASE },
               }
         }
         style={{ willChange: "transform" }}
       >
-        {src ? (
-          <Image
-            src={src.src}
-            alt={alt ?? src.alt}
-            fill
-            sizes={sizes}
-            priority={priority}
-            placeholder="blur"
-            blurDataURL={solidBlur(src.avgColor)}
-            className="object-cover"
-          />
-        ) : (
-          <Placeholder className="absolute inset-0" seed={hashId(id)} />
-        )}
+        {/* Counter-move, so the photo holds still while the mask travels */}
+        <motion.div
+          className="absolute inset-0"
+          variants={
+            reduced
+              ? {}
+              : {
+                  hidden: { ...wipe.photo, scale: 1.14 },
+                  visible: { x: "0%", y: "0%", scale: 1, transition: EASE },
+                }
+          }
+          style={{ willChange: "transform" }}
+        >
+          {src ? (
+            <Image
+              src={src.src}
+              alt={alt ?? src.alt}
+              fill
+              sizes={sizes}
+              priority={priority}
+              placeholder="blur"
+              blurDataURL={solidBlur(src.avgColor)}
+              className="object-cover"
+            />
+          ) : (
+            <Placeholder className="absolute inset-0" seed={hashId(id)} />
+          )}
+        </motion.div>
       </motion.div>
       {overlay}
     </motion.div>

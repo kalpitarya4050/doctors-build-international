@@ -13,6 +13,11 @@ import { WhyUs } from "@/components/sections/WhyUs";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { FaqPreview } from "@/components/sections/FaqPreview";
 import { LeadSection } from "@/components/sections/LeadSection";
+import { ColorStripe } from "@/components/sections/ColorStripe";
+import { NotXButY } from "@/components/sections/NotXButY";
+import { FeatureTrio } from "@/components/sections/FeatureTrio";
+import { BentoShowcase } from "@/components/sections/BentoShowcase";
+import { AdmissionConsole } from "@/components/sections/AdmissionConsole";
 import { FEATURED_FAQS } from "@/lib/data/faq";
 import { SITE } from "@/lib/site";
 
@@ -46,16 +51,23 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      {/* Grounds alternate — navy, white, linen — so no two
+          adjacent sections share a background. */}
       <Hero />
+      <ColorStripe />
       {/* Photography lands within one scroll of the fold */}
       <CampusStrip />
       <TrustBar />
       <Stats />
+      <NotXButY />
       <PromiseSection />
+      <FeatureTrio />
       <Destinations />
       <FeaturedUniversities />
+      <BentoShowcase />
       <LifeAbroad />
       <FeeTeaser />
+      <AdmissionConsole />
       <Process />
       <WhyUs />
       <Testimonials />

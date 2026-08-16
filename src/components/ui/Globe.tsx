@@ -74,7 +74,7 @@ type GlobePalette = {
   originFill: string;
 };
 
-const PALETTES: Record<"light" | "dark", GlobePalette> = {
+const PALETTES: Record<"light" | "dark" | "onNavy", GlobePalette> = {
   light: {
     // Gold reads as a warm halo but disappears as a line on a warm
     // sphere, so on light the arcs and nodes go navy for contrast and
@@ -106,13 +106,40 @@ const PALETTES: Record<"light" | "dark", GlobePalette> = {
     nodeRing: (a) => `rgba(233,199,102,${a})`,
     originFill: "#E8C766",
   },
+  /* On the navy hero the globe is the ground, not an ornament beside
+     the copy — so everything is pushed brighter than the `dark`
+     palette, which was tuned to sit quietly next to text. */
+  onNavy: {
+    glowInner: "rgba(201,162,39,0.30)",
+    glowMid: "rgba(201,162,39,0.09)",
+    bodyTop: "rgba(58,104,190,0.34)",
+    bodyMid: "rgba(18,44,92,0.24)",
+    bodyEdge: "rgba(10,31,68,0.06)",
+    rim: "rgba(233,199,102,0.62)",
+    parallel: "rgba(132,172,236,0.40)",
+    meridian: "rgba(132,172,236,0.30)",
+    arcTrack: "rgba(233,199,102,0.38)",
+    cometHead: (a) => `rgba(250,231,170,${Math.min(1, a * 1.25)})`,
+    nodeRing: (a) => `rgba(233,199,102,${Math.min(1, a * 1.2)})`,
+    originFill: "#F2DDA0",
+  },
 };
 
-export function Globe({ className }: { className?: string }) {
+export function Globe({
+  className,
+  /** "auto" follows the page theme. Pass an explicit tone when the
+   *  globe sits on a ground that does not track the theme — the navy
+   *  hero is navy in both schemes. */
+  tone = "auto",
+}: {
+  className?: string;
+  tone?: "auto" | "light" | "dark" | "onNavy";
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduced = useReducedMotion();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const paletteKey = tone === "auto" ? (isDark ? "dark" : "light") : tone;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -120,7 +147,7 @@ export function Globe({ className }: { className?: string }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const P = PALETTES[isDark ? "dark" : "light"];
+    const P = PALETTES[paletteKey];
 
     let raf = 0;
     let width = 0;
@@ -152,6 +179,15 @@ export function Globe({ className }: { className?: string }) {
     const TILT = -0.38;
     const start = performance.now();
 
+    /* Every place this globe plots — India and all six destinations —
+       sits between 37°E and 116°E. Starting the rotation at 0° put
+       that whole corridor on the far side, so the arcs were culled
+       and the sphere rendered as a bare wireframe for most of the
+       cycle. Offsetting the base rotation brings the corridor to the
+       front at load, which is the only reason the globe is here. */
+    const FOCUS_LNG = 76;
+    const BASE_SPIN = (-FOCUS_LNG * Math.PI) / 180;
+
     const draw = (now: number) => {
       // Nothing measurable yet — wait for the observer to report a size
       // rather than burning a frame drawing a zero-radius sphere.
@@ -161,8 +197,10 @@ export function Globe({ className }: { className?: string }) {
       }
 
       const elapsed = (now - start) / 1000;
-      // ~72 s per revolution — slow enough to read as ambient
-      const spin = reduced ? 0.6 : elapsed * 0.087;
+      // ~105 s per revolution. Slower than before because the arcs are
+      // now the subject rather than ambient decoration — they want
+      // time on screen, not a tour.
+      const spin = BASE_SPIN + (reduced ? 0 : elapsed * 0.06);
 
       const cx = width / 2;
       const cy = height / 2;
@@ -367,7 +405,7 @@ export function Globe({ className }: { className?: string }) {
       ro.disconnect();
     };
     // Redraw with the other palette when the theme is toggled.
-  }, [reduced, isDark]);
+  }, [reduced, paletteKey]);
 
   return (
     <canvas

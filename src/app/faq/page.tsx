@@ -42,7 +42,7 @@ export default function FaqPage() {
 
       <PageHero
         eyebrow="Questions & Answers"
-        title="Thirty questions. Thirty straight answers."
+        title={`${FAQS.length} questions. ${FAQS.length} straight answers.`}
         highlight={["straight"]}
         crumbs={[{ label: "FAQs" }]}
         image="students-study"
@@ -98,7 +98,7 @@ export default function FaqPage() {
         source="faq"
         heading={
           <>
-            Still have a <span className="gold-text">question</span>?
+            Still have a <em>question</em>?
           </>
         }
         lead={`Ask it directly. A counsellor will call you back within two hours, or reach us straight away on ${SITE.phoneDisplay}.`}

@@ -84,7 +84,7 @@ export function UniversityMedia({
           eyebrow={place}
           title={
             <>
-              Life at <span className="gold-text">{universityName}</span>, in pictures
+              Life at <em>{universityName}</em>, in pictures
             </>
           }
           lead={`The city you would be living in, and what studying medicine there looks like day to day.`}
@@ -129,11 +129,11 @@ export function UniversityMedia({
                       {item.isPlace && <MapPin className="size-3 shrink-0" />}
                       {item.label}
                     </span>
-                    <span className="mt-0.5 block text-[0.6875rem] text-white/60">
+                    <span className="mt-0.5 block text-[0.6875rem] text-on-dark-secondary">
                       {item.isPlace ? item.place : "Illustrative"}
                     </span>
                   </span>
-                  <span className="grid size-7 shrink-0 place-items-center rounded-full bg-white/12 text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
+                  <span className="grid size-7 shrink-0 place-items-center material-chip-dark rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <Expand className="size-3.5" />
                   </span>
                 </span>
@@ -200,14 +200,14 @@ export function UniversityMedia({
                   <span className="block text-[0.9375rem] font-semibold text-white">
                     {active.label}
                     {active.isPlace && (
-                      <span className="ml-2 font-normal text-white/55">· {active.place}</span>
+                      <span className="ml-2 font-normal text-on-dark-muted">· {active.place}</span>
                     )}
                   </span>
-                  <span className="mt-0.5 block text-[0.75rem] text-white/45">
+                  <span className="mt-0.5 block text-[0.75rem] text-on-dark-muted">
                     {active.isPlace ? "" : "Illustrative · "}Photo: {active.photographer} / Pexels
                   </span>
                 </span>
-                <span className="text-[0.8125rem] tabular-nums text-white/45">
+                <span className="text-[0.8125rem] tabular-nums text-on-dark-muted">
                   {(open ?? 0) + 1} / {all.length}
                 </span>
               </figcaption>
@@ -217,7 +217,7 @@ export function UniversityMedia({
               type="button"
               onClick={close}
               aria-label="Close"
-              className="absolute right-4 top-4 grid size-11 place-items-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur hover:bg-white/16 sm:right-8 sm:top-8"
+              className="absolute right-4 top-4 grid size-11 place-items-center rounded-full material-chip-dark hover:bg-on-dark-fill-hover sm:right-8 sm:top-8"
             >
               <X className="size-5" />
             </button>
@@ -225,7 +225,7 @@ export function UniversityMedia({
               type="button"
               onClick={() => step(-1)}
               aria-label="Previous image"
-              className="absolute left-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur hover:bg-white/16 sm:left-6"
+              className="absolute left-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full material-chip-dark hover:bg-on-dark-fill-hover sm:left-6"
             >
               <ChevronLeft className="size-5" />
             </button>
@@ -233,7 +233,7 @@ export function UniversityMedia({
               type="button"
               onClick={() => step(1)}
               aria-label="Next image"
-              className="absolute right-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur hover:bg-white/16 sm:right-6"
+              className="absolute right-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full material-chip-dark hover:bg-on-dark-fill-hover sm:right-6"
             >
               <ChevronRight className="size-5" />
             </button>

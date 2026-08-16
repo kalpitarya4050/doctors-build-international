@@ -57,7 +57,7 @@ export default function FeeComparisonPage() {
                   <TrendingDown className="size-4 text-[var(--green-600)]" />
                   Lowest total cost
                 </span>
-                <span className="t-num font-[family-name:var(--font-playfair)] text-[2.25rem] font-bold leading-none text-brand">
+                <span className="t-num t-figure text-[2.25rem] font-bold leading-none text-brand">
                   {cheapest?.totalExpenseInr ? inrShort(cheapest.totalExpenseInr) : "—"}
                 </span>
                 <span className="t-small">
@@ -71,7 +71,7 @@ export default function FeeComparisonPage() {
                   <Receipt className="size-4 text-[var(--accent)]" />
                   Highest total cost
                 </span>
-                <span className="t-num font-[family-name:var(--font-playfair)] text-[2.25rem] font-bold leading-none text-brand">
+                <span className="t-num t-figure text-[2.25rem] font-bold leading-none text-brand">
                   {dearest?.totalExpenseInr ? inrShort(dearest.totalExpenseInr) : "—"}
                 </span>
                 <span className="t-small">
@@ -85,7 +85,7 @@ export default function FeeComparisonPage() {
                   <ShieldOff className="size-4 text-[var(--green-600)]" />
                   Donation / capitation
                 </span>
-                <span className="font-[family-name:var(--font-playfair)] text-[2.25rem] font-bold leading-none text-[var(--green-600)]">
+                <span className="t-figure text-[2.25rem] font-bold leading-none text-[var(--green-600)]">
                   Zero
                 </span>
                 <span className="t-small">At every university, at every stage</span>
@@ -97,7 +97,7 @@ export default function FeeComparisonPage() {
                   <Info className="size-4 text-[var(--accent)]" />
                   Published figures
                 </span>
-                <span className="t-num font-[family-name:var(--font-playfair)] text-[2.25rem] font-bold leading-none text-brand">
+                <span className="t-num t-figure text-[2.25rem] font-bold leading-none text-brand">
                   {priced.length} of {UNIVERSITIES.length}
                 </span>
                 <span className="t-small">
@@ -125,7 +125,7 @@ export default function FeeComparisonPage() {
             eyebrow="Full Transparency"
             title={
               <>
-                What the table <span className="gold-text">does not</span> include
+                What the table <em>does not</em> include
               </>
             }
             lead="These costs sit outside the university's quoted total. Nobody should discover them after paying a deposit, so here they are up front."
@@ -170,7 +170,7 @@ export default function FeeComparisonPage() {
         source="fee-comparison"
         heading={
           <>
-            Which of these fits <span className="gold-text">your</span> budget?
+            Which of these fits <em>your</em> budget?
           </>
         }
         lead="Send us your NEET score and what your family can realistically spend across six years. We will come back with two or three genuine matches — and tell you honestly if none of them work."

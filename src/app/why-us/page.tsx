@@ -68,7 +68,7 @@ export default function WhyUsPage() {
             eyebrow="The Difference"
             title={
               <>
-                What it looks like <span className="gold-text">in practice</span>
+                What it looks like <em>in practice</em>
               </>
             }
             lead="We are not naming anyone. But every family that has switched to us from another consultancy describes at least three of the right-hand column."
@@ -96,7 +96,7 @@ export default function WhyUsPage() {
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 text-[0.6875rem] font-bold tracking-[0.08em] text-white/55 uppercase"
+                      className="px-6 py-4 text-[0.6875rem] font-bold tracking-[0.08em] text-on-dark-muted uppercase"
                     >
                       What you should watch for
                     </th>
@@ -154,7 +154,7 @@ export default function WhyUsPage() {
         source="why-us"
         heading={
           <>
-            Test us on the <span className="gold-text">first call</span>.
+            Test us on the <em>first call</em>.
           </>
         }
         lead="Ask us the hardest question you have — about total cost, about FMGE odds, about what happens if it goes wrong. The quality of that answer is the only reliable way to judge a consultancy."

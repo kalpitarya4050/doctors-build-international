@@ -87,7 +87,7 @@ export default function ApplyPage() {
                   <Phone className="size-5" />
                 </span>
                 <span>
-                  <span className="block text-[0.75rem] font-semibold tracking-[0.06em] text-white/60 uppercase">
+                  <span className="block text-[0.75rem] font-semibold tracking-[0.06em] text-on-dark-secondary uppercase">
                     Rather just call?
                   </span>
                   <span className="t-num mt-0.5 block text-[1.25rem] font-bold">

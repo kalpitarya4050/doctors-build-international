@@ -71,7 +71,7 @@ export default function ServicesPage() {
                   <span className="grid size-14 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)] lg:size-12">
                     <Icon name={s.icon} className="size-6 lg:size-5" strokeWidth={1.7} />
                   </span>
-                  <span className="font-[family-name:var(--font-playfair)] text-[1.75rem] font-bold leading-none text-[var(--border-strong)] lg:hidden">
+                  <span className="t-figure text-[1.75rem] font-bold leading-none text-[var(--border-strong)] lg:hidden">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
@@ -106,7 +106,7 @@ export default function ServicesPage() {
         source="services"
         heading={
           <>
-            Start with the <span className="gold-text">first</span> one.
+            Start with the <em>first</em> one.
           </>
         }
         lead="Career counselling is free and carries no obligation. Fifteen minutes with a doctor-led advisor who will assess your NEET score honestly — including telling you if going abroad is the wrong call."

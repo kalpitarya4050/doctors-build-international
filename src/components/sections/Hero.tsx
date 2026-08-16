@@ -5,271 +5,213 @@ import { useRef } from "react";
 import { ArrowRight, Phone, ShieldCheck, Star } from "lucide-react";
 import { SPRING_UI } from "@/lib/motion";
 import { SITE, whatsappLink, telLink } from "@/lib/site";
+import { UNIVERSITIES } from "@/lib/data/universities";
+import { COUNTRIES } from "@/lib/data/countries";
 import { Globe } from "@/components/ui/Globe";
 import { Button } from "@/components/ui/Button";
-import { Counter } from "@/components/ui/Counter";
-import { RevealWords } from "@/components/ui/Reveal";
+import { WipeLine } from "@/components/ui/Reveal";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
-import { KenBurns } from "@/components/ui/MediaMotion";
-import { Scrim } from "@/components/ui/Media";
+import { useIntro } from "@/components/intro/Intro";
 
-const FLOAT_STATS = [
-  { value: 5000, suffix: "+", label: "Students & parents", pos: "left-[-2%] top-[42%]", delay: 0.62 },
-];
+/* ============================================================
+   Full-bleed hero.
 
-/** Photo cards ringed around the globe. Each carries its own float
- *  offset and a slight rotation, so the cluster reads as a scattered
- *  set of prints rather than a grid. */
-const FLOAT_PHOTOS = [
-  {
-    id: "clinical-training",
-    caption: "Clinical training",
-    pos: "right-[-2%] top-[2%] w-[9.5rem] sm:w-[12rem]",
-    ratio: "aspect-[3/4]",
-    rotate: 3,
-    delay: 0.5,
-    float: "0s",
-  },
-  {
-    id: "graduation",
-    caption: "Graduation",
-    pos: "right-[2%] bottom-[2%] w-[10.5rem] sm:w-[13rem]",
-    ratio: "aspect-[4/3]",
-    rotate: -3,
-    delay: 0.62,
-    float: "1.6s",
-  },
-  {
-    id: "campus-geomedi",
-    caption: "GEOMEDI, Tbilisi",
-    pos: "left-[-3%] top-[4%] w-[9rem] sm:w-[11.5rem]",
-    ratio: "aspect-[4/3]",
-    rotate: -4,
-    delay: 0.74,
-    float: "2.9s",
-  },
-  {
-    id: "students-friends",
-    caption: "Indian community",
-    pos: "left-[3%] bottom-[4%] w-[8.5rem] sm:w-[10.5rem]",
-    ratio: "aspect-square",
-    rotate: 4,
-    delay: 0.86,
-    float: "4.1s",
-  },
-];
+   The previous version split the viewport into a copy column and
+   a visual column, then scattered four rotated photo cards and a
+   floating stat chip around the globe. Every element was small,
+   nothing led, and the composition read as busy rather than
+   confident.
+
+   This one commits to a single ground — navy, edge to edge, with
+   the globe as the subject rather than an ornament beside the
+   text — and puts the type on it with room to breathe. The globe
+   was the one thing worth keeping, so it is promoted rather than
+   decorated around.
+   ============================================================ */
 
 export function Hero() {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
+
+  /* The opening curtain releases this. Until it does, every entry
+     animation below holds at `initial` — otherwise the whole hero
+     would play out behind the panel and be finished and static by
+     the time it lifted. On inner pages and repeat visits `ready`
+     is true from the first frame. */
+  const { ready } = useIntro();
+
+  /** Rise-and-fade entry, held until `ready`. Every delay below is
+   *  measured from the release, so the sequence reads identically
+   *  whether the curtain ran or not. */
+  const rise = (delay: number, y = 18) => ({
+    initial: { opacity: 0, y },
+    animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y },
+    transition: { ...SPRING_UI, delay },
+  });
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  // Gentle parallax — the globe drifts slower than the copy,
-  // and both fade as the section leaves.
-  const globeY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
-  const copyY = useTransform(scrollYProgress, [0, 1], ["0%", "44%"]);
-  const fade = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  // The globe drifts slower than the copy, so the two layers
+  // separate as the section leaves.
+  const globeY = useTransform(scrollYProgress, [0, 1], ["0%", "16%"]);
+  const copyY = useTransform(scrollYProgress, [0, 1], ["0%", "38%"]);
+  const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
     <section
       ref={ref}
-      className="relative isolate overflow-hidden grain"
+      data-ground="navy"
+      className="relative isolate flex min-h-[min(46rem,calc(100svh-var(--header-h)))] flex-col justify-center overflow-hidden grain"
       aria-labelledby="hero-title"
     >
-      {/* Ground + ambient blooms */}
+      {/* ---------------- Ground ---------------- */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-20">
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--bg)_0%,var(--bg-sunken)_58%,var(--bg)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(150deg,var(--navy-950)_0%,var(--navy-900)_46%,#0d2a5c_100%)]" />
+        {/* Warm bloom behind the globe, so the sphere sits in light
+            rather than floating on a flat field. */}
         <div
-          className="absolute -top-24 left-1/2 size-[46rem] -translate-x-1/2 rounded-full opacity-60 blur-[130px]"
+          className="absolute right-[6%] top-1/2 size-[52rem] -translate-y-1/2 rounded-full opacity-70 blur-[120px]"
           style={{
             background:
-              "radial-gradient(circle, color-mix(in srgb, var(--gold-500) 20%, transparent), transparent 68%)",
+              "radial-gradient(circle, color-mix(in srgb, var(--gold-500) 22%, transparent), transparent 66%)",
           }}
         />
         <div
-          className="absolute bottom-0 right-[8%] size-[32rem] rounded-full opacity-45 blur-[140px]"
+          className="absolute -left-[10%] bottom-[-20%] size-[38rem] rounded-full opacity-60 blur-[130px]"
           style={{
             background:
-              "radial-gradient(circle, color-mix(in srgb, var(--navy-600) 30%, transparent), transparent 70%)",
+              "radial-gradient(circle, color-mix(in srgb, var(--navy-500) 55%, transparent), transparent 70%)",
           }}
         />
       </div>
 
-      <div className="shell-wide relative grid items-center gap-8 pb-12 pt-8 sm:gap-12 sm:pb-16 sm:pt-14 lg:grid-cols-[1.06fr_1fr] lg:gap-8 lg:pb-24 lg:pt-20">
-        {/* ---------------- Copy ---------------- */}
-        <motion.div style={reduced ? undefined : { y: copyY, opacity: fade }} className="relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...SPRING_UI, delay: 0.05 }}
-            className="material-chip inline-flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-4"
-          >
-            <span className="shrink-0 whitespace-nowrap rounded-full bg-[var(--navy-900)] px-2.5 py-1 text-[0.6875rem] font-bold tracking-[0.08em] text-[var(--gold-300)] uppercase">
-              {SITE.admissionYear}
-            </span>
-            <span className="text-[0.8125rem] font-medium text-ink-secondary">
-              Admissions open · NMC-approved universities
-            </span>
-          </motion.div>
-
-          <h1 id="hero-title" className="t-display mt-6 text-brand">
-            <RevealWords text="From Dreams" delay={0.12} />
-            <br />
-            <RevealWords text="To White Coat." delay={0.24} highlight={["White", "Coat"]} />
-          </h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...SPRING_UI, delay: 0.42 }}
-            className="t-lead mt-6 max-w-[54ch]"
-          >
-            We help aspiring doctors secure admission at top global medical universities with ease,
-            transparency and complete support — from your first counselling call to the day you
-            graduate.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...SPRING_UI, delay: 0.5 }}
-            className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center"
-          >
-            <Button href="/apply" variant="gold" size="lg" className="w-full sm:w-auto">
-              Get Free Counselling
-              <ArrowRight className="size-4" />
-            </Button>
-            <Button href={whatsappLink()} external variant="whatsapp" size="lg" className="w-full sm:w-auto">
-              <WhatsAppIcon className="size-[18px]" />
-              WhatsApp Us
-            </Button>
-            <a
-              href={telLink()}
-              className="tap flex min-h-11 items-center gap-2 px-1 text-[0.9375rem] font-semibold text-ink-secondary transition-colors hover:text-[var(--accent)] sm:px-3"
-            >
-              <Phone className="size-4" />
-              {SITE.phoneDisplay}
-            </a>
-          </motion.div>
-
-          {/* Trust row */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.66 }}
-            className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3.5"
-          >
-            <span className="flex items-center gap-2 text-[0.8125rem] font-medium text-ink-secondary">
-              <ShieldCheck className="size-4 text-[var(--green-600)]" />
-              NMC · WHO recognized
-            </span>
-            <span className="flex items-center gap-2 text-[0.8125rem] font-medium text-ink-secondary">
-              <span className="flex gap-0.5" aria-hidden>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="size-3.5 fill-[var(--gold-500)] text-[var(--gold-500)]" />
-                ))}
-              </span>
-              4.5/5 from 5000+ families
-            </span>
-            <span className="text-[0.8125rem] font-medium text-ink-secondary">
-              Zero donation · Zero capitation
-            </span>
-          </motion.div>
-        </motion.div>
-
-        {/* ---------------- Globe ---------------- */}
+      {/* ---------------- Globe ----------------
+          Deliberately oversized and cropped by the section. A globe
+          that fits neatly inside a box reads as an illustration; one
+          that runs past the edge reads as a place. */}
+      <motion.div
+        aria-hidden
+        style={reduced ? undefined : { y: globeY, opacity: fade }}
+        className="pointer-events-none absolute -right-[22%] top-1/2 -z-10 aspect-square w-[86%] -translate-y-1/2 sm:-right-[14%] sm:w-[70%] lg:right-[-6%] lg:w-[52%]"
+      >
         <motion.div
-          style={reduced ? undefined : { y: globeY, opacity: fade }}
-          className="relative mx-auto aspect-square w-full max-w-[26rem] sm:max-w-[32rem] lg:max-w-none"
+          initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+          animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: reduced ? 1 : 0.9 }}
+          transition={{ type: "spring", bounce: 0, duration: 1.2, delay: 0.15 }}
+          className="size-full"
         >
-          {/* Globe sits inset so the photo ring has room to breathe */}
-          <motion.div
-            initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.88 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", bounce: 0, duration: 1.1, delay: 0.18 }}
-            className="absolute inset-[9%]"
-          >
-            <Globe />
-          </motion.div>
-
-          {/* Floating glass stat chips, anchored around the globe */}
-          {FLOAT_STATS.map((s) => (
-            <motion.div
-              key={s.label}
-              className={`material-card absolute ${s.pos} rounded-[var(--radius)] px-4 py-3 ${
-                reduced ? "" : "animate-float-slow"
-              }`}
-              style={{ animationDelay: `${s.delay}s` }}
-              initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.8, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ ...SPRING_UI, delay: s.delay }}
-            >
-              <p className="t-num text-[1.375rem] font-bold leading-none text-brand">
-                <Counter value={s.value} suffix={s.suffix} />
-              </p>
-              <p className="mt-1.5 text-[0.6875rem] font-medium tracking-[0.02em] text-ink-muted">
-                {s.label}
-              </p>
-            </motion.div>
-          ))}
-
-          {/* Floating photo cards */}
-          {FLOAT_PHOTOS.map((p) => (
-            <motion.figure
-              key={p.id}
-              className={`absolute ${p.pos} ${reduced ? "" : "animate-float-slow"}`}
-              style={{ animationDelay: p.float }}
-              initial={
-                reduced
-                  ? { opacity: 0 }
-                  : { opacity: 0, scale: 0.82, y: 20, rotate: p.rotate * 2.4 }
-              }
-              animate={{ opacity: 1, scale: 1, y: 0, rotate: p.rotate }}
-              transition={{ ...SPRING_UI, delay: p.delay }}
-            >
-              <div
-                className={`relative ${p.ratio} overflow-hidden rounded-[var(--radius-lg)] border-2 border-white/70 shadow-[var(--shadow-xl)] dark:border-white/20`}
-              >
-                <KenBurns
-                  id={p.id}
-                  className="absolute inset-0"
-                  sizes="(max-width: 640px) 42vw, 13rem"
-                  duration={30}
-                  scale={1.14}
-                />
-                <Scrim strength="medium" />
-                <figcaption className="absolute inset-x-0 bottom-0 p-3 text-[0.6875rem] font-semibold tracking-[0.01em] text-white">
-                  {p.caption}
-                </figcaption>
-              </div>
-            </motion.figure>
-          ))}
+          <Globe tone="onNavy" />
         </motion.div>
-      </div>
+      </motion.div>
 
-      {/* Scroll cue */}
-      {!reduced && (
+      {/* Keeps the headline legible where it crosses the sphere. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--navy-950)_0%,color-mix(in_srgb,var(--navy-950)_72%,transparent)_38%,transparent_68%)]"
+      />
+
+      {/* ---------------- Copy ---------------- */}
+      <motion.div
+        style={reduced ? undefined : { y: copyY, opacity: fade }}
+        className="shell-wide relative w-full py-16 sm:py-20 lg:py-28"
+      >
         <motion.div
-          aria-hidden
-          className="pointer-events-none absolute bottom-5 left-1/2 hidden -translate-x-1/2 lg:block"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-          style={{ opacity: fade }}
+          {...rise(0.05, 14)}
+          className="material-chip-dark hover-neon inline-flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-4"
         >
-          <div className="flex h-9 w-6 items-start justify-center rounded-full border border-line-strong p-1.5">
-            <motion.span
-              className="size-1 rounded-full bg-[var(--accent)]"
-              animate={{ y: [0, 12, 0], opacity: [1, 0.2, 1] }}
-              transition={{ duration: 2.1, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
+          <span className="shrink-0 whitespace-nowrap rounded-full bg-[var(--gold-500)] px-2.5 py-1 text-[0.6875rem] font-bold tracking-[0.08em] text-[var(--navy-950)] uppercase">
+            {SITE.admissionYear}
+          </span>
+          <span className="text-[0.8125rem] font-medium text-on-dark-secondary">
+            Admissions open · {UNIVERSITIES.length} universities · {COUNTRIES.length} countries
+          </span>
         </motion.div>
-      )}
+
+        {/* Line-by-line mask wipe, matching the reference. Each line
+            is its own block so the wipe travels the width of that
+            line rather than the width of the whole heading. */}
+        <h1 id="hero-title" className="t-display mt-7 max-w-[16ch] text-on-dark">
+          <WipeLine as="div" play={ready} delay={0.1}>
+            From Dreams
+          </WipeLine>
+          <WipeLine as="div" play={ready} delay={0.42}>
+            To <em className="t-accent">White Coat.</em>
+          </WipeLine>
+        </h1>
+
+        <motion.p
+          {...rise(0.72)}
+          className="t-lead mt-7 max-w-[46ch] !text-on-dark-secondary"
+        >
+          We help aspiring doctors secure admission at NMC-eligible medical universities
+          abroad — with doctor-led counselling, published fees and support that does not
+          stop at the airport.
+        </motion.p>
+
+        <motion.div
+          {...rise(0.82)}
+          className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
+        >
+          <Button href="/apply" variant="gold" size="lg" className="w-full sm:w-auto">
+            Get Free Counselling
+            <ArrowRight className="size-4" />
+          </Button>
+          <Button
+            href={whatsappLink()}
+            external
+            variant="whatsapp"
+            size="lg"
+            className="w-full sm:w-auto"
+          >
+            <WhatsAppIcon className="size-[18px]" />
+            WhatsApp Us
+          </Button>
+          <a
+            href={telLink()}
+            className="tap flex min-h-11 items-center gap-2 px-1 text-[0.9375rem] font-semibold text-on-dark-secondary transition-colors hover:text-on-dark sm:px-3"
+          >
+            <Phone className="size-4" />
+            {SITE.phoneDisplay}
+          </a>
+        </motion.div>
+      </motion.div>
+
+      {/* ---------------- Counter-line, bottom right ----------------
+          The reference sets its headline against a second line in the
+          opposite corner, so the eye crosses the whole frame. */}
+      <motion.div
+        style={reduced ? undefined : { opacity: fade }}
+        // Below md the fixed Call/Apply bar overlays the viewport
+        // bottom, and the last chip in this row was disappearing
+        // behind it. Clear the bar plus the home indicator.
+        className="shell-wide relative w-full pb-[calc(5.75rem+env(safe-area-inset-bottom,0px))] md:pb-14"
+      >
+        <motion.div
+          {...rise(0.96, 16)}
+          className="flex flex-wrap items-center gap-x-7 gap-y-3.5 lg:justify-end"
+        >
+          <span className="flex items-center gap-2 text-[0.8125rem] font-medium text-on-dark-secondary">
+            <ShieldCheck className="size-4 text-[var(--gold-300)]" />
+            NMC eligible · WHO recognized
+          </span>
+          <span className="flex items-center gap-2 text-[0.8125rem] font-medium text-on-dark-secondary">
+            <span className="flex gap-0.5" aria-hidden>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="size-3.5 fill-[var(--gold-400)] text-[var(--gold-400)]" />
+              ))}
+            </span>
+            4.5/5 from 5000+ families
+          </span>
+          {/* Highlight block on the closing claim — the reference's
+              marker-pen device, and the only one on the page. */}
+          <span className="rounded-[var(--radius-sm)] bg-[var(--gold-500)] px-2.5 py-1 text-[0.8125rem] font-bold text-[var(--navy-950)]">
+            Zero donation · Zero capitation
+          </span>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

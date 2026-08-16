@@ -293,9 +293,23 @@ export interface Testimonial {
   year: string;
 }
 
+/* ------------------------------------------------------------
+   PLACEHOLDER CONTENT — MUST BE REPLACED BEFORE GO-LIVE.
+
+   These quotes are written marketing copy, not sourced reviews.
+   The names below are deliberately non-identifying ("Student A")
+   so nothing on the site presents an invented person as a real
+   one — families are committing 15 to 30 lakh on the strength of
+   this page.
+
+   To go live: replace each entry with a real quote you have
+   written consent to publish, and put the student's actual name
+   and batch in `name` / `year`. If a student prefers not to be
+   named, keep the placeholder form rather than inventing one.
+   ------------------------------------------------------------ */
 export const TESTIMONIALS: Testimonial[] = [
   {
-    name: "Ananya Sharma",
+    name: "Student A",
     course: "MBBS",
     university: "GEOMEDI University",
     country: "Georgia",
@@ -306,7 +320,7 @@ export const TESTIMONIALS: Testimonial[] = [
     year: "2023 Batch",
   },
   {
-    name: "Rohit Verma",
+    name: "Student B",
     course: "MBBS",
     university: "Kemerovo State Medical University",
     country: "Russia",
@@ -317,7 +331,7 @@ export const TESTIMONIALS: Testimonial[] = [
     year: "2022 Batch",
   },
   {
-    name: "Priya Nair",
+    name: "Student C",
     course: "MBBS",
     university: "University of South Asia",
     country: "Kyrgyzstan",
@@ -328,7 +342,7 @@ export const TESTIMONIALS: Testimonial[] = [
     year: "2023 Batch",
   },
   {
-    name: "Aditya Patel",
+    name: "Student D",
     course: "MBBS",
     university: "Ingush State University",
     country: "Russia",
@@ -339,7 +353,7 @@ export const TESTIMONIALS: Testimonial[] = [
     year: "2024 Batch",
   },
   {
-    name: "Sneha Kulkarni",
+    name: "Student E",
     course: "MBBS",
     university: "Fergana Medical Institute",
     country: "Uzbekistan",
@@ -350,7 +364,7 @@ export const TESTIMONIALS: Testimonial[] = [
     year: "2022 Batch",
   },
   {
-    name: "Karan Thakur",
+    name: "Student F",
     course: "MBBS",
     university: "North Caucasian State Medical Academy",
     country: "Russia",

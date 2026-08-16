@@ -304,7 +304,12 @@ function Field({
   );
 
   return (
-    <div className="flex flex-col gap-1.5">
+    /* `min-w-0` is what stops the field overflowing its grid track.
+       An <input>/<select> carries an intrinsic min-content width from
+       its default `size`, and a grid item's `min-width: auto` refuses
+       to shrink below it — so `w-full` alone does not save you.
+       Without this the form runs ~14px past the viewport on phones. */
+    <div className="flex min-w-0 flex-col gap-1.5">
       <label htmlFor={name} className="text-[0.8125rem] font-semibold text-ink-secondary">
         {label}
         {required && <span className="ml-1 text-[var(--red-600)]">*</span>}
@@ -379,7 +384,12 @@ function SelectField({
   required?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
+    /* `min-w-0` is what stops the field overflowing its grid track.
+       An <input>/<select> carries an intrinsic min-content width from
+       its default `size`, and a grid item's `min-width: auto` refuses
+       to shrink below it — so `w-full` alone does not save you.
+       Without this the form runs ~14px past the viewport on phones. */
+    <div className="flex min-w-0 flex-col gap-1.5">
       <label htmlFor={name} className="text-[0.8125rem] font-semibold text-ink-secondary">
         {label}
         {required && <span className="ml-1 text-[var(--red-600)]">*</span>}

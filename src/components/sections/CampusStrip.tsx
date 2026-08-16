@@ -2,14 +2,21 @@ import { MARQUEE_TOP, MARQUEE_BOTTOM, MARQUEE_CAPTIONS } from "@/lib/data/media-
 import { COUNTRIES } from "@/lib/data/countries";
 import { UNIVERSITIES } from "@/lib/data/universities";
 import { MediaMarquee } from "@/components/ui/MediaMotion";
+import { ScrollExpand } from "@/components/ui/ScrollExpand";
+import { SpectrumRule } from "@/components/ui/Decor";
 
 /** Two bands of photography rolling in opposite directions. Pauses on
- *  hover, and holds still entirely under prefers-reduced-motion. */
+ *  hover, and holds still entirely under prefers-reduced-motion.
+ *
+ *  The pair also widens from inset to full bleed as the section
+ *  crosses the viewport — the reference's signature move, and the
+ *  reason this reads as an opening rather than a filmstrip. */
 export function CampusStrip() {
   return (
     <section
+      data-ground="linen"
       aria-label="Photographs of our destinations and campus life"
-      className="relative overflow-hidden border-y border-hairline bg-[var(--bg-sunken)] py-10 lg:py-14"
+      className="relative overflow-hidden border-y border-hairline py-10 lg:py-14"
     >
       <div className="shell mb-8 flex flex-col items-center gap-3 text-center">
         <span className="t-eyebrow inline-flex items-center gap-3 text-[var(--accent)]">
@@ -23,10 +30,14 @@ export function CampusStrip() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <MediaMarquee ids={MARQUEE_TOP} captions={MARQUEE_CAPTIONS} speed={64} />
-        <MediaMarquee ids={MARQUEE_BOTTOM} captions={MARQUEE_CAPTIONS} speed={78} reverse />
-      </div>
+      <ScrollExpand from={9}>
+        <div className="flex flex-col gap-3">
+          <MediaMarquee ids={MARQUEE_TOP} captions={MARQUEE_CAPTIONS} speed={64} />
+          <MediaMarquee ids={MARQUEE_BOTTOM} captions={MARQUEE_CAPTIONS} speed={78} reverse />
+        </div>
+      </ScrollExpand>
+
+      <SpectrumRule className="mt-10 opacity-60" />
     </section>
   );
 }

@@ -5,7 +5,12 @@ import { useRef, type ReactNode, type PointerEvent as ReactPointerEvent } from "
 import { cn } from "@/lib/utils";
 
 /** Translucent material layer. Weight scales with surface size —
- *  bigger surfaces read as thicker glass (Apple §12). */
+ *  bigger surfaces read as thicker glass (Apple §12).
+ *
+ *  `liquid` is the heaviest: a specular edge, a gradient rim and a
+ *  sheen that sweeps on hover. Reserve it for cards floating over
+ *  photography or a navy slab, where a plain blur has nothing to
+ *  catch light against. */
 export function GlassCard({
   children,
   className,
@@ -14,7 +19,7 @@ export function GlassCard({
 }: {
   children: ReactNode;
   className?: string;
-  weight?: "chip" | "card" | "chrome";
+  weight?: "chip" | "card" | "chrome" | "liquid";
   as?: "div" | "article" | "li" | "section";
 }) {
   const Tag = as;
@@ -24,6 +29,7 @@ export function GlassCard({
         weight === "chip" && "material-chip rounded-[var(--radius-sm)]",
         weight === "card" && "material-card rounded-[var(--radius-lg)]",
         weight === "chrome" && "material-chrome rounded-[var(--radius-xl)]",
+        weight === "liquid" && "liquid-glass rounded-[var(--radius-lg)]",
         className,
       )}
     >

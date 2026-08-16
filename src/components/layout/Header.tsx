@@ -244,10 +244,10 @@ function DestinationsMega() {
 
       <div className="rounded-[var(--radius-lg)] bg-[var(--navy-900)] p-6 text-white">
         <p className="t-eyebrow text-[var(--gold-300)]">Not sure which?</p>
-        <p className="mt-3 font-[family-name:var(--font-playfair)] text-[1.375rem] leading-[1.2] tracking-[-0.018em]">
+        <p className="mt-3 text-[1.375rem] leading-[1.2] tracking-[-0.018em]">
           Compare all {UNIVERSITIES.length} side by side.
         </p>
-        <p className="mt-2.5 text-[0.8125rem] leading-relaxed text-white/70">
+        <p className="mt-2.5 text-[0.8125rem] leading-relaxed text-on-dark-secondary">
           Fees, duration, intake, FMGE pass rates and safety ratings — one table, no sales pitch.
         </p>
         <Button href="/fee-comparison" variant="gold" size="sm" className="mt-5" fullWidth>

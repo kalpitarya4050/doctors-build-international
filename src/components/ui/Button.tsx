@@ -20,7 +20,7 @@ const VARIANTS: Record<Variant, string> = {
   gold: "text-[var(--navy-950)] shadow-[var(--shadow-glow)] bg-[linear-gradient(100deg,var(--gold-600),var(--gold-300)_45%,var(--gold-500))]",
   ghost: "text-ink hover:bg-[var(--bg-sunken)]",
   outline: "border border-line-strong text-ink hover:border-[var(--accent)] bg-transparent",
-  whatsapp: "bg-[var(--green-500)] text-[#062611] shadow-[0_8px_28px_rgba(37,211,102,0.32)]",
+  whatsapp: "bg-[var(--green-500)] text-[#062611] shadow-[var(--shadow-whatsapp)]",
 };
 
 const SIZES: Record<Size, string> = {

@@ -218,7 +218,7 @@ export function ApplyForm() {
               <div className="grid gap-4">
                 <Select label="Interested in" required value={v.interest} onChange={(x) => set("interest", x)} options={INTEREST_OPTIONS as unknown as string[]} placeholder="Choose a destination" error={errors.interest} />
                 <Select label="Family budget for the full course" value={v.budget} onChange={(x) => set("budget", x)} options={BUDGETS} placeholder="Select a range" />
-                <div className="flex flex-col gap-1.5">
+                <div className="flex min-w-0 flex-col gap-1.5">
                   <label htmlFor="message" className="text-[0.8125rem] font-semibold text-ink-secondary">
                     Anything you would like to ask?
                   </label>
@@ -304,7 +304,7 @@ function Input({
 }) {
   const id = label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex min-w-0 flex-col gap-1.5">
       <label htmlFor={id} className="text-[0.8125rem] font-semibold text-ink-secondary">
         {label}
         {required && <span className="ml-1 text-[var(--red-600)]">*</span>}
@@ -362,7 +362,7 @@ function Select({
 }) {
   const id = label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex min-w-0 flex-col gap-1.5">
       <label htmlFor={id} className="text-[0.8125rem] font-semibold text-ink-secondary">
         {label}
         {required && <span className="ml-1 text-[var(--red-600)]">*</span>}

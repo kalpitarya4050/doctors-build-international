@@ -18,7 +18,7 @@ export function FeaturedUniversities() {
             title={
               <>
                 {UNIVERSITIES.length} universities.{" "}
-                <span className="gold-text">Every number</span> we hold.
+                <em>Every number</em> we hold.
               </>
             }
             lead="Fees, duration, intake, FMGE pass rates, Indian student numbers and safety ratings — exactly as published in our official brochures, and marked “on request” where a university has not published them. Drag to explore."

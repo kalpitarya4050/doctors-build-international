@@ -4,7 +4,18 @@ import { cn } from "@/lib/utils";
 /** The DB monogram, redrawn as vector so it stays crisp at any
  *  size and adapts to light and dark grounds — the source logo is
  *  a JPEG on a hard white background and cannot do either. */
-export function LogoMark({ className, id = "dbi" }: { className?: string; id?: string }) {
+export function LogoMark({
+  className,
+  id = "dbi",
+  tone = "default",
+}: {
+  className?: string;
+  id?: string;
+  /** `onNavy` lightens the shield fill. The default navy gradient
+   *  disappears against a navy slab, leaving the mark reading as a
+   *  few floating strokes rather than an object. */
+  tone?: "default" | "onNavy";
+}) {
   return (
     <svg viewBox="0 0 64 64" fill="none" className={cn("shrink-0", className)} aria-hidden>
       <defs>
@@ -18,12 +29,16 @@ export function LogoMark({ className, id = "dbi" }: { className?: string; id?: s
           <stop offset="0%" stopColor="#14315F" />
           <stop offset="100%" stopColor="#0A1F44" />
         </linearGradient>
+        <linearGradient id={`${id}-reverse`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.16" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.05" />
+        </linearGradient>
       </defs>
 
       {/* Shield ground */}
       <path
         d="M32 2.5 60 11v22.5C60 47.8 48.2 57.9 32 61.5 15.8 57.9 4 47.8 4 33.5V11L32 2.5Z"
-        fill={`url(#${id}-navy)`}
+        fill={`url(#${id}-${tone === "onNavy" ? "reverse" : "navy"})`}
       />
       <path
         d="M32 2.5 60 11v22.5C60 47.8 48.2 57.9 32 61.5 15.8 57.9 4 47.8 4 33.5V11L32 2.5Z"
@@ -75,9 +90,11 @@ export function Logo({
       {showWordmark && (
         <span className="flex flex-col leading-none">
           <span
+            // The wordmark keeps a serif voice even though the UI is
+            // now sans — it is a brand mark, not interface type.
             className={cn(
-              "font-[family-name:var(--font-playfair)] font-bold tracking-[-0.015em] text-brand",
-              compact ? "text-[0.95rem]" : "text-[1.0625rem]",
+              "font-accent tracking-[0.01em] text-brand",
+              compact ? "text-[1.05rem]" : "text-[1.1875rem]",
             )}
           >
             Doctors <span className="gold-text">Build</span>

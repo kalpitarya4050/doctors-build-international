@@ -24,13 +24,14 @@ export function Process() {
   const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section className="section relative bg-[var(--bg-sunken)]" aria-labelledby="process-title">
+    <section data-ground="linen"
+      className="section relative" aria-labelledby="process-title">
       <div className="shell">
         <SectionHeading
           eyebrow="How It Works"
           title={
             <>
-              Five steps. <span className="gold-text">Six to eight weeks.</span> One team.
+              Five steps. <em>Six to eight weeks.</em> One team.
             </>
           }
           lead="From your first counselling call to landing at the destination airport — here is exactly what happens, and when."
@@ -53,12 +54,24 @@ export function Process() {
           <RevealGroup className="grid gap-9 lg:grid-cols-5 lg:gap-5" stagger={0.1}>
             {PROCESS.map((p) => (
               <RevealItem key={p.step} className="relative flex gap-5 lg:flex-col lg:gap-0">
-                {/* Node */}
-                <div className="relative z-10 shrink-0">
-                  <span className="grid size-14 place-items-center rounded-full border border-line bg-[var(--bg-elevated)] shadow-[var(--shadow-sm)]">
+                {/* Node.
+                    `w-fit` matters: on lg the item switches to flex-col,
+                    where `shrink-0` no longer constrains width and this
+                    wrapper stretched to the whole 5-column cell. The step
+                    badge is anchored to its right edge, so it detached
+                    from the icon and floated most of a column away. */}
+                <div className="group relative z-10 w-fit shrink-0">
+                  <span className="grid size-14 place-items-center rounded-full border border-line bg-[var(--bg-elevated)] shadow-[var(--shadow-md)] transition-shadow duration-300 group-hover:shadow-[var(--neon-gold)]">
                     <Icon name={p.icon} className="size-6 text-[var(--accent)]" strokeWidth={1.7} />
                   </span>
-                  <span className="absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-[var(--navy-900)] text-[0.6875rem] font-bold text-[var(--gold-300)]">
+                  {/* Gradient step orb, rather than the flat navy dot
+                      it replaced — it has to survive on both the
+                      linen ground and the elevated node behind it. */}
+                  <span
+                    aria-hidden
+                    className="absolute -right-1.5 -top-1.5 grid size-7 place-items-center rounded-full text-[0.6875rem] font-bold text-white shadow-[var(--shadow-md)]"
+                    style={{ background: "var(--grad-brand)" }}
+                  >
                     {p.step}
                   </span>
                 </div>

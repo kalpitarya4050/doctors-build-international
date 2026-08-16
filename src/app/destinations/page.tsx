@@ -36,7 +36,7 @@ export default function DestinationsPage() {
             eyebrow="Side by Side"
             title={
               <>
-                All {UNIVERSITIES.length} universities, <span className="gold-text">side by side</span>
+                All {UNIVERSITIES.length} universities, <em>side by side</em>
               </>
             }
             lead="Sort by cost, FMGE pass rate, Indian student numbers or safety. Switch between local currency and rupees."

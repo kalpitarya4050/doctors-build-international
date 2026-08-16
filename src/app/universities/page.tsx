@@ -72,7 +72,7 @@ export default function UniversitiesPage() {
             eyebrow="Full Comparison"
             title={
               <>
-                Compare all {UNIVERSITIES.length}, <span className="gold-text">side by side</span>
+                Compare all {UNIVERSITIES.length}, <em>side by side</em>
               </>
             }
             lead="Sort by total cost, FMGE pass rate, Indian student numbers or safety rating. Toggle between local currency and rupees."

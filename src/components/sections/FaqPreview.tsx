@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { FEATURED_FAQS } from "@/lib/data/faq";
+import { FAQS, FEATURED_FAQS } from "@/lib/data/faq";
 import { Accordion } from "@/components/ui/Accordion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -15,7 +15,7 @@ export function FaqPreview() {
             eyebrow="Questions & Answers"
             title={
               <>
-                The questions parents <span className="gold-text">actually</span> ask.
+                The questions parents <em>actually</em> ask.
               </>
             }
             lead="Straight answers on NEET, FMGE, total cost, safety and recognition — including the ones other consultancies avoid."
@@ -25,7 +25,7 @@ export function FaqPreview() {
               href="/faq"
               className="tap mt-8 inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
             >
-              Read all 30 questions
+              Read all {FAQS.length} questions
               <ArrowRight className="size-4" />
             </Link>
           </Reveal>

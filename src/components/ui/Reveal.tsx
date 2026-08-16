@@ -129,6 +129,65 @@ export function RevealItem({
   );
 }
 
+/** Left-to-right mask wipe over a whole line.
+ *
+ *  Unlike RevealWords — which stays viewport-triggered and is used
+ *  by every PageHero — this one is driven by a `play` prop, so the
+ *  caller decides when it runs. The homepage hero uses it to hand
+ *  over from the opening curtain.
+ *
+ *  The inset is negative on three sides: a serif descender or an
+ *  italic overhang sits outside the text box and a flush inset
+ *  shears it. */
+export function WipeLine({
+  children,
+  className,
+  delay = 0,
+  play = true,
+  duration = 0.85,
+  as = "span",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  /** Set false to hold at the un-wiped state. */
+  play?: boolean;
+  duration?: number;
+  as?: "span" | "div";
+}) {
+  const reduced = useReducedMotion();
+  const MotionTag = as === "div" ? motion.div : motion.span;
+
+  if (reduced) {
+    return (
+      <MotionTag
+        className={cn("inline-block", className)}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: play ? 1 : 0 }}
+        transition={{ duration: 0.25, delay: play ? delay * 0.4 : 0 }}
+      >
+        {children}
+      </MotionTag>
+    );
+  }
+
+  return (
+    <MotionTag
+      className={cn("inline-block", className)}
+      initial={{ clipPath: "inset(-0.35em 100% -0.35em -0.12em)" }}
+      animate={{
+        clipPath: play
+          ? "inset(-0.35em -0.12em -0.35em -0.12em)"
+          : "inset(-0.35em 100% -0.35em -0.12em)",
+      }}
+      transition={{ duration, delay: play ? delay : 0, ease: [0.22, 1, 0.36, 1] }}
+      style={{ willChange: "clip-path" }}
+    >
+      {children}
+    </MotionTag>
+  );
+}
+
 /** Word-by-word headline reveal. Splits on spaces and releases
  *  each word on its own spring — reads as the sentence arriving
  *  rather than a block fading in. */

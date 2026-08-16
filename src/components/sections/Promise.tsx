@@ -25,7 +25,7 @@ export function PromiseSection() {
               <span className="block">Your Dream.</span>
             </Reveal>
             <Reveal direction="up" delay={0.1}>
-              <span className="block gold-text">Our Guidance.</span>
+              <em className="block">Our Guidance.</em>
             </Reveal>
             <Reveal direction="up" delay={0.16}>
               <span className="block">Your Future.</span>
@@ -111,7 +111,7 @@ export function PromiseSection() {
                 image collapses legibility. */}
             <Reveal direction="up" delay={0.28}>
               <div className="absolute -bottom-7 left-2 rounded-[var(--radius)] border border-line bg-[var(--bg-elevated)] px-5 py-3.5 shadow-[var(--shadow-lg)] sm:-left-6">
-                <p className="font-[family-name:var(--font-playfair)] text-[1.75rem] font-bold leading-none text-brand">
+                <p className="t-figure text-[1.75rem] font-bold leading-none text-brand">
                   10<span className="gold-text">+</span>
                 </p>
                 <p className="mt-1.5 text-[0.6875rem] font-medium tracking-[0.02em] text-ink-muted">

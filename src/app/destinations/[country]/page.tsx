@@ -241,10 +241,10 @@ export default async function CountryPage({
           <>
             <Scrim strength="light" from="bottom" />
             <div className="shell absolute inset-x-0 bottom-0 pb-8">
-              <p className="font-[family-name:var(--font-playfair)] text-[clamp(1.375rem,3vw,2.25rem)] leading-tight tracking-[-0.02em] text-white [text-shadow:0_2px_20px_rgba(5,15,34,0.5)]">
+              <p className="text-[clamp(1.375rem,3vw,2.25rem)] leading-tight tracking-[-0.02em] text-white [text-shadow:0_2px_20px_rgba(5,15,34,0.5)]">
                 {c.tagline}
               </p>
-              <p className="mt-2 text-[0.8125rem] text-white/65">
+              <p className="mt-2 text-[0.8125rem] text-on-dark-secondary">
                 {c.name} · {c.livingCost} · {c.climate}
               </p>
             </div>
@@ -259,7 +259,7 @@ export default async function CountryPage({
             eyebrow="Advantages"
             title={
               <>
-                What <span className="gold-text">{c.name}</span> gives you
+                What <em>{c.name}</em> gives you
               </>
             }
             lead={c.tagline}
@@ -290,7 +290,7 @@ export default async function CountryPage({
                 title={
                   <>
                     {unis.length === 1 ? "Our university" : `Our ${unis.length} universities`} in{" "}
-                    <span className="gold-text">{c.name}</span>
+                    <em>{c.name}</em>
                   </>
                 }
                 lead="Every figure below is taken directly from our official Admission Portfolio for 2026-27."
@@ -309,7 +309,7 @@ export default async function CountryPage({
                 eyebrow="Universities"
                 title={
                   <>
-                    Universities in <span className="gold-text">{c.name}</span>, on request
+                    Universities in <em>{c.name}</em>, on request
                   </>
                 }
                 lead={`We advise on ${c.name} admissions case by case. Speak to a counsellor for current university availability, fee structures and intake timelines for ${SITE.admissionYear}.`}
@@ -330,7 +330,7 @@ export default async function CountryPage({
         eyebrow={`Inside ${c.name}`}
         title={
           <>
-            What {c.name} actually <span className="gold-text">looks like</span>
+            What {c.name} actually <em>looks like</em>
           </>
         }
         lead={`${c.tagline} Here is the country you would be living in for ${c.duration.toLowerCase()}.`}
@@ -380,7 +380,7 @@ export default async function CountryPage({
                 href="/faq"
                 className="tap inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
               >
-                Read all 30 questions
+                Read all {FAQS.length} questions
                 <ArrowRight className="size-4" />
               </Link>
             </div>
@@ -428,7 +428,7 @@ export default async function CountryPage({
         defaultInterest={`MBBS in ${c.name}`}
         heading={
           <>
-            Start your <span className="gold-text">{c.name}</span> application.
+            Start your <em>{c.name}</em> application.
           </>
         }
         lead={`Tell us your NEET score and budget. We will confirm which ${c.name} universities you are eligible for, what the complete cost looks like, and what happens next — in one honest call.`}
