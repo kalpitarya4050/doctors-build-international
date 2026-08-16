@@ -1008,11 +1008,34 @@ textarea {
    The colour stripe — the band that closes every printed piece
    the client puts out. A 3px spectrum rule over a navy strip.
    ============================================================ */
+/* Static by default.
+   An earlier version animated `background-position` on this 3px band.
+   Background position is a paint-level property, so every frame
+   repainted a full-viewport-wide strip sitting directly above the
+   sticky header — which is exactly where the flicker at the top of
+   the page was coming from. Only the marquee band opts into motion,
+   and it does so via transform, which the compositor can handle
+   without repainting. */
 .color-stripe {
   height: 3px;
   background: var(--grad-spectrum);
-  background-size: 200% 100%;
-  animation: stripe-slide 18s linear infinite;
+}
+
+.color-stripe-anim {
+  height: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.color-stripe-anim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 200%;
+  background: var(--grad-spectrum);
+  background-size: 50% 100%;
+  animation: stripe-slide 22s linear infinite;
+  will-change: transform;
 }
 
 /* ============================================================
@@ -1349,10 +1372,10 @@ textarea {
 /* The spectrum stripe drifting sideways under its own band. */
 @keyframes stripe-slide {
   from {
-    background-position: 0% 0;
+    transform: translate3d(0, 0, 0);
   }
   to {
-    background-position: 200% 0;
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -1444,7 +1467,8 @@ textarea {
   .animate-caret,
   .shimmer,
   .sparkle,
-  .color-stripe {
+  .color-stripe,
+  .color-stripe-anim::before {
     animation: none !important;
   }
   /* The caret is the one thing that must stay visible once the

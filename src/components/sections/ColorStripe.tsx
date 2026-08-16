@@ -24,7 +24,7 @@ export function ColorStripe() {
   return (
     <section aria-label="What we do" data-ground="navy" className="relative">
       {/* The spectrum rule — one hue per destination. */}
-      <div aria-hidden className="color-stripe" />
+      <div aria-hidden className="color-stripe-anim" />
 
       <div className="py-3.5">
         <Marquee speed={46} fade pauseOnHover>
@@ -43,7 +43,7 @@ export function ColorStripe() {
         </Marquee>
       </div>
 
-      <div aria-hidden className="color-stripe" />
+      <div aria-hidden className="color-stripe-anim" />
     </section>
   );
 }

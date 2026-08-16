@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import { useTheme } from "next-themes";
 import { COUNTRIES, ORIGIN } from "@/lib/data/countries";
+import { LAND } from "@/lib/data/land";
 import { VelocityTracker, project } from "@/lib/motion";
 import { Shield3D } from "@/components/ui/Shield3D";
 import { Flag } from "@/components/ui/Flag";
@@ -72,6 +73,8 @@ type GlobePalette = {
   parallel: string;
   meridian: string;
   arcTrack: string;
+  landFill: string;
+  landEdge: string;
   cometHead: (a: number) => string;
   nodeRing: (a: number) => string;
   originFill: string;
@@ -91,6 +94,8 @@ const PALETTES: Record<"light" | "dark" | "onNavy", GlobePalette> = {
     parallel: "rgba(10,31,68,0.28)",
     meridian: "rgba(10,31,68,0.22)",
     arcTrack: "rgba(10,31,68,0.30)",
+    landFill: "rgba(10,31,68,0.13)",
+    landEdge: "rgba(10,31,68,0.34)",
     cometHead: (a) => `rgba(10,31,68,${Math.min(1, a * 1.15)})`,
     nodeRing: (a) => `rgba(10,31,68,${Math.min(1, a * 1.2)})`,
     originFill: "#0A1F44",
@@ -105,6 +110,8 @@ const PALETTES: Record<"light" | "dark" | "onNavy", GlobePalette> = {
     parallel: "rgba(90,140,220,0.30)",
     meridian: "rgba(90,140,220,0.24)",
     arcTrack: "rgba(201,162,39,0.24)",
+    landFill: "rgba(150,190,255,0.11)",
+    landEdge: "rgba(150,190,255,0.30)",
     cometHead: (a) => `rgba(233,199,102,${a})`,
     nodeRing: (a) => `rgba(233,199,102,${a})`,
     originFill: "#E8C766",
@@ -122,6 +129,10 @@ const PALETTES: Record<"light" | "dark" | "onNavy", GlobePalette> = {
     parallel: "rgba(132,172,236,0.40)",
     meridian: "rgba(132,172,236,0.30)",
     arcTrack: "rgba(233,199,102,0.38)",
+    /* Land is the subject now, so it carries more weight than the
+       graticule rather than sitting under it. */
+    landFill: "rgba(120,170,255,0.17)",
+    landEdge: "rgba(176,208,255,0.46)",
     cometHead: (a) => `rgba(250,231,170,${Math.min(1, a * 1.25)})`,
     nodeRing: (a) => `rgba(233,199,102,${Math.min(1, a * 1.2)})`,
     originFill: "#F2DDA0",
@@ -175,11 +186,19 @@ export function Globe({
     resize();
 
     const origin = { lat: ORIGIN.lat, lng: ORIGIN.lng };
+    /* Fan the chips by LONGITUDE RANK, not array index.
+       Uzbekistan (64E), Kazakhstan (68E) and Kyrgyzstan (74E) are
+       within ten degrees of each other, so any fan keyed on array
+       order can still hand two neighbours the same radius — which is
+       how Kazakhstan ended up hidden behind Kyrgyzstan. Ranking by
+       longitude guarantees adjacent chips sit at different heights. */
+    const byLng = [...COUNTRIES].sort((a, b) => a.lng - b.lng).map((c) => c.slug);
     const targets = COUNTRIES.map((c) => ({
       lat: c.lat,
       lng: c.lng,
       accent: c.accent,
       name: c.name,
+      lift: 1.05 + (byLng.indexOf(c.slug) % 3) * 0.115,
     }));
 
     const TILT = -0.38;
@@ -221,9 +240,14 @@ export function Globe({
       // ~105 s per revolution. Slower than before because the arcs are
       // now the subject rather than ambient decoration — they want
       // time on screen, not a tour.
-      // Ambient drift pauses while the pointer owns the globe, so the
-      // two never fight for the same axis.
-      const ambient = reduced ? 0 : dragging ? 0 : elapsed * 0.06;
+      /* Ambient drift OSCILLATES rather than revolving.
+         Every destination sits between 37E and 116E, so a continuous
+         rotation swept that whole corridor behind the sphere and the
+         flags vanished for most of the cycle — which is exactly the
+         "flags disappear after 15 seconds" fault. A slow sway keeps
+         the corridor facing the viewer permanently while still
+         leaving the globe alive. Dragging overrides it completely. */
+      const ambient = reduced ? 0 : Math.sin(elapsed * 0.16) * 0.30;
       const spin = BASE_SPIN + ambient + userSpin;
       const tilt = TILT + userTilt;
 
@@ -272,6 +296,48 @@ export function Globe({
         p = rotateX(p, tilt);
         return { sx: cx + p.x, sy: cy - p.y, z: p.z };
       };
+
+      /* ---- landmasses ----
+         Natural Earth 1:110m outlines, baked to lon/lat rings by
+         scripts/build-land.mjs. Orthographic projection shows exactly
+         one hemisphere, so each ring is split into runs of
+         front-facing points and every run is filled on its own. The
+         alternative — clipping each ring against the limb circle —
+         is correct but costs a lot of maths per frame for an edge
+         nobody looks at, since the sphere's own rim covers the seam. */
+      ctx.lineJoin = "round";
+      for (const ring of LAND) {
+        let run: { sx: number; sy: number }[] = [];
+
+        const flush = () => {
+          if (run.length > 2) {
+            ctx.beginPath();
+            ctx.moveTo(run[0].sx, run[0].sy);
+            for (let i = 1; i < run.length; i++) ctx.lineTo(run[i].sx, run[i].sy);
+            ctx.closePath();
+            ctx.fillStyle = P.landFill;
+            ctx.fill();
+            ctx.strokeStyle = P.landEdge;
+            ctx.lineWidth = 0.9;
+            ctx.stroke();
+          }
+          run = [];
+        };
+
+        // Rings are flat [lon,lat,lon,lat,...] to keep the baked file
+        // small; stepping by two avoids allocating a pair per point.
+        for (let i = 0; i < ring.length; i += 2) {
+          let p = toCartesian(ring[i + 1], ring[i], radius);
+          p = rotateY(p, spin);
+          p = rotateX(p, tilt);
+          if (p.z < 0) {
+            flush();
+            continue;
+          }
+          run.push({ sx: cx + p.x, sy: cy - p.y });
+        }
+        flush();
+      }
 
       /* ---- graticule: parallels ---- */
       ctx.lineWidth = 0.75;
@@ -450,19 +516,16 @@ export function Globe({
       targets.forEach((t, i) => {
         const el = flagRefs.current[i];
         if (!el) return;
-        /* Every destination we place into sits between 37E and 116E
-           and 35-55N — a genuinely tight cluster, so at one uniform
-           lift the six chips stack on top of each other. Fanning the
-           radius per index pulls them apart without moving any of
-           them off its true bearing. */
-        const lift = 1.05 + (i % 3) * 0.085;
-        let p = toCartesian(t.lat, t.lng, radius * lift);
+        // Radius fans per longitude rank (see `targets` above); the
+        // bearing itself is never altered, so each chip still points
+        // at its true position.
+        let p = toCartesian(t.lat, t.lng, radius * t.lift);
         p = rotateY(p, spin);
         p = rotateX(p, tilt);
         const behind = p.z < 0;
         // Perspective: nearer reads bigger. Kept shallow so a flag
         // swinging to the front does not lunge at the viewer.
-        const depth = 0.78 + (p.z / radius) * 0.22;
+        const depth = 0.72 + (p.z / radius) * 0.30;
         el.style.transform =
           `translate(-50%,-50%) translate3d(${(cx + p.x).toFixed(1)}px, ${(cy - p.y).toFixed(1)}px, 0) ` +
           `scale(${depth.toFixed(3)})`;
@@ -485,6 +548,10 @@ export function Globe({
     const stage = stageRef.current;
     const onDown = (e: PointerEvent) => {
       if (reduced || e.pointerType === "touch") return;
+      // Without this the browser starts a native text selection as the
+      // pointer travels off the globe and across the headline, so a
+      // spin leaves the hero copy highlighted.
+      e.preventDefault();
       dragging = true;
       lastX = e.clientX;
       lastY = e.clientY;
@@ -584,15 +651,15 @@ export function Globe({
           style={{ opacity: 0 }}
         >
           <span
-            className="flex items-center gap-1 rounded-full py-[3px] pl-[3px] pr-2 shadow-[var(--shadow-badge)] backdrop-blur-sm"
-            style={{ background: "rgba(5,15,34,0.72)", border: `1px solid ${c.accent}` }}
+            className="flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3 shadow-[var(--shadow-badge)] backdrop-blur-md"
+            style={{ background: "rgba(5,15,34,0.78)", border: `1.5px solid ${c.accent}` }}
           >
-            <Flag country={c.slug} className="h-3 w-[1.125rem] rounded-[2px]" />
+            <Flag country={c.slug} className="h-5 w-[1.875rem] rounded-[3px] shadow-[0_1px_3px_rgba(0,0,0,0.5)]" />
             {/* Name drops below sm. Six labels around a globe that is
                 only ~150px across on a phone is unreadable clutter,
                 and at that size the type falls under the 12px floor
                 the rest of the site holds itself to. */}
-            <span className="hidden whitespace-nowrap text-[0.625rem] font-bold tracking-[0.02em] text-white sm:inline">
+            <span className="hidden whitespace-nowrap text-[0.8125rem] font-bold tracking-[0.01em] text-white sm:inline">
               {c.name}
             </span>
           </span>

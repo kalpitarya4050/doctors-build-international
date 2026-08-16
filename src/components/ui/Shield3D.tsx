@@ -26,6 +26,14 @@ import { cn } from "@/lib/utils";
    here, only a gradient sheet that moves with rotation.
    ============================================================ */
 
+/* The filenames deliberately avoid a trailing `-<n>w`. .gitignore
+   excludes CI-generated responsive variants by that suffix, so the
+   first version of this asset was silently never committed and
+   404'd in production — which left the shield as bare gold layers
+   with no artwork inside it.
+   (The ignore glob is not written out here on purpose: it contains
+   a star-slash sequence that would close this comment early.) */
+
 /** Traced from the artwork's own gold rim rather than reusing the
  *  LogoMark path — that path is a wider shield (0.95 aspect) than
  *  the photograph (0.78), so stretching it to fit pulled the
@@ -90,8 +98,8 @@ export const Shield3D = forwardRef<HTMLDivElement, { className?: string }>(
               phone, so the 320w file is what most visitors fetch. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={withBasePath("/brand/shield-doctor-600w.webp")}
-            srcSet={`${withBasePath("/brand/shield-doctor-320w.webp")} 320w, ${withBasePath("/brand/shield-doctor-600w.webp")} 600w`}
+            src={withBasePath("/brand/shield-doctor.webp")}
+            srcSet={`${withBasePath("/brand/shield-doctor-sm.webp")} 320w, ${withBasePath("/brand/shield-doctor.webp")} 600w`}
             sizes="(max-width: 640px) 120px, 200px"
             alt=""
             className="size-full object-cover"

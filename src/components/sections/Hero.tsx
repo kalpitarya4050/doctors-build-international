@@ -144,9 +144,12 @@ export function Hero() {
           `translateY` are the same transform — set both on one
           element and the second silently wins. */}
       <motion.div
-        aria-hidden
         style={reduced ? undefined : { y: globeY, opacity: fade }}
-        className="pointer-events-none absolute -right-[22%] top-1/2 -z-10 aspect-square w-[86%] -translate-y-1/2 sm:-right-[14%] sm:w-[70%] lg:right-[-6%] lg:w-[52%]"
+        /* NOT pointer-events-none, and not aria-hidden: the globe is
+           draggable, so it has to receive pointer events and announce
+           itself. It previously sat inside a pointer-events-none
+           wrapper, which silently swallowed every drag. */
+        className="absolute -right-[22%] top-1/2 z-[1] aspect-square w-[86%] -translate-y-1/2 sm:-right-[14%] sm:w-[70%] lg:right-[-6%] lg:w-[52%]"
       >
         <motion.div
           style={reduced ? undefined : { x: globeX, y: globeTiltY }}
@@ -182,7 +185,7 @@ export function Hero() {
       {/* ---------------- Copy ---------------- */}
       <motion.div
         style={reduced ? undefined : { y: copyY, opacity: fade }}
-        className="relative w-full"
+        className="relative z-[2] w-full"
       >
       <motion.div
         style={reduced ? undefined : { x: copyX, y: copyLean }}
