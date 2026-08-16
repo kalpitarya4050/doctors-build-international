@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { FAQS, FEATURED_FAQS } from "@/lib/data/faq";
 import { Accordion } from "@/components/ui/Accordion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { AnimatedArrow } from "@/components/ui/Bits";
 
 export function FaqPreview() {
   return (
@@ -26,7 +26,7 @@ export function FaqPreview() {
               className="tap mt-8 inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
             >
               Read all {FAQS.length} questions
-              <ArrowRight className="size-4" />
+              <AnimatedArrow />
             </Link>
           </Reveal>
         </div>

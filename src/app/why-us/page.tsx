@@ -6,6 +6,7 @@ import { LeadSection } from "@/components/sections/LeadSection";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: "Why Choose Us — 100% Transparency, Doctor-Led, 5000+ Families",
@@ -62,7 +63,8 @@ export default function WhyUsPage() {
       />
 
       {/* Comparison table */}
-      <section className="section" aria-labelledby="comparison">
+      <section data-ground="white" className="section relative isolate" aria-labelledby="comparison">
+        <DotGrid gap={26} opacity={0.7} />
         <div className="shell">
           <SectionHeading
             eyebrow="The Difference"

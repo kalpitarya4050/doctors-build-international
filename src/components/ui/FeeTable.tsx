@@ -234,7 +234,13 @@ export function FeeTable({
                   i % 2 === 1 && "bg-[var(--bg-sunken)]/55",
                 )}
               >
-                <Td className="sticky left-0 z-10 bg-[inherit]">
+                {/* A 3px inset rule in the country's colour. In a 23-row
+                    table sorted by cost the destinations otherwise
+                    interleave with nothing to group them by eye. */}
+                <Td
+                  className="sticky left-0 z-10 bg-[inherit] border-l-[3px]"
+                  style={{ borderLeftColor: u.accent }}
+                >
                   <Link
                     href={`/universities/${u.slug}`}
                     className="tap-min group flex items-center gap-2.5"
@@ -394,13 +400,17 @@ function Td({
   children,
   align = "left",
   className,
+  style,
 }: {
   children: React.ReactNode;
   align?: "left" | "right";
   className?: string;
+  /** Used by the first cell to carry the row's country hue. */
+  style?: React.CSSProperties;
 }) {
   return (
     <td
+      style={style}
       className={cn(
         "px-4 py-4 text-[0.8125rem] text-ink-secondary align-middle",
         align === "right" ? "text-right" : "text-left",

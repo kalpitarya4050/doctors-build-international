@@ -70,8 +70,12 @@ export function Header() {
 
   return (
     <>
-      {/* Announcement strip — the one place the tassel red is used */}
+      {/* Announcement strip — the one place the tassel red is used.
+          Capped with the destination spectrum so the brand's colour
+          system is stated in the first 3px of the page, before any
+          section has had a chance to. */}
       <div className="relative z-50 overflow-hidden bg-[var(--navy-900)] text-white">
+        <div aria-hidden className="color-stripe" />
         <div className="shell-wide flex h-9 items-center justify-between gap-4 text-[0.75rem]">
           <p className="flex items-center gap-2 font-medium tracking-[0.01em]">
             <span className="relative flex size-1.5">

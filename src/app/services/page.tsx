@@ -10,6 +10,7 @@ import { RevealMedia } from "@/components/ui/MediaMotion";
 import { Scrim } from "@/components/ui/Media";
 import { Icon } from "@/components/ui/Icon";
 import { SITE } from "@/lib/site";
+import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: "Our Services — Counselling, Admission, Visa & Post-Arrival Support",
@@ -52,13 +53,14 @@ export default function ServicesPage() {
         lead="Most consultancies hand you off between departments — and go quiet once the fee clears. Everything below is delivered by one team, and that team stays reachable for the full six years of your degree."
       />
 
-      <section className="section" aria-label="Services">
+      <section data-ground="white" className="section relative isolate" aria-label="Services">
+        <DotGrid gap={26} opacity={0.7} />
         <div className="shell flex flex-col gap-4">
           {SERVICES.map((s, i) => (
             <Reveal key={s.slug} direction="up" delay={(i % 3) * 0.05}>
               <article
                 id={s.slug}
-                className="material-card grid scroll-mt-28 gap-7 overflow-hidden rounded-[var(--radius-lg)] p-7 lg:grid-cols-[13rem_1fr_18rem] lg:items-start lg:p-9"
+                className="material-card hover-lift grid scroll-mt-28 gap-7 overflow-hidden rounded-[var(--radius-lg)] p-7 lg:grid-cols-[13rem_1fr_18rem] lg:items-start lg:p-9"
               >
                 <div className="flex items-center gap-4 lg:flex-col lg:items-stretch">
                   <RevealMedia

@@ -7,6 +7,7 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { OrbField } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: "Contact Us — Free MBBS Abroad Counselling | Shimla, Chandigarh, Vadodara",
@@ -57,7 +58,8 @@ export default function ContactPage() {
         lead="Counselling is free and carries no obligation. Bring your parents into the call — most of our conversations are with families, not students alone, and the questions parents ask are usually the right ones."
       />
 
-      <section className="section" aria-label="Contact channels">
+      <section data-ground="white" className="section relative isolate" aria-label="Contact channels">
+        <OrbField tone="gold" count={2} intensity={0.26} />
         <div className="shell grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <div>
             <RevealGroup className="grid gap-4 sm:grid-cols-2" stagger={0.06}>
@@ -86,12 +88,12 @@ export default function ContactPage() {
                         {...(c.external
                           ? { target: "_blank", rel: "noopener noreferrer" }
                           : {})}
-                        className="material-card block h-full rounded-[var(--radius-lg)] p-6 transition-shadow duration-300 hover:shadow-[var(--shadow-lg)]"
+                        className="material-card hover-lift block h-full rounded-[var(--radius-lg)] p-6 transition-shadow duration-300 hover:shadow-[var(--shadow-lg)]"
                       >
                         {Body}
                       </a>
                     ) : (
-                      <div className="material-card h-full rounded-[var(--radius-lg)] p-6">
+                      <div className="material-card hover-lift h-full rounded-[var(--radius-lg)] p-6">
                         {Body}
                       </div>
                     )}
@@ -142,7 +144,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="offices">
+      <section data-ground="linen" className="section" aria-labelledby="offices">
         <div className="shell">
           <SectionHeading
             eyebrow="Our Offices"
@@ -152,7 +154,7 @@ export default function ContactPage() {
           <RevealGroup className="mt-12 grid gap-5 md:grid-cols-3" stagger={0.08}>
             {OFFICES.map((o) => (
               <RevealItem key={o.city}>
-                <div className="material-card h-full rounded-[var(--radius-lg)] p-7">
+                <div className="material-card hover-lift h-full rounded-[var(--radius-lg)] p-7">
                   <span className="grid size-11 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)]">
                     <MapPin className="size-5" />
                   </span>

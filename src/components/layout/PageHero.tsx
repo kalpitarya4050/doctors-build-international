@@ -1,13 +1,40 @@
 import Link from "next/link";
 import { ChevronRight, Camera } from "lucide-react";
 import type { ReactNode } from "react";
-import { Reveal, RevealWords } from "@/components/ui/Reveal";
+import { Reveal, WipeLine } from "@/components/ui/Reveal";
 import { KenBurns } from "@/components/ui/MediaMotion";
 import { Scrim } from "@/components/ui/Media";
 import { Eyebrow } from "@/components/ui/Surface";
 import { Flag } from "@/components/ui/Flag";
+import { DotGrid, OrbField, SpectrumRule } from "@/components/ui/Decor";
 import { img } from "@/lib/images";
 import { cn } from "@/lib/utils";
+
+/** Wraps the highlighted words in the gold serif accent. RevealWords
+ *  used to do this internally; the headline now travels as one
+ *  mask-wiped line — matching the homepage hero — so the highlight has
+ *  to be resolved here instead. Punctuation is stripped for the match
+ *  but kept in the output. */
+function withHighlight(title: string, highlight?: string[]): ReactNode {
+  if (!highlight?.length) return title;
+  const hi = new Set(highlight.map((w) => w.toLowerCase().replace(/[.,:;]/g, "")));
+
+  return title.split(" ").map((word, i) => {
+    const clean = word.toLowerCase().replace(/[.,:;]/g, "");
+    const space = i > 0 ? " " : "";
+    return hi.has(clean) ? (
+      <span key={i}>
+        {space}
+        <em className="t-accent">{word}</em>
+      </span>
+    ) : (
+      <span key={i}>
+        {space}
+        {word}
+      </span>
+    );
+  });
+}
 
 export interface Crumb {
   label: string;
@@ -76,17 +103,24 @@ export function PageHero({
           />
         </>
       ) : (
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--bg-sunken),var(--bg))]" />
-          <div
-            className="absolute -top-28 left-1/2 size-[40rem] -translate-x-1/2 rounded-full opacity-55 blur-[125px]"
-            style={{
-              background: `radial-gradient(circle, color-mix(in srgb, ${
-                accent ?? "var(--gold-500)"
-              } 22%, transparent), transparent 68%)`,
-            }}
-          />
-        </div>
+        <>
+          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--bg-sunken),var(--bg))]" />
+            <div
+              className="absolute -top-28 left-1/2 size-[40rem] -translate-x-1/2 rounded-full opacity-55 blur-[125px]"
+              style={{
+                background: `radial-gradient(circle, color-mix(in srgb, ${
+                  accent ?? "var(--gold-500)"
+                } 22%, transparent), transparent 68%)`,
+              }}
+            />
+          </div>
+          {/* The banner used to be a single static bloom on a flat
+              gradient, which read as an empty shelf above the content.
+              A dot grid gives it a surface and the orbs give it drift. */}
+          <DotGrid gap={26} opacity={0.75} />
+          <OrbField tone="gold" count={2} intensity={0.28} />
+        </>
       )}
 
       <div
@@ -146,6 +180,9 @@ export function PageHero({
           </Reveal>
         )}
 
+        {/* Mask wipe, not a per-word slide — the same move the homepage
+            hero makes, so arriving on an inner page reads as the same
+            site rather than a different one. */}
         <h1
           className={cn(
             "t-h1 mt-5",
@@ -156,7 +193,9 @@ export function PageHero({
           {flagCountry && (
             <Flag country={flagCountry} className="mr-3 h-[0.62em] w-[0.93em] align-baseline" />
           )}
-          <RevealWords text={title} highlight={highlight} />
+          <WipeLine delay={0.12} duration={0.9}>
+            {withHighlight(title, highlight)}
+          </WipeLine>
         </h1>
 
         {lead && (
@@ -182,6 +221,11 @@ export function PageHero({
           </p>
         )}
       </div>
+
+      {/* Closes the banner with the same spectrum band every printed
+          piece the client puts out ends on. Also gives the eye a hard
+          edge between the hero and whatever section follows. */}
+      <SpectrumRule className="absolute inset-x-0 bottom-0" />
     </section>
   );
 }

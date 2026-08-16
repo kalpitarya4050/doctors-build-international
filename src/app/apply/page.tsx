@@ -6,6 +6,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ApplyForm } from "@/components/forms/ApplyForm";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
+import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: `Apply for MBBS Abroad ${SITE.admissionYear} — Free Counselling`,
@@ -32,7 +33,8 @@ export default function ApplyPage() {
         lead="Tell us who you are, what you scored and what your family can spend. A doctor-led counsellor will call you back within two hours with two or three genuine options — or an honest explanation of why none of them fit."
       />
 
-      <section className="section pt-0" aria-label="Application form">
+      <section data-ground="white" className="section relative isolate pt-0" aria-label="Application form">
+        <DotGrid gap={26} opacity={0.6} />
         <div className="shell grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
           <Reveal direction="up">
             <ApplyForm />
@@ -40,7 +42,7 @@ export default function ApplyPage() {
 
           <div className="flex flex-col gap-6">
             <Reveal direction="left" delay={0.06}>
-              <div className="material-card rounded-[var(--radius-lg)] p-7">
+              <div className="material-card hover-lift rounded-[var(--radius-xl)] p-7">
                 <p className="t-eyebrow text-[var(--accent)]">What happens next</p>
                 <ol className="mt-5 flex flex-col gap-5">
                   {PROCESS.map((p) => (

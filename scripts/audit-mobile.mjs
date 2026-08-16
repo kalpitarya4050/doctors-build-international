@@ -237,8 +237,15 @@ async function run() {
         });
       }
       try {
-        await page.goto(`${BASE}${route}`, { waitUntil: "networkidle2", timeout: 45000 });
-        await new Promise((r) => setTimeout(r, 600));
+        /* `networkidle2` is the wrong signal here. Edge defers load
+           events for lazily-loaded images ("Images loaded lazily and
+           replaced with placeholders"), so on the image-heavy home
+           page the idle event never fires even though in-flight
+           requests sit at zero the whole time — it timed out on three
+           of four viewports and reported nothing useful. Wait for the
+           DOM, then settle, which is what the layout actually needs. */
+        await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded", timeout: 45000 });
+        await new Promise((r) => setTimeout(r, 2200));
         const res = await page.evaluate(audit);
 
         const overflowed = res.scrollWidth > res.docWidth + 1 && res.canScrollX;

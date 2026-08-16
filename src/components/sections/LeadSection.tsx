@@ -5,6 +5,8 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealMedia } from "@/components/ui/MediaMotion";
 import { Eyebrow } from "@/components/ui/Surface";
+import { DotGrid, OrbField } from "@/components/ui/Decor";
+import { Sparkle } from "@/components/ui/Bits";
 
 export function LeadSection({
   source = "homepage",
@@ -23,19 +25,16 @@ export function LeadSection({
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,var(--bg),var(--bg-sunken))]"
       />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-32 left-1/4 -z-10 size-[34rem] rounded-full opacity-40 blur-[130px]"
-        style={{
-          background:
-            "radial-gradient(circle, color-mix(in srgb, var(--gold-500) 24%, transparent), transparent 70%)",
-        }}
-      />
+      <DotGrid gap={26} opacity={0.7} />
+      <OrbField tone="gold" count={2} intensity={0.3} />
 
       <div className="shell grid items-start gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
         <div>
           <Reveal>
-            <Eyebrow>Free Counselling</Eyebrow>
+            <Eyebrow>
+              <Sparkle className="mr-1.5 inline size-3.5 align-[-0.15em]" />
+              Free Counselling
+            </Eyebrow>
           </Reveal>
           <Reveal direction="up" delay={0.05}>
             <h2 className="t-h2 mt-5 text-brand">
@@ -55,8 +54,8 @@ export function LeadSection({
 
           <Reveal direction="up" delay={0.16}>
             <ul className="mt-10 flex flex-col gap-5">
-              <li className="flex items-start gap-4">
-                <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)]">
+              <li className="hover-pastel flex items-start gap-4 rounded-[var(--radius)] p-2 -m-2">
+                <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-[var(--shadow-sm)]">
                   <Phone className="size-5" />
                 </span>
                 <span>
@@ -71,8 +70,8 @@ export function LeadSection({
                   </a>
                 </span>
               </li>
-              <li className="flex items-start gap-4">
-                <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)]">
+              <li className="hover-pastel flex items-start gap-4 rounded-[var(--radius)] p-2 -m-2">
+                <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-[var(--shadow-sm)]">
                   <Mail className="size-5" />
                 </span>
                 <span>
@@ -87,8 +86,8 @@ export function LeadSection({
                   </a>
                 </span>
               </li>
-              <li className="flex items-start gap-4">
-                <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)]">
+              <li className="hover-pastel flex items-start gap-4 rounded-[var(--radius)] p-2 -m-2">
+                <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-[var(--shadow-sm)]">
                   <MapPin className="size-5" />
                 </span>
                 <span>
@@ -100,8 +99,8 @@ export function LeadSection({
                   </span>
                 </span>
               </li>
-              <li className="flex items-start gap-4">
-                <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)]">
+              <li className="hover-pastel flex items-start gap-4 rounded-[var(--radius)] p-2 -m-2">
+                <span className="grid size-11 shrink-0 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-[var(--shadow-sm)]">
                   <Clock3 className="size-5" />
                 </span>
                 <span>

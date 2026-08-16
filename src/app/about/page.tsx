@@ -12,6 +12,7 @@ import { Scrim } from "@/components/ui/Media";
 import { SectionHeading, Bloom } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
 import { SITE } from "@/lib/site";
+import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: "About Us — Doctor-Led Counselling for MBBS Abroad Since 2015",
@@ -153,7 +154,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="values">
+      <section data-ground="linen" className="section" aria-labelledby="values">
         <div className="shell">
           <SectionHeading
             eyebrow="What We Stand For"
@@ -166,7 +167,7 @@ export default function AboutPage() {
           <RevealGroup className="mt-12 grid gap-5 md:grid-cols-2" stagger={0.07}>
             {VALUES.map((v) => (
               <RevealItem key={v.title}>
-                <div className="material-card relative h-full overflow-hidden rounded-[var(--radius-lg)] p-8">
+                <div className="material-card hover-lift relative h-full overflow-hidden rounded-[var(--radius-lg)] p-8">
                   <Quote
                     aria-hidden
                     className="absolute right-6 top-6 size-8 text-[var(--accent)]/16"
@@ -182,7 +183,8 @@ export default function AboutPage() {
       </section>
 
       {/* USPs */}
-      <section className="section" aria-labelledby="usps">
+      <section data-ground="white" className="section relative isolate" aria-labelledby="usps">
+        <DotGrid gap={26} opacity={0.7} />
         <div className="shell">
           <SectionHeading
             eyebrow="Why Doctors Build"
@@ -205,7 +207,7 @@ export default function AboutPage() {
       </section>
 
       {/* Offices */}
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="offices">
+      <section data-ground="linen" className="section" aria-labelledby="offices">
         <div className="shell">
           <SectionHeading
             eyebrow="Where To Find Us"
@@ -215,7 +217,7 @@ export default function AboutPage() {
           <RevealGroup className="mt-12 grid gap-5 md:grid-cols-3" stagger={0.08}>
             {OFFICES.map((o) => (
               <RevealItem key={o.city}>
-                <div className="material-card h-full rounded-[var(--radius-lg)] p-7">
+                <div className="material-card hover-lift h-full rounded-[var(--radius-lg)] p-7">
                   <span className="grid size-11 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)]">
                     <MapPin className="size-5" />
                   </span>

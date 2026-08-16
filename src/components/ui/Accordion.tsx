@@ -49,7 +49,15 @@ function AccordionRow({
   const id = useId();
 
   return (
-    <div>
+    /* A gold rail on the open row. The list previously had no open
+       state at all beyond the rotated plus, so a long FAQ gave you
+       nothing to track your place against. */
+    <div
+      className={cn(
+        "relative transition-colors duration-300",
+        isOpen && "before:absolute before:inset-y-0 before:-left-4 before:w-[3px] before:rounded-full before:bg-[var(--grad-gold)]",
+      )}
+    >
       <h3>
         <button
           type="button"
@@ -70,8 +78,8 @@ function AccordionRow({
             className={cn(
               "mt-0.5 grid size-8 shrink-0 place-items-center rounded-full border",
               isOpen
-                ? "border-transparent bg-[var(--accent-bright)] text-[var(--navy-950)]"
-                : "border-line-strong text-ink-muted group-hover:border-[var(--accent)]",
+                ? "border-transparent bg-[var(--accent-bright)] text-[var(--navy-950)] shadow-[var(--neon-gold)]"
+                : "border-line-strong text-ink-muted group-hover:border-[var(--accent)] group-hover:text-[var(--accent)]",
             )}
             animate={{ rotate: isOpen ? 135 : 0 }}
             transition={SPRING_UI}

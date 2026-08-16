@@ -7,6 +7,7 @@ import { FeeTable } from "@/components/ui/FeeTable";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { SITE } from "@/lib/site";
+import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: `MBBS Abroad Destinations ${SITE.admissionYear} — Six Countries Compared`,
@@ -30,7 +31,8 @@ export default function DestinationsPage() {
 
       <Destinations />
 
-      <section className="section" aria-labelledby="compare">
+      <section data-ground="white" className="section relative isolate" aria-labelledby="compare">
+        <DotGrid gap={26} opacity={0.7} />
         <div className="shell">
           <SectionHeading
             eyebrow="Side by Side"

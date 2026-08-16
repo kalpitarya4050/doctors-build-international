@@ -7,6 +7,7 @@ import { RevealGroup, RevealItem, Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/Section";
 import { FeeTable } from "@/components/ui/FeeTable";
 import { SITE } from "@/lib/site";
+import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: `Partner Medical Universities ${SITE.admissionYear} — NMC Eligible MBBS Abroad`,
@@ -54,7 +55,8 @@ export default function UniversitiesPage() {
         lead="These are the universities we place students into — not a directory of everything that exists. Each one is here because of its recognition status, its clinical exposure and the support already in place for Indian students on campus."
       />
 
-      <section className="section" aria-label="All universities">
+      <section data-ground="white" className="section relative isolate" aria-label="All universities">
+        <DotGrid gap={26} opacity={0.7} />
         <div className="shell">
           <RevealGroup className="grid gap-5 md:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
             {UNIVERSITIES.map((u) => (
@@ -66,7 +68,7 @@ export default function UniversitiesPage() {
         </div>
       </section>
 
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="compare-all">
+      <section data-ground="linen" className="section" aria-labelledby="compare-all">
         <div className="shell">
           <SectionHeading
             eyebrow="Full Comparison"

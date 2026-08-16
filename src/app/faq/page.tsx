@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Eyebrow } from "@/components/ui/Surface";
 import { SITE } from "@/lib/site";
 import { slugify } from "@/lib/utils";
+import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: "MBBS Abroad FAQs — NEET, FMGE, Fees, Safety & Recognition",
@@ -49,7 +50,8 @@ export default function FaqPage() {
         lead="Including the ones other consultancies avoid — what happens if your visa is rejected, whether you should use a consultancy at all, and what the total cost really comes to once everything is counted."
       />
 
-      <section className="section" aria-label="Frequently asked questions">
+      <section data-ground="white" className="section relative isolate" aria-label="Frequently asked questions">
+        <DotGrid gap={26} opacity={0.7} />
         <div className="shell grid gap-12 lg:grid-cols-[15rem_1fr] lg:gap-16">
           {/* Category jump list */}
           <nav aria-label="FAQ categories" className="lg:sticky lg:top-28 lg:self-start">

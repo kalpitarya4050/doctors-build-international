@@ -8,6 +8,7 @@ import { SectionHeading } from "@/components/ui/Section";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { SITE } from "@/lib/site";
 import { inrShort } from "@/lib/utils";
+import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: `MBBS Abroad Fee Comparison ${SITE.admissionYear} — All Partner Universities`,
@@ -48,7 +49,7 @@ export default function FeeComparisonPage() {
       />
 
       {/* Headline numbers */}
-      <section className="border-y border-hairline bg-[var(--bg-sunken)] py-12" aria-label="Cost range">
+      <section data-ground="linen" className="border-y border-hairline py-12" aria-label="Cost range">
         <div className="shell">
           <RevealGroup className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4" stagger={0.07}>
             <RevealItem>
@@ -110,7 +111,8 @@ export default function FeeComparisonPage() {
       </section>
 
       {/* The table */}
-      <section className="section" aria-labelledby="table">
+      <section data-ground="white" className="section relative isolate" aria-labelledby="table">
+        <DotGrid gap={26} opacity={0.6} />
         <div className="shell">
           <Reveal direction="up">
             <FeeTable />
@@ -119,7 +121,7 @@ export default function FeeComparisonPage() {
       </section>
 
       {/* Additional costs */}
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="additional">
+      <section data-ground="linen" className="section" aria-labelledby="additional">
         <div className="shell">
           <SectionHeading
             eyebrow="Full Transparency"
@@ -133,7 +135,7 @@ export default function FeeComparisonPage() {
           <RevealGroup className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
             {ADDITIONAL_COSTS.map((c) => (
               <RevealItem key={c.label}>
-                <div className="material-card flex h-full flex-col rounded-[var(--radius-lg)] p-6">
+                <div className="material-card hover-lift flex h-full flex-col rounded-[var(--radius-lg)] p-6">
                   <p className="t-h4 text-brand">{c.label}</p>
                   <p className="t-num mt-2 text-[1.0625rem] font-bold text-[var(--accent)]">
                     {c.amount}

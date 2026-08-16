@@ -3,19 +3,15 @@ import { COUNTRIES } from "@/lib/data/countries";
 import { Button } from "@/components/ui/Button";
 import { LogoMark } from "@/components/ui/Logo";
 import { Flag } from "@/components/ui/Flag";
+import { DotGrid, OrbField } from "@/components/ui/Decor";
+import { AnimatedArrow } from "@/components/ui/Bits";
 import { SITE, whatsappLink } from "@/lib/site";
 
 export default function NotFound() {
   return (
-    <section className="section relative isolate overflow-hidden grain">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-24 left-1/2 -z-10 size-[38rem] -translate-x-1/2 rounded-full opacity-50 blur-[120px]"
-        style={{
-          background:
-            "radial-gradient(circle, color-mix(in srgb, var(--gold-500) 22%, transparent), transparent 68%)",
-        }}
-      />
+    <section data-ground="white" className="section relative isolate overflow-hidden grain">
+      <DotGrid gap={26} opacity={0.7} />
+      <OrbField tone="gold" count={2} intensity={0.3} />
 
       <div className="shell flex max-w-3xl flex-col items-center text-center">
         <LogoMark className="size-16" id="nf" />
@@ -31,6 +27,7 @@ export default function NotFound() {
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
           <Button href="/" variant="gold" size="lg">
             Back to home
+            <AnimatedArrow />
           </Button>
           <Button href={whatsappLink()} external variant="whatsapp" size="lg">
             Ask us on WhatsApp

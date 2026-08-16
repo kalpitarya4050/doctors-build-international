@@ -21,6 +21,8 @@ import { Accordion } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { UniversityCard } from "@/components/ui/UniversityCard";
 import { Icon } from "@/components/ui/Icon";
+import { DotGrid, OrbField } from "@/components/ui/Decor";
+import { AnimatedArrow } from "@/components/ui/Bits";
 
 export function generateStaticParams() {
   return COUNTRIES.map((c) => ({ country: c.slug }));
@@ -142,7 +144,7 @@ export default async function CountryPage({
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button href="#counselling" variant="gold" size="lg">
               Get free counselling
-              <ArrowRight className="size-4" />
+              <AnimatedArrow />
             </Button>
             {unis.length > 0 && (
               <Button href="#universities" variant="outline" size="lg">
@@ -154,7 +156,7 @@ export default async function CountryPage({
       </PageHero>
 
       {/* At a glance */}
-      <section className="border-y border-hairline bg-[var(--bg-sunken)] py-10" aria-label="At a glance">
+      <section data-ground="linen" className="border-y border-hairline py-10" aria-label="At a glance">
         <div className="shell">
           <RevealGroup className="grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-5" stagger={0.05}>
             <Glance
@@ -188,7 +190,8 @@ export default async function CountryPage({
       </section>
 
       {/* Long-form intro */}
-      <section className="section" aria-labelledby="overview">
+      <section data-ground="white" className="section relative isolate" aria-labelledby="overview">
+        <DotGrid gap={26} opacity={0.6} />
         <div className="shell grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">
           <div>
             <SectionHeading
@@ -206,7 +209,7 @@ export default async function CountryPage({
           </div>
 
           <Reveal direction="left">
-            <aside className="material-card sticky top-28 rounded-[var(--radius-lg)] p-7">
+            <aside className="material-card hover-lift sticky top-28 rounded-[var(--radius-lg)] p-7">
               <p className="t-eyebrow text-[var(--accent)]">Quick Facts</p>
               <dl className="mt-5 flex flex-col gap-4 text-[0.875rem]">
                 <QuickRow label="Universities we place into" value={unis.length > 0 ? `${unis.length}` : "On request"} />
@@ -253,7 +256,8 @@ export default async function CountryPage({
       />
 
       {/* Advantages */}
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="advantages">
+      <section data-ground="linen" className="section relative isolate" aria-labelledby="advantages">
+        <OrbField tone="gold" count={2} intensity={0.26} />
         <div className="shell">
           <SectionHeading
             eyebrow="Advantages"
@@ -267,7 +271,7 @@ export default async function CountryPage({
           <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
             {c.advantages.map((a) => (
               <RevealItem key={a.title}>
-                <div className="material-card h-full rounded-[var(--radius-lg)] p-7">
+                <div className="material-card hover-lift h-full rounded-[var(--radius-lg)] p-7">
                   <span className="grid size-10 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)]">
                     <Check className="size-5" strokeWidth={2.4} />
                   </span>
@@ -281,7 +285,8 @@ export default async function CountryPage({
       </section>
 
       {/* Universities */}
-      <section className="section" id="universities" aria-labelledby="unis">
+      <section data-ground="white" className="section relative isolate" id="universities" aria-labelledby="unis">
+        <DotGrid gap={26} opacity={0.7} />
         <div className="shell">
           {unis.length > 0 ? (
             <>
@@ -317,7 +322,7 @@ export default async function CountryPage({
               <Reveal direction="up" className="mt-10 text-center">
                 <Button href="#counselling" variant="gold" size="lg">
                   Request university options
-                  <ArrowRight className="size-4" />
+                  <AnimatedArrow />
                 </Button>
               </Reveal>
             </>
@@ -338,7 +343,7 @@ export default async function CountryPage({
       />
 
       {/* Process */}
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="process">
+      <section data-ground="linen" className="section" aria-labelledby="process">
         <div className="shell">
           <SectionHeading
             eyebrow="Admission Process"
@@ -348,7 +353,7 @@ export default async function CountryPage({
           <RevealGroup className="mt-12 grid gap-5 md:grid-cols-3 lg:grid-cols-5" stagger={0.07}>
             {PROCESS.map((p) => (
               <RevealItem key={p.step}>
-                <div className="material-card flex h-full flex-col rounded-[var(--radius-lg)] p-6">
+                <div className="material-card hover-lift flex h-full flex-col rounded-[var(--radius-lg)] p-6">
                   <div className="flex items-center gap-3">
                     <span className="grid size-10 place-items-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
                       <Icon name={p.icon} className="size-5" />
@@ -367,7 +372,8 @@ export default async function CountryPage({
       </section>
 
       {/* FAQ */}
-      <section className="section" aria-labelledby="country-faq">
+      <section data-ground="white" className="section relative isolate" aria-labelledby="country-faq">
+        <DotGrid gap={26} opacity={0.6} />
         <div className="shell">
           <SectionHeading
             eyebrow="Questions & Answers"
@@ -381,7 +387,7 @@ export default async function CountryPage({
                 className="tap inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
               >
                 Read all {FAQS.length} questions
-                <ArrowRight className="size-4" />
+                <AnimatedArrow />
               </Link>
             </div>
           </div>
@@ -389,7 +395,7 @@ export default async function CountryPage({
       </section>
 
       {/* Other destinations */}
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="other-destinations">
+      <section data-ground="linen" className="section" aria-labelledby="other-destinations">
         <div className="shell">
           <SectionHeading eyebrow="Also Consider" title="Other destinations we place into" />
           <RevealGroup

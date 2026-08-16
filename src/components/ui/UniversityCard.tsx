@@ -36,11 +36,19 @@ export function UniversityCard({
     <Link
       href={`/universities/${u.slug}`}
       className={cn(
-        "group material-card relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)]",
-        "transition-shadow duration-300 hover:shadow-[var(--shadow-lg)]",
+        "group material-card hover-lift relative flex h-full flex-col overflow-hidden rounded-[var(--radius-xl)]",
         className,
       )}
     >
+      {/* Country hue as a top rule — the same colour coding the client
+          uses to separate destinations in their printed comparison
+          sheets, so a wall of 23 cards still sorts by eye. */}
+      <span
+        aria-hidden
+        className="h-1.5 w-full shrink-0"
+        style={{ background: u.accent }}
+      />
+
       {/* Photograph of the host city, captioned as the city */}
       <div className="relative aspect-[16/9] w-full overflow-hidden">
         <Media
@@ -66,8 +74,11 @@ export function UniversityCard({
               {u.country}
             </span>
           </div>
-          <span className="grid size-8 shrink-0 place-items-center rounded-full material-chip-dark transition-colors duration-300 group-hover:bg-[var(--accent-bright)] group-hover:text-[var(--navy-950)]">
-            <ArrowUpRight className="size-4" strokeWidth={2.2} />
+          <span className="grid size-8 shrink-0 place-items-center rounded-full material-chip-dark transition-all duration-300 group-hover:bg-[var(--accent-bright)] group-hover:text-[var(--navy-950)] group-hover:shadow-[var(--neon-gold)]">
+            <ArrowUpRight
+              className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              strokeWidth={2.2}
+            />
           </span>
         </div>
 

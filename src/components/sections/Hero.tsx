@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { ArrowRight, Phone, ShieldCheck, Star } from "lucide-react";
+import { Phone, ShieldCheck, Star } from "lucide-react";
 import { SPRING_UI } from "@/lib/motion";
 import { SITE, whatsappLink, telLink } from "@/lib/site";
 import { UNIVERSITIES } from "@/lib/data/universities";
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { WipeLine } from "@/components/ui/Reveal";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 import { useIntro } from "@/components/intro/Intro";
+import { AnimatedArrow } from "@/components/ui/Bits";
 
 /* ============================================================
    Full-bleed hero.
@@ -157,7 +158,7 @@ export function Hero() {
         >
           <Button href="/apply" variant="gold" size="lg" className="w-full sm:w-auto">
             Get Free Counselling
-            <ArrowRight className="size-4" />
+            <AnimatedArrow />
           </Button>
           <Button
             href={whatsappLink()}

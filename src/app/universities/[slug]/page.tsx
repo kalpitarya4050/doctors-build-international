@@ -15,8 +15,7 @@ import {
   MapPin,
   Check,
   Info,
-  ArrowRight,
-} from "lucide-react";
+  } from "lucide-react";
 import {
   UNIVERSITIES,
   getUniversity,
@@ -48,6 +47,8 @@ import { Accordion } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { UniversityCard, formatTotal, formatTuition } from "@/components/ui/UniversityCard";
 import { cn, inr, num } from "@/lib/utils";
+import { DotGrid, OrbField } from "@/components/ui/Decor";
+import { AnimatedArrow } from "@/components/ui/Bits";
 
 export function generateStaticParams() {
   return UNIVERSITIES.map((u) => ({ slug: u.slug }));
@@ -270,7 +271,7 @@ export default async function UniversityPage({
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button href="#counselling" variant="gold" size="lg">
               Check my eligibility
-              <ArrowRight className="size-4" />
+              <AnimatedArrow />
             </Button>
             <Button href="/fee-comparison" variant="outline" size="lg">
               Compare with other universities
@@ -280,7 +281,7 @@ export default async function UniversityPage({
       </PageHero>
 
       {/* ---------------- Key facts strip ---------------- */}
-      <section className="border-y border-hairline bg-[var(--bg-sunken)] py-10" aria-label="Key facts">
+      <section data-ground="linen" className="border-y border-hairline py-10" aria-label="Key facts">
         <div className="shell">
           <RevealGroup
             className="grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-3 lg:grid-cols-6"
@@ -341,7 +342,8 @@ export default async function UniversityPage({
       </section>
 
       {/* ---------------- About ---------------- */}
-      <section className="section" aria-labelledby="about-uni">
+      <section data-ground="white" className="section relative isolate" aria-labelledby="about-uni">
+        <DotGrid gap={26} opacity={0.6} />
         <div className="shell grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">
           <div>
             <SectionHeading
@@ -389,7 +391,7 @@ export default async function UniversityPage({
                 ) : undefined
               }
             />
-            <aside className="material-card sticky top-28 rounded-[var(--radius-lg)] p-7">
+            <aside className="material-card hover-lift sticky top-28 rounded-[var(--radius-lg)] p-7">
               <p className="t-eyebrow text-[var(--accent)]">Cost Summary</p>
 
               {u.hasPublishedFees ? (
@@ -445,7 +447,8 @@ export default async function UniversityPage({
       </section>
 
       {/* ---------------- Why study here ---------------- */}
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="why-study">
+      <section data-ground="linen" className="section relative isolate" aria-labelledby="why-study">
+        <OrbField tone="gold" count={2} intensity={0.26} />
         <div className="shell">
           <SectionHeading
             eyebrow="Student Experience"
@@ -459,7 +462,7 @@ export default async function UniversityPage({
             <RevealGroup className="grid gap-5 sm:grid-cols-2" stagger={0.07}>
               {u.whyStudy.map((w) => (
                 <RevealItem key={w.title}>
-                  <div className="material-card h-full rounded-[var(--radius-lg)] p-7">
+                  <div className="material-card hover-lift h-full rounded-[var(--radius-lg)] p-7">
                     <h3 className="t-h4 text-brand">{w.title}</h3>
                     <p className="t-body mt-2.5">{w.body}</p>
                   </div>
@@ -528,7 +531,7 @@ export default async function UniversityPage({
       <FeeBreakdown university={u} />
 
       {/* ---------------- Eligibility & documents ---------------- */}
-      <section className="section bg-[var(--bg-sunken)]" aria-labelledby="eligibility">
+      <section data-ground="linen" className="section" aria-labelledby="eligibility">
         <div className="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <SectionHeading align="left" eyebrow="Eligibility" title="Do you qualify?" />
@@ -583,7 +586,8 @@ export default async function UniversityPage({
       </section>
 
       {/* ---------------- Included / additional ---------------- */}
-      <section className="section" aria-labelledby="package">
+      <section data-ground="white" className="section relative isolate" aria-labelledby="package">
+        <DotGrid gap={26} opacity={0.6} />
         <div className="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <SectionHeading
@@ -638,7 +642,7 @@ export default async function UniversityPage({
       />
 
       {/* ---------------- FAQ ---------------- */}
-      <section className="section" aria-labelledby="uni-faq">
+      <section data-ground="white" className="section" aria-labelledby="uni-faq">
         <div className="shell">
           <SectionHeading
             eyebrow="Common Questions"
@@ -652,7 +656,7 @@ export default async function UniversityPage({
                 className="tap inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--accent)] hover:underline"
               >
                 Read all {FAQS.length} questions
-                <ArrowRight className="size-4" />
+                <AnimatedArrow />
               </Link>
             </div>
           </div>
@@ -660,7 +664,7 @@ export default async function UniversityPage({
       </section>
 
       {/* ---------------- Related ---------------- */}
-      <section className="section" aria-labelledby="related">
+      <section data-ground="linen" className="section" aria-labelledby="related">
         <div className="shell">
           <SectionHeading
             eyebrow="Compare"
@@ -780,7 +784,7 @@ function FeeBreakdown({ university: u }: { university: University }) {
         <Reveal direction="up" className="mt-12">
           <div className="grid gap-5 lg:grid-cols-[1.35fr_0.65fr]">
             {/* Payment schedule */}
-            <div className="material-card overflow-hidden rounded-[var(--radius-lg)]">
+            <div className="material-card hover-lift overflow-hidden rounded-[var(--radius-lg)]">
               <div className="border-b border-hairline px-6 py-5">
                 <h3 className="t-h4 text-brand">Payment schedule</h3>
                 <p className="t-small mt-1">
@@ -877,7 +881,7 @@ function FeeBreakdown({ university: u }: { university: University }) {
                 </p>
               </div>
 
-              <div className="material-card rounded-[var(--radius-lg)] p-6">
+              <div className="material-card hover-lift rounded-[var(--radius-xl)] p-6">
                 <p className="t-eyebrow text-[var(--accent)]">Monthly living</p>
                 <p
                   className={cn(
