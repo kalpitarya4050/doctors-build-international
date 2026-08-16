@@ -1,6 +1,14 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "motion/react";
 import { useRef } from "react";
 import { Phone, ShieldCheck, Star } from "lucide-react";
 import { SPRING_UI } from "@/lib/motion";
@@ -61,9 +69,47 @@ export function Hero() {
   const copyY = useTransform(scrollYProgress, [0, 1], ["0%", "38%"]);
   const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  /* ---- Pointer parallax (Apple §2/§3) ----
+     Scroll already separates these layers vertically; the pointer
+     separates them horizontally, which is what makes the globe read
+     as sitting behind the type rather than beside it. Spring-driven
+     off live values so a change of direction mid-travel reverses
+     from the current on-screen position, never from the target. */
+  const px = useMotionValue(0.5);
+  const py = useMotionValue(0.5);
+  const lit = useMotionValue(0);
+  const TRACK = { stiffness: 140, damping: 26, mass: 0.55 };
+  const sx = useSpring(px, TRACK);
+  const sy = useSpring(py, TRACK);
+  const sLit = useSpring(lit, { stiffness: 120, damping: 24, mass: 0.5 });
+
+  const globeX = useTransform(sx, [0, 1], [34, -34]);
+  const globeTiltY = useTransform(sy, [0, 1], [22, -22]);
+  const copyX = useTransform(sx, [0, 1], [-12, 12]);
+  const copyLean = useTransform(sy, [0, 1], [-8, 8]);
+
+  const lx = useTransform(sx, (v) => `${v * 100}%`);
+  const ly = useTransform(sy, (v) => `${v * 100}%`);
+  const spotlight = useMotionTemplate`radial-gradient(42rem circle at ${lx} ${ly}, rgba(233,199,102,0.20), rgba(201,162,39,0.07) 36%, transparent 64%)`;
+
+  const track = (e: React.PointerEvent<HTMLElement>) => {
+    if (reduced || e.pointerType !== "mouse" || !ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    px.set((e.clientX - r.left) / r.width);
+    py.set((e.clientY - r.top) / r.height);
+    lit.set(1);
+  };
+  const release = () => {
+    px.set(0.5);
+    py.set(0.5);
+    lit.set(0);
+  };
+
   return (
     <section
       ref={ref}
+      onPointerMove={track}
+      onPointerLeave={release}
       data-ground="navy"
       className="relative isolate flex min-h-[min(46rem,calc(100svh-var(--header-h)))] flex-col justify-center overflow-hidden grain"
       aria-labelledby="hero-title"
@@ -93,20 +139,39 @@ export function Hero() {
           Deliberately oversized and cropped by the section. A globe
           that fits neatly inside a box reads as an illustration; one
           that runs past the edge reads as a place. */}
+      {/* Three nested layers, not one style object: scroll drift is a
+          percentage and pointer offset is pixels, and `y` /
+          `translateY` are the same transform — set both on one
+          element and the second silently wins. */}
       <motion.div
         aria-hidden
         style={reduced ? undefined : { y: globeY, opacity: fade }}
         className="pointer-events-none absolute -right-[22%] top-1/2 -z-10 aspect-square w-[86%] -translate-y-1/2 sm:-right-[14%] sm:w-[70%] lg:right-[-6%] lg:w-[52%]"
       >
         <motion.div
-          initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
-          animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: reduced ? 1 : 0.9 }}
-          transition={{ type: "spring", bounce: 0, duration: 1.2, delay: 0.15 }}
+          style={reduced ? undefined : { x: globeX, y: globeTiltY }}
           className="size-full"
         >
-          <Globe tone="onNavy" />
+          <motion.div
+            initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+            animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: reduced ? 1 : 0.9 }}
+            transition={{ type: "spring", bounce: 0, duration: 1.2, delay: 0.15 }}
+            className="size-full"
+          >
+            <Globe tone="onNavy" />
+          </motion.div>
         </motion.div>
       </motion.div>
+
+      {/* Pointer spotlight — lifts the ground where the cursor is,
+          so the navy field is a lit surface rather than flat paint. */}
+      {!reduced && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-[15] mix-blend-soft-light"
+          style={{ background: spotlight, opacity: sLit }}
+        />
+      )}
 
       {/* Keeps the headline legible where it crosses the sphere. */}
       <div
@@ -117,6 +182,10 @@ export function Hero() {
       {/* ---------------- Copy ---------------- */}
       <motion.div
         style={reduced ? undefined : { y: copyY, opacity: fade }}
+        className="relative w-full"
+      >
+      <motion.div
+        style={reduced ? undefined : { x: copyX, y: copyLean }}
         className="shell-wide relative w-full py-16 sm:py-20 lg:py-28"
       >
         <motion.div
@@ -178,6 +247,7 @@ export function Hero() {
             {SITE.phoneDisplay}
           </a>
         </motion.div>
+      </motion.div>
       </motion.div>
 
       {/* ---------------- Counter-line, bottom right ----------------

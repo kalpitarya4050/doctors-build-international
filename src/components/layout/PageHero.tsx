@@ -7,6 +7,7 @@ import { Scrim } from "@/components/ui/Media";
 import { Eyebrow } from "@/components/ui/Surface";
 import { Flag } from "@/components/ui/Flag";
 import { DotGrid, OrbField, SpectrumRule } from "@/components/ui/Decor";
+import { HeroStage } from "@/components/layout/HeroStage";
 import { img } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
@@ -79,28 +80,32 @@ export function PageHero({
     <section className={cn("relative isolate overflow-hidden", !onPhoto && "grain")}>
       {onPhoto ? (
         <>
-          <KenBurns
-            id={image!}
-            className="absolute inset-0 -z-10"
-            sizes="100vw"
-            priority
-            duration={30}
-            scale={1.12}
+          {/* The wash is now a two-axis blend rather than a single
+              105° ramp: horizontal for headline legibility, vertical
+              so the photograph reads as lit from above.
+
+              The old build also ended on a flat `linear-gradient(0deg,
+              var(--bg), transparent)` strip, which is what made the
+              bottom look like the image running out of ink. It is gone
+              — the section now ends on the spectrum rule instead, a
+              deliberate edge rather than a dissolve. */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10"
+            style={{
+              background:
+                "linear-gradient(102deg, rgba(5,15,34,0.95) 0%, rgba(5,15,34,0.80) 40%, rgba(5,15,34,0.34) 76%, rgba(5,15,34,0.22) 100%)",
+            }}
           />
           <span
             aria-hidden
             className="pointer-events-none absolute inset-0 -z-10"
             style={{
               background:
-                "linear-gradient(105deg, rgba(5,15,34,0.94) 0%, rgba(5,15,34,0.82) 42%, rgba(5,15,34,0.44) 78%, rgba(5,15,34,0.3) 100%)",
+                "linear-gradient(180deg, rgba(5,15,34,0.55) 0%, transparent 32%, transparent 62%, rgba(5,15,34,0.62) 100%)",
             }}
           />
           <Scrim strength="light" className="-z-10" />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-28"
-            style={{ background: "linear-gradient(0deg, var(--bg), transparent)" }}
-          />
         </>
       ) : (
         <>
@@ -123,6 +128,22 @@ export function PageHero({
         </>
       )}
 
+      <HeroStage
+        photo={
+          onPhoto ? (
+            <KenBurns
+              id={image!}
+              className="absolute inset-0"
+              sizes="100vw"
+              priority
+              /* Was 30s / 1.12. Too slow and too shallow to register
+                 as movement — it read as a still. */
+              duration={18}
+              scale={1.18}
+            />
+          ) : undefined
+        }
+      >
       <div
         className={cn(
           "shell relative pb-14 pt-10 lg:pt-14",
@@ -215,12 +236,13 @@ export function PageHero({
         {children}
 
         {onPhoto && imageCaption && (
-          <p className="mt-10 inline-flex items-center gap-2 material-chip-dark rounded-full px-3.5 py-1.5 text-[0.6875rem] font-medium !text-on-dark-secondary">
+          <p className="liquid-glass mt-10 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[0.6875rem] font-medium !text-on-dark-secondary">
             <Camera className="size-3.5" />
             {imageCaption}
           </p>
         )}
       </div>
+      </HeroStage>
 
       {/* Closes the banner with the same spectrum band every printed
           piece the client puts out ends on. Also gives the eye a hard
