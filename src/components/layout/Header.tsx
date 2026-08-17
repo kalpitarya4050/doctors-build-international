@@ -11,6 +11,7 @@ import { COUNTRIES } from "@/lib/data/countries";
 import { UNIVERSITIES } from "@/lib/data/universities";
 import { Logo } from "@/components/ui/Logo";
 import { Flag } from "@/components/ui/Flag";
+import { UniversityLogo } from "@/components/ui/UniversityLogo";
 import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn, inrShort } from "@/lib/utils";
@@ -203,7 +204,14 @@ export function Header() {
               className="absolute inset-x-0 top-full hidden lg:block"
             >
               <div className="shell-wide pt-2 pb-6">
-                <div className="material-chrome overflow-hidden rounded-[var(--radius-xl)] border border-line shadow-[var(--shadow-xl)]">
+                {/* Solid, not `material-chrome`. The translucent
+                    chrome is right for the bar, which sits over a
+                    single hero; it is wrong for a panel carrying two
+                    columns of small type, because whatever the page
+                    is showing underneath reads straight through the
+                    labels — section headings and body copy were
+                    legible through both menus. */}
+                <div className="overflow-hidden rounded-[var(--radius-xl)] border border-line bg-[var(--surface-solid)] shadow-[var(--shadow-xl)]">
                   {openMega === "destinations" ? <DestinationsMega /> : <UniversitiesMega />}
                 </div>
               </div>
@@ -262,61 +270,157 @@ function DestinationsMega() {
   );
 }
 
-/** Grouped by country. A flat list of 23 overflows the viewport and
- *  loses the brochure's own structure; the columns mirror the
- *  priority bands a student is actually choosing between. */
+/* ============================================================
+   Partner universities — one country open at a time.
+
+   The previous version printed all six countries and all 23
+   universities at once, in three columns, inside a scroll box. It
+   was accurate and unreadable: six headings and 23 two-line
+   entries is more than a nav menu can carry, the columns broke the
+   country grouping across gutters, and any country below the fold
+   needed a scroll inside a hover menu — which closes the moment
+   the pointer leaves to reach the scrollbar.
+
+   This shows six rows, the same shape as the Destinations menu
+   beside it, and expands exactly one. Height is therefore bounded
+   by the largest country (Russia, 8) rather than by the total, and
+   nothing scrolls.
+   ============================================================ */
 function UniversitiesMega() {
+  const reduced = useReducedMotion();
   const groups = COUNTRIES.map((c) => ({
     country: c,
     unis: UNIVERSITIES.filter((u) => u.countrySlug === c.slug),
   })).filter((g) => g.unis.length > 0);
 
+  // Open on the first country rather than on nothing: an empty panel
+  // makes the menu look broken for however long it takes to aim.
+  const [open, setOpen] = useState(groups[0]?.country.slug ?? "");
+
   return (
-    <div className="p-7">
-      <div className="mb-5 flex items-baseline justify-between">
-        <p className="t-eyebrow text-ink-muted">Partner Universities {SITE.admissionYear}</p>
-        <Link
-          href="/universities"
-          className="text-[0.8125rem] font-semibold text-[var(--accent)] hover:underline"
-        >
-          View all {UNIVERSITIES.length} →
-        </Link>
+    <div className="grid gap-8 p-7 lg:grid-cols-[1fr_18rem]">
+      <div className="min-w-0">
+        <div className="mb-4 flex items-baseline justify-between gap-4">
+          <p className="t-eyebrow text-ink-muted">Partner Universities {SITE.admissionYear}</p>
+          <Link
+            href="/universities"
+            className="shrink-0 text-[0.8125rem] font-semibold text-[var(--accent)] hover:underline"
+          >
+            View all {UNIVERSITIES.length} →
+          </Link>
+        </div>
+
+        <ul className="flex flex-col gap-0.5">
+          {groups.map(({ country, unis }) => {
+            const isOpen = open === country.slug;
+            return (
+              <li
+                key={country.slug}
+                /* onMouseMove, deliberately NOT onMouseEnter.
+                 *
+                 * Collapsing a country shortens the list, so every row
+                 * below it slides up. If the pointer is sitting still
+                 * at the moment that happens — which is exactly the
+                 * case, the user has just arrived at the row they
+                 * aimed for — a different row lands under the cursor
+                 * and mouseEnter fires for it. Aiming at Russia
+                 * opened Kazakhstan.
+                 *
+                 * mousemove only fires when the pointer genuinely
+                 * moves, so a row arriving underneath a stationary
+                 * cursor cannot steal the selection. Re-setting the
+                 * same slug is a no-op, so the extra events are free.
+                 */
+                onMouseMove={() => setOpen(country.slug)}
+              >
+                <Link
+                  href={`/destinations/${country.slug}`}
+                  onFocus={() => setOpen(country.slug)}
+                  aria-expanded={isOpen}
+                  className={cn(
+                    "group flex items-center gap-3 rounded-[var(--radius)] px-3 py-2.5",
+                    "transition-colors duration-200",
+                    isOpen ? "bg-[var(--bg-sunken)]" : "hover:bg-[var(--bg-sunken)]",
+                  )}
+                >
+                  <Flag country={country.slug} className="h-5 w-[1.875rem]" />
+                  <span className="min-w-0 flex-1">
+                    <span
+                      className={cn(
+                        "block truncate text-[0.875rem] font-semibold transition-colors",
+                        isOpen ? "text-[var(--accent)]" : "text-ink group-hover:text-[var(--accent)]",
+                      )}
+                    >
+                      MBBS in {country.name}
+                    </span>
+                    <span className="block truncate text-[0.75rem] text-ink-muted">
+                      {unis.length} {unis.length === 1 ? "university" : "universities"} ·{" "}
+                      {country.startingFrom}
+                    </span>
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "size-4 shrink-0 text-ink-muted transition-transform duration-200",
+                      isOpen && "rotate-180 text-[var(--accent)]",
+                    )}
+                  />
+                </Link>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      key="unis"
+                      initial={reduced ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                      animate={reduced ? { opacity: 1 } : { height: "auto", opacity: 1 }}
+                      exit={reduced ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                      transition={reduced ? { duration: 0.15 } : { ...EASE_OUT, duration: 0.26 }}
+                      // Clipping is what makes it read as a slide
+                      // rather than a fade — without it the rows below
+                      // are overlapped by content that has not
+                      // finished arriving.
+                      className="overflow-hidden"
+                    >
+                      <ul className="grid grid-cols-1 gap-0.5 pt-1 pb-2 pl-3 sm:grid-cols-2">
+                        {unis.map((u) => (
+                          <li key={u.slug}>
+                            <Link
+                              href={`/universities/${u.slug}`}
+                              className="group flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-2 transition-colors duration-200 hover:bg-[var(--bg-elevated)]"
+                            >
+                              <UniversityLogo slug={u.slug} shortName={u.shortName} size={30} />
+                              <span className="min-w-0">
+                                <span className="block truncate text-[0.8125rem] font-semibold text-ink transition-colors group-hover:text-[var(--accent)]">
+                                  {u.shortName}
+                                </span>
+                                <span className="block truncate text-[0.6875rem] text-ink-muted">
+                                  {u.city}
+                                  {u.totalExpenseInr ? ` · ${inrShort(u.totalExpenseInr)}` : ""}
+                                </span>
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </li>
+            );
+          })}
+        </ul>
       </div>
 
-      <div className="grid max-h-[min(30rem,65vh)] gap-x-6 gap-y-5 overflow-y-auto md:grid-cols-2 xl:grid-cols-3">
-        {groups.map(({ country, unis }) => (
-          <div key={country.slug}>
-            <Link
-              href={`/destinations/${country.slug}`}
-              className="mb-2 flex items-center gap-2 rounded-[var(--radius-sm)] px-3 py-1.5 transition-colors hover:bg-[var(--bg-sunken)]"
-            >
-              <Flag country={country.slug} className="h-4 w-6 shrink-0" />
-              <span className="text-[0.8125rem] font-bold text-ink">{country.name}</span>
-              <span className="text-[0.6875rem] text-ink-muted">
-                {unis.length} {unis.length === 1 ? "university" : "universities"}
-              </span>
-            </Link>
-            <ul className="flex flex-col gap-0.5">
-              {unis.map((u) => (
-                <li key={u.slug}>
-                  <Link
-                    href={`/universities/${u.slug}`}
-                    className="group block rounded-[var(--radius-sm)] px-3 py-2 transition-colors duration-200 hover:bg-[var(--bg-sunken)]"
-                  >
-                    <span className="block truncate text-[0.8125rem] font-semibold text-ink transition-colors group-hover:text-[var(--accent)]">
-                      {u.shortName}
-                    </span>
-                    <span className="block truncate text-[0.6875rem] text-ink-muted">
-                      {u.city}
-                      {u.totalExpenseInr ? ` · ${inrShort(u.totalExpenseInr)}` : ""}
-                      {u.fmgePassRate ? ` · ${u.fmgePassRate} FMGE` : ""}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      <div className="rounded-[var(--radius-lg)] bg-[var(--navy-900)] p-6 text-white">
+        <p className="t-eyebrow text-[var(--gold-300)]">Every partner</p>
+        <p className="mt-3 text-[1.375rem] leading-[1.2] tracking-[-0.018em]">
+          {UNIVERSITIES.length} universities, {COUNTRIES.length} countries.
+        </p>
+        <p className="mt-2.5 text-[0.8125rem] leading-relaxed text-on-dark-secondary">
+          Every one NMC-eligible or WHO-recognized, taught in English, with no IELTS requirement.
+        </p>
+        <Button href="/universities" variant="gold" size="sm" className="mt-5" fullWidth>
+          Browse Universities
+        </Button>
       </div>
     </div>
   );
@@ -405,20 +509,36 @@ function MobileMenu({
                 ))}
               </ul>
 
+              {/* Grouped under a country heading rather than 23 rows
+                  each repeating the same six flags — on a phone that
+                  list was the same flag six or eight times running,
+                  which reads as noise and tells you nothing. */}
               <p className="t-eyebrow mt-8 mb-3 px-3.5 text-ink-muted">Universities</p>
-              <ul className="flex flex-col gap-0.5">
-                {UNIVERSITIES.map((u) => (
-                  <li key={u.slug}>
-                    <Link
-                      href={`/universities/${u.slug}`}
-                      className="flex items-center gap-3 rounded-[var(--radius)] px-3.5 py-2.5 text-[0.875rem] text-ink-secondary hover:bg-[var(--bg-sunken)]"
-                    >
-                      <Flag country={u.countrySlug} className="h-4 w-6" />
-                      <span className="truncate">{u.shortName}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              {COUNTRIES.map((c) => {
+                const unis = UNIVERSITIES.filter((u) => u.countrySlug === c.slug);
+                if (!unis.length) return null;
+                return (
+                  <div key={c.slug} className="mb-4">
+                    <p className="mb-1 flex items-center gap-2 px-3.5 text-[0.75rem] font-bold text-ink">
+                      <Flag country={c.slug} className="h-3.5 w-5" />
+                      {c.name}
+                    </p>
+                    <ul className="flex flex-col gap-0.5">
+                      {unis.map((u) => (
+                        <li key={u.slug}>
+                          <Link
+                            href={`/universities/${u.slug}`}
+                            className="flex items-center gap-3 rounded-[var(--radius)] px-3.5 py-2.5 text-[0.875rem] text-ink-secondary hover:bg-[var(--bg-sunken)]"
+                          >
+                            <UniversityLogo slug={u.slug} shortName={u.shortName} size={26} />
+                            <span className="truncate">{u.shortName}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
             </nav>
 
             <div className="flex flex-col gap-2.5 border-t border-hairline p-5">

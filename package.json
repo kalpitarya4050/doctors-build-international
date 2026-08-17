@@ -9,6 +9,7 @@
     "lint": "eslint",
     "images": "node scripts/fetch-images.mjs",
     "images:universities": "node scripts/fetch-university-images.mjs",
+    "images:logos": "node scripts/fetch-university-logos.mjs",
     "share": "node scripts/share.mjs",
     "images:compress": "node scripts/compress-images.mjs",
     "audit:mobile": "node scripts/audit-mobile.mjs",
