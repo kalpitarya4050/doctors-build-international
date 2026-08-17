@@ -53,3 +53,9 @@ public/images/.variants.json
 # Local headless browser for the audit scripts (see scripts/browser.mjs).
 # Install with: npx @puppeteer/browsers install chrome-headless-shell@stable
 /chrome-headless-shell/
+
+# Natural Earth source data for scripts/build-land.mjs and
+# scripts/build-globe-texture.mjs. Downloaded on demand, baked into
+# src/lib/data/land.ts and public/brand/globe-land.png, then discarded —
+# the baked outputs are what ship.
+/land-*m.json

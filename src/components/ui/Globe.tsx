@@ -4,140 +4,122 @@ import { useEffect, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import { useTheme } from "next-themes";
 import { COUNTRIES, ORIGIN } from "@/lib/data/countries";
-import { LAND } from "@/lib/data/land";
 import { VelocityTracker, project } from "@/lib/motion";
-import { Shield3D } from "@/components/ui/Shield3D";
+import {
+  GlobeRenderer,
+  greatCircle,
+  projectLatLng,
+  type GlobeColors,
+} from "@/lib/globe-gl";
+import { withBasePath } from "@/lib/images";
 import { Flag } from "@/components/ui/Flag";
 import { cn } from "@/lib/utils";
 
 /* ============================================================
-   A slowly rotating wireframe globe with animated flight arcs
-   from India to every destination we place students into.
+   The hero globe.
 
-   Canvas + requestAnimationFrame (the web's display-synced
-   clock). Rotation is deliberately slow — well away from the
-   ~0.2 Hz oscillation band that triggers vestibular discomfort —
-   and the whole thing renders as a single static frame under
-   prefers-reduced-motion.
+   A real sphere, rendered by a fragment shader that solves the
+   orthographic projection in closed form (src/lib/globe-gl.ts),
+   textured from a baked Natural Earth land mask and lit in the
+   site's own navy and gold. It replaces a wireframe canvas
+   drawing that read as a diagram of a globe rather than a globe.
+
+   Three layers, one rotation:
+
+     1. WebGL canvas — the Earth itself.
+     2. 2D canvas    — flight arcs from India, surface markers,
+                       and the leader lines out to the labels.
+     3. DOM          — the flag chips, so they stay real text
+                       that a screen reader and a translator can
+                       both reach.
+
+   Every layer reads the same `yaw`/`pitch` from the same rAF
+   tick, so nothing can drift off the sphere it is drawn on.
    ============================================================ */
 
-type Vec3 = { x: number; y: number; z: number };
-
-function toCartesian(latDeg: number, lngDeg: number, r: number): Vec3 {
-  const lat = (latDeg * Math.PI) / 180;
-  const lng = (lngDeg * Math.PI) / 180;
-  return {
-    x: r * Math.cos(lat) * Math.sin(lng),
-    y: r * Math.sin(lat),
-    z: r * Math.cos(lat) * Math.cos(lng),
-  };
-}
-
-function rotateY(p: Vec3, a: number): Vec3 {
-  const c = Math.cos(a);
-  const s = Math.sin(a);
-  return { x: p.x * c + p.z * s, y: p.y, z: -p.x * s + p.z * c };
-}
-
-function rotateX(p: Vec3, a: number): Vec3 {
-  const c = Math.cos(a);
-  const s = Math.sin(a);
-  return { x: p.x, y: p.y * c - p.z * s, z: p.y * s + p.z * c };
-}
-
-/** Spherical interpolation so an arc follows the great circle,
- *  the way a flight path actually does. */
-function slerp(a: Vec3, b: Vec3, t: number, r: number): Vec3 {
-  const dot = Math.max(-1, Math.min(1, (a.x * b.x + a.y * b.y + a.z * b.z) / (r * r)));
-  const omega = Math.acos(dot);
-  if (omega < 1e-6) return a;
-  const s = Math.sin(omega);
-  const w1 = Math.sin((1 - t) * omega) / s;
-  const w2 = Math.sin(t * omega) / s;
-  return { x: a.x * w1 + b.x * w2, y: a.y * w1 + b.y * w2, z: a.z * w1 + b.z * w2 };
-}
-
-/* ------------------------------------------------------------------
-   The canvas cannot inherit CSS custom properties, so the palette is
-   declared here per theme. The original values were tuned against a
-   dark ground and were almost invisible on the light one — on white,
-   the sphere and graticule need far more contrast to read at all.
-   ------------------------------------------------------------------ */
-type GlobePalette = {
-  glowInner: string;
-  glowMid: string;
-  bodyTop: string;
-  bodyMid: string;
-  bodyEdge: string;
-  rim: string;
-  parallel: string;
-  meridian: string;
-  arcTrack: string;
-  landFill: string;
-  landEdge: string;
-  cometHead: (a: number) => string;
-  nodeRing: (a: number) => string;
-  originFill: string;
-};
-
-const PALETTES: Record<"light" | "dark" | "onNavy", GlobePalette> = {
-  light: {
-    // Gold reads as a warm halo but disappears as a line on a warm
-    // sphere, so on light the arcs and nodes go navy for contrast and
-    // gold is kept for the glow and rim only.
-    glowInner: "rgba(201,162,39,0.22)",
-    glowMid: "rgba(201,162,39,0.08)",
-    bodyTop: "rgba(42,85,159,0.22)",
-    bodyMid: "rgba(10,31,68,0.15)",
-    bodyEdge: "rgba(10,31,68,0.06)",
-    rim: "rgba(168,133,29,0.80)",
-    parallel: "rgba(10,31,68,0.28)",
-    meridian: "rgba(10,31,68,0.22)",
-    arcTrack: "rgba(10,31,68,0.30)",
-    landFill: "rgba(10,31,68,0.13)",
-    landEdge: "rgba(10,31,68,0.34)",
-    cometHead: (a) => `rgba(10,31,68,${Math.min(1, a * 1.15)})`,
-    nodeRing: (a) => `rgba(10,31,68,${Math.min(1, a * 1.2)})`,
-    originFill: "#0A1F44",
+/* Land is blue and the Earth is the ground; gold is reserved for our
+   own marks on it — the arcs, the markers, the coastline glow and the
+   rim. That split is what keeps six destinations legible on top of a
+   fully painted planet, and it is why the land is not gold too. */
+const PALETTES: Record<"light" | "dark" | "onNavy", GlobeColors & {
+  arc: string;
+  arcHead: string;
+  marker: string;
+  origin: string;
+  leader: string;
+}> = {
+  onNavy: {
+    oceanLit: "#0b2c5c",
+    oceanDark: "#061530",
+    landLow: "#255ca4",
+    landHigh: "#63a1e2",
+    coast: "#e8c766",
+    rim: "#c9a227",
+    atmosphere: "#e8c766",
+    arc: "rgba(233,199,102,0.55)",
+    arcHead: "250,231,170",
+    marker: "#f2dda0",
+    origin: "#ffffff",
+    leader: "rgba(233,199,102,0.6)",
   },
   dark: {
-    glowInner: "rgba(201,162,39,0.16)",
-    glowMid: "rgba(201,162,39,0.05)",
-    bodyTop: "rgba(28,64,128,0.20)",
-    bodyMid: "rgba(10,31,68,0.13)",
-    bodyEdge: "rgba(10,31,68,0.03)",
-    rim: "rgba(201,162,39,0.40)",
-    parallel: "rgba(90,140,220,0.30)",
-    meridian: "rgba(90,140,220,0.24)",
-    arcTrack: "rgba(201,162,39,0.24)",
-    landFill: "rgba(150,190,255,0.11)",
-    landEdge: "rgba(150,190,255,0.30)",
-    cometHead: (a) => `rgba(233,199,102,${a})`,
-    nodeRing: (a) => `rgba(233,199,102,${a})`,
-    originFill: "#E8C766",
+    oceanLit: "#0b2851",
+    oceanDark: "#040c20",
+    landLow: "#1f4c8e",
+    landHigh: "#5f95d8",
+    coast: "#e8c766",
+    rim: "#c9a227",
+    atmosphere: "#c9a227",
+    arc: "rgba(233,199,102,0.36)",
+    arcHead: "233,199,102",
+    marker: "#e8c766",
+    origin: "#ffffff",
+    leader: "rgba(233,199,102,0.45)",
   },
-  /* On the navy hero the globe is the ground, not an ornament beside
-     the copy — so everything is pushed brighter than the `dark`
-     palette, which was tuned to sit quietly next to text. */
-  onNavy: {
-    glowInner: "rgba(201,162,39,0.30)",
-    glowMid: "rgba(201,162,39,0.09)",
-    bodyTop: "rgba(58,104,190,0.34)",
-    bodyMid: "rgba(18,44,92,0.24)",
-    bodyEdge: "rgba(10,31,68,0.06)",
-    rim: "rgba(233,199,102,0.62)",
-    parallel: "rgba(132,172,236,0.40)",
-    meridian: "rgba(132,172,236,0.30)",
-    arcTrack: "rgba(233,199,102,0.38)",
-    /* Land is the subject now, so it carries more weight than the
-       graticule rather than sitting under it. */
-    landFill: "rgba(120,170,255,0.17)",
-    landEdge: "rgba(176,208,255,0.46)",
-    cometHead: (a) => `rgba(250,231,170,${Math.min(1, a * 1.25)})`,
-    nodeRing: (a) => `rgba(233,199,102,${Math.min(1, a * 1.2)})`,
-    originFill: "#F2DDA0",
+  light: {
+    /* On white the sphere has to hold its own edge, so the ocean is
+       darker here than on the navy hero, not lighter — a pale globe
+       on a pale page has no silhouette at all. */
+    oceanLit: "#173f7d",
+    oceanDark: "#0a1f44",
+    landLow: "#3b76c4",
+    landHigh: "#8fbdf0",
+    coast: "#c9a227",
+    rim: "#a8851d",
+    atmosphere: "#c9a227",
+    arc: "rgba(10,31,68,0.30)",
+    arcHead: "10,31,68",
+    marker: "#c9a227",
+    origin: "#0A1F44",
+    leader: "rgba(10,31,68,0.35)",
   },
 };
+
+/** Radius as a fraction of the stage's short side. Leaves room for the
+ *  atmosphere halo and for labels fanned outside the limb. */
+const RADIUS_RATIO = 0.4;
+
+/** Fill cost scales with the square of this, and the shader does
+ *  thirteen texture fetches per pixel. 1.75 is past the point where
+ *  more resolution is visible on the limb. */
+const MAX_DPR = 1.75;
+
+/* Module-level so a theme flip — which tears the render effect down
+   and builds it again — reuses the decoded bitmap instead of going
+   back to the network. Rejects once and stays rejected, which is the
+   right answer: if the mask 404s, it will 404 again. */
+let maskPromise: Promise<HTMLImageElement> | null = null;
+
+function loadMask(): Promise<HTMLImageElement> {
+  maskPromise ??= new Promise((resolve, reject) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.onerror = () => reject(new Error("globe mask failed to load"));
+    img.src = withBasePath("/brand/globe-land.png");
+    img.decode().then(() => resolve(img), reject);
+  });
+  return maskPromise;
+}
 
 export function Globe({
   className,
@@ -149,405 +131,427 @@ export function Globe({
   className?: string;
   tone?: "auto" | "light" | "dark" | "onNavy";
 }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const shieldRef = useRef<HTMLDivElement>(null);
-  const flagRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const glRef = useRef<HTMLCanvasElement>(null);
+  const overlayRef = useRef<HTMLCanvasElement>(null);
+  const fallbackRef = useRef<HTMLDivElement>(null);
+  const chipRefs = useRef<(HTMLDivElement | null)[]>([]);
   const reduced = useReducedMotion();
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const paletteKey = tone === "auto" ? (isDark ? "dark" : "light") : tone;
+  const paletteKey = tone === "auto" ? (resolvedTheme === "dark" ? "dark" : "light") : tone;
 
+  /* One effect owns the whole thing. The arcs, markers, labels and
+     drag all work with no WebGL at all — they only need the rotation —
+     so they start immediately, and the sphere fades in underneath them
+     if and when the mask decodes and a context is granted. Which layer
+     is showing is a property of two DOM nodes, not of React state:
+     tracking it in state would re-render the tree for a crossfade and
+     would mean writing setState from inside an effect. */
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const stage = stageRef.current;
+    const glCanvas = glRef.current;
+    const overlay = overlayRef.current;
+    const fallback = fallbackRef.current;
+    if (!stage || !glCanvas || !overlay) return;
 
     const P = PALETTES[paletteKey];
+    const ctx = overlay.getContext("2d");
+    if (!ctx) return;
 
-    let raf = 0;
+    let renderer: GlobeRenderer | null = null;
+    let disposed = false;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
     let width = 0;
     let height = 0;
-    let radius = 0;
+    let radius = 1;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    /* The stage is deliberately wider than the viewport and hangs off
+       the right edge — that crop is what makes the globe read as a
+       place rather than an illustration. Labels must not inherit that:
+       a chip pushed outward near the right limb lands in the crop and
+       is simply gone. These are the stage's offsets, so the declutter
+       can express "stay on screen" in stage-local coordinates. */
+    let stageLeft = 0;
 
     const resize = () => {
-      const rect = canvas.getBoundingClientRect();
+      const rect = stage.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
+      stageLeft = rect.left;
+      radius = Math.min(width, height) * RADIUS_RATIO;
+      renderer?.resize(width, height, radius, dpr);
+      overlay.width = Math.max(1, Math.floor(width * dpr));
+      overlay.height = Math.max(1, Math.floor(height * dpr));
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      radius = Math.min(width, height) * 0.38;
     };
-
     resize();
 
-    const origin = { lat: ORIGIN.lat, lng: ORIGIN.lng };
-    /* Fan the chips by LONGITUDE RANK, not array index.
-       Uzbekistan (64E), Kazakhstan (68E) and Kyrgyzstan (74E) are
-       within ten degrees of each other, so any fan keyed on array
-       order can still hand two neighbours the same radius — which is
-       how Kazakhstan ended up hidden behind Kyrgyzstan. Ranking by
-       longitude guarantees adjacent chips sit at different heights. */
+    if (GlobeRenderer.isSupported()) {
+      loadMask().then(
+        (img) => {
+          if (disposed) return;
+          try {
+            renderer = new GlobeRenderer(glCanvas, img, P);
+          } catch {
+            return; // fallback disc stays up
+          }
+          renderer.resize(width, height, radius, dpr);
+          glCanvas.style.opacity = "1";
+          if (fallback) fallback.style.opacity = "0";
+          /* Under prefers-reduced-motion the loop draws exactly one
+             frame and does not recurse — and that frame has already
+             been and gone by the time the mask finishes decoding, so
+             without this kick the sphere stays blank forever and only
+             the fallback disc is ever seen. */
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(frame);
+        },
+        () => {},
+      );
+    }
+
+    /* ---- destinations ----------------------------------------- */
+    /* Fan the labels by LONGITUDE RANK, not array index. Uzbekistan
+       (69E), Kyrgyzstan (74.6E) and Kazakhstan (76.9E) sit within eight
+       degrees of one another, so any fan keyed on array order can hand
+       two neighbours the same offset and hide one behind the other.
+       Ranking by longitude guarantees adjacent labels differ. */
     const byLng = [...COUNTRIES].sort((a, b) => a.lng - b.lng).map((c) => c.slug);
     const targets = COUNTRIES.map((c) => ({
       lat: c.lat,
       lng: c.lng,
-      accent: c.accent,
       name: c.name,
-      lift: 1.05 + (byLng.indexOf(c.slug) % 3) * 0.115,
+      slug: c.slug,
+      /** Label distance out from the limb, in sphere radii. */
+      fan: 0.17 + (byLng.indexOf(c.slug) % 3) * 0.085,
+      arc: greatCircle(ORIGIN.lat, ORIGIN.lng, c.lat, c.lng, 48),
     }));
 
-    const TILT = -0.38;
-    const start = performance.now();
+    /* Per-frame label state. Allocated once and mutated in place: this
+       is rewritten sixty times a second, and six fresh objects a frame
+       is six hundred objects a second for the collector to sweep. */
+    const layout = targets.map(() => ({
+      sx: 0, // marker, on the surface
+      sy: 0,
+      x: 0, // label, after the fan and the declutter
+      y: 0,
+      z: 0,
+      w: 90, // measured from the DOM in resize()
+      h: 30,
+      visible: false,
+    }));
+    /** Clear space demanded between two labels, in CSS pixels. */
+    const LABEL_GAP = 8;
+    /** Clear space demanded between a label and the viewport edge. */
+    const EDGE_PAD = 12;
 
-    /* ---- drag state (Apple 2, 5, 6) ----------------------------
-       `userSpin` is the offset the pointer has added on top of the
-       ambient rotation. On release the flick is projected forward
-       with the same exponential-decay model the carousel uses, then
-       bled off — so letting go continues the gesture rather than
-       stopping it dead. */
-    let userSpin = 0;
-    let userTilt = 0;
-    let spinVel = 0;   // radians/s, decaying after release
-    let tiltVel = 0;
+    const measureChips = () => {
+      for (let i = 0; i < layout.length; i++) {
+        const el = chipRefs.current[i];
+        if (!el?.firstElementChild) continue;
+        const r = el.firstElementChild.getBoundingClientRect();
+        if (r.width > 0) {
+          layout[i].w = r.width;
+          layout[i].h = r.height;
+        }
+      }
+    };
+    measureChips();
+    // Chip width is set by its text, so it changes when the webfont
+    // swaps in. Measuring only at mount leaves the declutter working
+    // from fallback-font metrics for the life of the page.
+    document.fonts?.ready.then(() => {
+      if (!disposed) measureChips();
+    });
+
+    /* ---- rotation --------------------------------------------- */
+    /* Every place this globe plots — India and all six destinations —
+       sits between 37E and 116E. A continuous revolution parks that
+       whole corridor on the far side for most of its cycle, which is
+       how the labels used to vanish for fifteen seconds at a stretch.
+       A slow sway keeps the corridor facing the viewer permanently
+       while the sphere still visibly turns. Dragging overrides it. */
+    const FOCUS_LNG = 74;
+    const BASE_YAW = (-FOCUS_LNG * Math.PI) / 180;
+    /* POSITIVE pitch brings northern latitudes down toward the middle
+       of the disc. Every destination sits between 39N and 56N, so a
+       negative tilt — which was the first guess — stacks all six of
+       them into the top sliver of the sphere with their labels piled
+       on each other and half of them off the top of the section. */
+    const BASE_PITCH = 0.4;
+    const SWAY = 0.42;
+    const SWAY_HZ = 0.026;
+
+    let userYaw = 0;
+    let userPitch = 0;
+    let yawVel = 0;
+    let pitchVel = 0;
     let dragging = false;
     let lastX = 0;
     let lastY = 0;
+    let lastT = 0;
     const vt = new VelocityTracker(90);
 
-    /* Every place this globe plots — India and all six destinations —
-       sits between 37°E and 116°E. Starting the rotation at 0° put
-       that whole corridor on the far side, so the arcs were culled
-       and the sphere rendered as a bare wireframe for most of the
-       cycle. Offsetting the base rotation brings the corridor to the
-       front at load, which is the only reason the globe is here. */
-    const FOCUS_LNG = 76;
-    const BASE_SPIN = (-FOCUS_LNG * Math.PI) / 180;
+    const start = performance.now();
+    let raf = 0;
+    let tick = 0;
 
-    const draw = (now: number) => {
-      // Nothing measurable yet — wait for the observer to report a size
-      // rather than burning a frame drawing a zero-radius sphere.
-      if (width === 0 || height === 0) {
-        if (!reduced) raf = requestAnimationFrame(draw);
-        return;
-      }
-
-      const elapsed = (now - start) / 1000;
-      // ~105 s per revolution. Slower than before because the arcs are
-      // now the subject rather than ambient decoration — they want
-      // time on screen, not a tour.
-      /* Ambient drift OSCILLATES rather than revolving.
-         Every destination sits between 37E and 116E, so a continuous
-         rotation swept that whole corridor behind the sphere and the
-         flags vanished for most of the cycle — which is exactly the
-         "flags disappear after 15 seconds" fault. A slow sway keeps
-         the corridor facing the viewer permanently while still
-         leaving the globe alive. Dragging overrides it completely. */
-      const ambient = reduced ? 0 : Math.sin(elapsed * 0.16) * 0.30;
-      const spin = BASE_SPIN + ambient + userSpin;
-      const tilt = TILT + userTilt;
-
+    const drawOverlay = (yaw: number, pitch: number, elapsed: number) => {
       const cx = width / 2;
       const cy = height / 2;
-
       ctx.clearRect(0, 0, width, height);
-
-      /* ---- outer atmosphere glow ---- */
-      const glow = ctx.createRadialGradient(cx, cy, radius * 0.72, cx, cy, radius * 1.42);
-      glow.addColorStop(0, P.glowInner);
-      glow.addColorStop(0.55, P.glowMid);
-      glow.addColorStop(1, "rgba(201,162,39,0)");
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius * 1.42, 0, Math.PI * 2);
-      ctx.fill();
-
-      /* ---- sphere body ---- */
-      const body = ctx.createRadialGradient(
-        cx - radius * 0.34,
-        cy - radius * 0.4,
-        radius * 0.06,
-        cx,
-        cy,
-        radius,
-      );
-      body.addColorStop(0, P.bodyTop);
-      body.addColorStop(0.62, P.bodyMid);
-      body.addColorStop(1, P.bodyEdge);
-      ctx.fillStyle = body;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      /* ---- rim ---- */
-      ctx.strokeStyle = P.rim;
-      ctx.lineWidth = 1.4;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.stroke();
-
-      const projectPoint = (lat: number, lng: number) => {
-        let p = toCartesian(lat, lng, radius);
-        p = rotateY(p, spin);
-        p = rotateX(p, tilt);
-        return { sx: cx + p.x, sy: cy - p.y, z: p.z };
-      };
-
-      /* ---- landmasses ----
-         Natural Earth 1:110m outlines, baked to lon/lat rings by
-         scripts/build-land.mjs. Orthographic projection shows exactly
-         one hemisphere, so each ring is split into runs of
-         front-facing points and every run is filled on its own. The
-         alternative — clipping each ring against the limb circle —
-         is correct but costs a lot of maths per frame for an edge
-         nobody looks at, since the sphere's own rim covers the seam. */
       ctx.lineJoin = "round";
-      for (const ring of LAND) {
-        let run: { sx: number; sy: number }[] = [];
+      ctx.lineCap = "round";
 
-        const flush = () => {
-          if (run.length > 2) {
-            ctx.beginPath();
-            ctx.moveTo(run[0].sx, run[0].sy);
-            for (let i = 1; i < run.length; i++) ctx.lineTo(run[i].sx, run[i].sy);
-            ctx.closePath();
-            ctx.fillStyle = P.landFill;
-            ctx.fill();
-            ctx.strokeStyle = P.landEdge;
-            ctx.lineWidth = 0.9;
-            ctx.stroke();
-          }
-          run = [];
-        };
+      /* A point is visible if it is on the near hemisphere. Arcs are
+         allowed a little slack past the limb so they do not snap off
+         mid-stroke exactly on the silhouette. */
+      const ARC_CULL = -0.1;
 
-        // Rings are flat [lon,lat,lon,lat,...] to keep the baked file
-        // small; stepping by two avoids allocating a pair per point.
-        for (let i = 0; i < ring.length; i += 2) {
-          let p = toCartesian(ring[i + 1], ring[i], radius);
-          p = rotateY(p, spin);
-          p = rotateX(p, tilt);
-          if (p.z < 0) {
-            flush();
-            continue;
-          }
-          run.push({ sx: cx + p.x, sy: cy - p.y });
-        }
-        flush();
-      }
-
-      /* ---- graticule: parallels ---- */
-      ctx.lineWidth = 0.75;
-      for (let lat = -60; lat <= 60; lat += 30) {
-        ctx.beginPath();
-        let started = false;
-        for (let lng = -180; lng <= 180; lng += 4) {
-          const { sx, sy, z } = projectPoint(lat, lng);
-          if (z < 0) {
-            started = false;
-            continue;
-          }
-          if (!started) {
-            ctx.moveTo(sx, sy);
-            started = true;
-          } else {
-            ctx.lineTo(sx, sy);
-          }
-        }
-        ctx.strokeStyle = P.parallel;
-        ctx.stroke();
-      }
-
-      /* ---- graticule: meridians ---- */
-      for (let lng = -180; lng < 180; lng += 30) {
-        ctx.beginPath();
-        let started = false;
-        for (let lat = -90; lat <= 90; lat += 4) {
-          const { sx, sy, z } = projectPoint(lat, lng);
-          if (z < 0) {
-            started = false;
-            continue;
-          }
-          if (!started) {
-            ctx.moveTo(sx, sy);
-            started = true;
-          } else {
-            ctx.lineTo(sx, sy);
-          }
-        }
-        ctx.strokeStyle = P.meridian;
-        ctx.stroke();
-      }
-
-      /* ---- flight arcs, India → each destination ---- */
-      const a = toCartesian(origin.lat, origin.lng, radius);
-
-      targets.forEach((t, idx) => {
-        const b = toCartesian(t.lat, t.lng, radius);
-        // Each arc runs its own 5.5 s cycle, offset so they never
-        // all fire together.
-        const cycle = 5.5;
-        const phase = reduced ? 0.65 : ((elapsed + idx * 0.78) % cycle) / cycle;
-
-        const SEGMENTS = 44;
-        const pts: { sx: number; sy: number; z: number }[] = [];
-
-        for (let i = 0; i <= SEGMENTS; i++) {
-          const s = i / SEGMENTS;
-          let p = slerp(a, b, s, radius);
+      for (let i = 0; i < targets.length; i++) {
+        const t = targets[i];
+        const pts = t.arc.map((p) =>
           // Lift the arc off the surface so it reads as a flight path
-          const lift = 1 + Math.sin(s * Math.PI) * 0.19;
-          p = { x: p.x * lift, y: p.y * lift, z: p.z * lift };
-          p = rotateY(p, spin);
-          p = rotateX(p, tilt);
-          pts.push({ sx: cx + p.x, sy: cy - p.y, z: p.z });
-        }
+          // rather than a line painted on the ground.
+          projectLatLng(p.lat, p.lng, yaw, pitch, radius, 1 + Math.sin(p.t * Math.PI) * 0.17),
+        );
 
-        // Static arc track
+        // Static track
         ctx.beginPath();
-        let started = false;
+        let open = false;
         for (const p of pts) {
-          if (p.z < -radius * 0.12) {
-            started = false;
+          if (p.z < ARC_CULL) {
+            open = false;
             continue;
           }
-          if (!started) {
-            ctx.moveTo(p.sx, p.sy);
-            started = true;
-          } else {
-            ctx.lineTo(p.sx, p.sy);
+          if (open) ctx.lineTo(cx + p.x, cy + p.y);
+          else {
+            ctx.moveTo(cx + p.x, cy + p.y);
+            open = true;
           }
         }
-        ctx.strokeStyle = P.arcTrack;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Travelling comet head with a short trail
-        const headIdx = Math.floor(phase * SEGMENTS);
-        const TRAIL = 9;
-        for (let k = 0; k < TRAIL; k++) {
-          const i = headIdx - k;
-          if (i < 0 || i >= pts.length - 1) continue;
-          const p = pts[i];
-          const n = pts[i + 1];
-          if (p.z < -radius * 0.12 || n.z < -radius * 0.12) continue;
-          const alpha = (1 - k / TRAIL) * 0.85;
-          ctx.beginPath();
-          ctx.moveTo(p.sx, p.sy);
-          ctx.lineTo(n.sx, n.sy);
-          ctx.strokeStyle = P.cometHead(alpha);
-          ctx.lineWidth = 2.1 * (1 - k / TRAIL) + 0.5;
-          ctx.lineCap = "round";
-          ctx.stroke();
-        }
-
-        // Destination node
-        const dest = pts[pts.length - 1];
-        if (dest.z > -radius * 0.06) {
-          const pulse = reduced ? 0.5 : (Math.sin(elapsed * 1.9 + idx) + 1) / 2;
-          ctx.beginPath();
-          ctx.arc(dest.sx, dest.sy, 3.1 + pulse * 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = t.accent;
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(dest.sx, dest.sy, 6.5 + pulse * 5.5, 0, Math.PI * 2);
-          ctx.strokeStyle = P.nodeRing(0.55 - pulse * 0.34);
-          ctx.lineWidth = 1.1;
-          ctx.stroke();
-        }
-      });
-
-      /* ---- origin node: India ---- */
-      const originPt = projectPoint(origin.lat, origin.lng);
-      if (originPt.z > -radius * 0.06) {
-        const pulse = reduced ? 0.5 : (Math.sin(elapsed * 2.2) + 1) / 2;
-        ctx.beginPath();
-        ctx.arc(originPt.sx, originPt.sy, 4.6, 0, Math.PI * 2);
-        ctx.fillStyle = P.originFill;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(originPt.sx, originPt.sy, 9 + pulse * 8, 0, Math.PI * 2);
-        ctx.strokeStyle = P.nodeRing(0.6 - pulse * 0.4);
+        ctx.strokeStyle = P.arc;
         ctx.lineWidth = 1.4;
         ctx.stroke();
-      }
 
-      /* ---- momentum decay after release ----
-         Velocity bleeds off exponentially and is folded back into
-         the ambient drift, so the globe never stops abruptly. */
-      if (!dragging && (spinVel !== 0 || tiltVel !== 0)) {
-        const dt = 1 / 60;
-        userSpin += spinVel * dt;
-        userTilt += tiltVel * dt;
-        spinVel *= 0.94;
-        tiltVel *= 0.94;
-        if (Math.abs(spinVel) < 0.0008) spinVel = 0;
-        if (Math.abs(tiltVel) < 0.0008) tiltVel = 0;
-      }
-      // Tilt is bounded — past roughly +/-50 degrees you are looking at
-      // the poles and the graticule turns to mush.
-      userTilt = Math.max(-0.55, Math.min(0.55, userTilt));
-
-      /* ---- DOM layer, driven from the same projection ----
-         Written straight to style rather than through React: this
-         runs every frame, and a state update per frame would cost
-         a full reconciliation for a transform. */
-      const shield = shieldRef.current;
-      if (shield) {
-        // The element is authored at its natural 307px width, so the
-        // factor has to divide that out — otherwise this is a 14x
-        // blowup rather than a fit. Target is a little over half the
-        // sphere, which leaves the graticule readable around it.
-        const s = (radius * 0.66) / 307;
-        shield.style.transform =
-          `translate(-50%,-50%) rotateX(${(-tilt * 34).toFixed(2)}deg) ` +
-          `rotateY(${(Math.sin(spin) * 26).toFixed(2)}deg) scale(${s.toFixed(3)})`;
-        const spec = shield.querySelector<HTMLElement>("[data-shield-spec]");
-        if (spec) {
-          // Highlight slides against the turn — the cue that the
-          // bezel is a raised surface and not a printed ring.
-          spec.style.backgroundPosition = `${(50 - Math.sin(spin) * 46).toFixed(1)}% 0`;
+        // Travelling comet head. Each arc runs its own cycle, offset so
+        // they never all fire at once.
+        const CYCLE = 5.6;
+        const phase = reduced ? 0.68 : ((elapsed + i * 0.82) % CYCLE) / CYCLE;
+        const head = Math.floor(phase * (pts.length - 1));
+        const TRAIL = 10;
+        for (let k = 0; k < TRAIL; k++) {
+          const j = head - k;
+          if (j < 0 || j >= pts.length - 1) continue;
+          const a = pts[j];
+          const b = pts[j + 1];
+          if (a.z < ARC_CULL || b.z < ARC_CULL) continue;
+          const fade = 1 - k / TRAIL;
+          ctx.beginPath();
+          ctx.moveTo(cx + a.x, cy + a.y);
+          ctx.lineTo(cx + b.x, cy + b.y);
+          ctx.strokeStyle = `rgba(${P.arcHead},${(fade * 0.9).toFixed(3)})`;
+          ctx.lineWidth = 2.3 * fade + 0.5;
+          ctx.stroke();
         }
       }
 
-      targets.forEach((t, i) => {
-        const el = flagRefs.current[i];
-        if (!el) return;
-        // Radius fans per longitude rank (see `targets` above); the
-        // bearing itself is never altered, so each chip still points
-        // at its true position.
-        let p = toCartesian(t.lat, t.lng, radius * t.lift);
-        p = rotateY(p, spin);
-        p = rotateX(p, tilt);
-        const behind = p.z < 0;
-        // Perspective: nearer reads bigger. Kept shallow so a flag
-        // swinging to the front does not lunge at the viewer.
-        const depth = 0.72 + (p.z / radius) * 0.30;
-        el.style.transform =
-          `translate(-50%,-50%) translate3d(${(cx + p.x).toFixed(1)}px, ${(cy - p.y).toFixed(1)}px, 0) ` +
-          `scale(${depth.toFixed(3)})`;
-        el.style.opacity = behind ? String(Math.max(0, 0.16 + (p.z / radius) * 0.5)) : "1";
-        el.style.zIndex = String(Math.round(100 + (p.z / radius) * 50));
-      });
+      /* ---- destination labels ----
+         Anchor, declutter, then draw. The three steps have to be
+         separate passes: a label cannot be positioned without knowing
+         where the others ended up. */
+      for (let i = 0; i < targets.length; i++) {
+        const t = targets[i];
+        const s = projectLatLng(t.lat, t.lng, yaw, pitch, radius);
+        const L = layout[i];
+        L.sx = cx + s.x;
+        L.sy = cy + s.y;
+        L.z = s.z;
+        L.visible = s.z >= 0;
+        if (!L.visible) continue;
 
-      if (!reduced) raf = requestAnimationFrame(draw);
+        /* The label is pushed radially OUTWARD in screen space, not
+           along the surface normal. A normal-space lift collapses to
+           nothing for anything near the middle of the disc — where the
+           normal points straight at the viewer — and drops the label on
+           top of its own marker. Screen-radial always separates them,
+           and it spreads a tight cluster automatically, because
+           neighbours sit at slightly different bearings from centre. */
+        const len = Math.hypot(s.x, s.y);
+        const dirX = len > radius * 0.12 ? s.x / len : 0;
+        const dirY = len > radius * 0.12 ? s.y / len : -1;
+        const push = radius * t.fan;
+        L.x = L.sx + dirX * push;
+        L.y = L.sy + dirY * push;
+      }
+
+      /* Declutter. Ranking the fan by longitude spreads the labels but
+         cannot guarantee they clear each other — the spacing that works
+         at rest fails as soon as the globe is dragged, and Kyrgyzstan
+         and Kazakhstan are two degrees apart, so at some rotations
+         nothing keyed on position alone separates them. This resolves
+         the boxes against each other directly: overlapping pairs are
+         pushed apart along whichever axis needs the least movement,
+         nearest label winning the tie. Three passes is enough for six
+         labels and costs nothing. */
+      for (let pass = 0; pass < 3; pass++) {
+        for (let i = 0; i < layout.length; i++) {
+          const a = layout[i];
+          if (!a.visible) continue;
+          for (let j = i + 1; j < layout.length; j++) {
+            const b = layout[j];
+            if (!b.visible) continue;
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const ox = (a.w + b.w) / 2 + LABEL_GAP - Math.abs(dx);
+            const oy = (a.h + b.h) / 2 + LABEL_GAP - Math.abs(dy);
+            if (ox <= 0 || oy <= 0) continue;
+            // Share the correction by depth: the label closer to the
+            // viewer keeps its position, the one behind gives way.
+            const wA = b.z / (a.z + b.z || 1);
+            const wB = 1 - wA;
+            if (oy < ox) {
+              const s = (dy >= 0 ? 1 : -1) * oy;
+              a.y -= s * wA;
+              b.y += s * wB;
+            } else {
+              const s = (dx >= 0 ? 1 : -1) * ox;
+              a.x -= s * wA;
+              b.x += s * wB;
+            }
+          }
+        }
+        /* Clamp INSIDE the loop, not after it: a label shoved back into
+           bounds can land on a neighbour, and only a further pass will
+           notice.
+
+           Vertical bounds are the STAGE, not the viewport. Tying them
+           to the viewport would make the labels creep against the globe
+           as the page scrolls, which reads as a bug. Horizontally the
+           stage's own right edge is not enough, because that edge is
+           off-screen by design — so the tighter of the two wins. */
+        for (const L of layout) {
+          if (!L.visible) continue;
+          const hx = L.w / 2 + EDGE_PAD;
+          const hy = L.h / 2 + EDGE_PAD;
+          const right = Math.min(width, window.innerWidth - stageLeft) - hx;
+          L.x = Math.min(Math.max(L.x, hx), Math.max(hx, right));
+          L.y = Math.min(Math.max(L.y, hy), Math.max(hy, height - hy));
+        }
+      }
+
+      for (let i = 0; i < layout.length; i++) {
+        const L = layout[i];
+        const chip = chipRefs.current[i];
+        if (!L.visible) {
+          if (chip) chip.style.opacity = "0";
+          continue;
+        }
+        const near = Math.min(1, L.z * 3.2);
+
+        ctx.beginPath();
+        ctx.moveTo(L.sx, L.sy);
+        ctx.lineTo(L.x, L.y);
+        ctx.strokeStyle = P.leader;
+        ctx.globalAlpha = near;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        const pulse = reduced ? 0.5 : (Math.sin(elapsed * 1.9 + i) + 1) / 2;
+        ctx.beginPath();
+        ctx.arc(L.sx, L.sy, 3.4, 0, Math.PI * 2);
+        ctx.fillStyle = P.marker;
+        ctx.globalAlpha = near;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(L.sx, L.sy, 6 + pulse * 7, 0, Math.PI * 2);
+        ctx.strokeStyle = P.marker;
+        ctx.globalAlpha = near * (0.5 - pulse * 0.34);
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        if (chip) {
+          // Written straight to style, never through React state: this
+          // runs every frame, and a state update per frame would cost a
+          // full reconciliation to move a transform.
+          chip.style.transform = `translate(-50%,-50%) translate3d(${L.x.toFixed(1)}px,${L.y.toFixed(1)}px,0)`;
+          chip.style.opacity = near.toFixed(3);
+          chip.style.zIndex = String(100 + Math.round(L.z * 50));
+        }
+      }
+
+      /* ---- origin: India ---- */
+      const o = projectLatLng(ORIGIN.lat, ORIGIN.lng, yaw, pitch, radius);
+      if (o.z > 0) {
+        const pulse = reduced ? 0.5 : (Math.sin(elapsed * 2.2) + 1) / 2;
+        ctx.globalAlpha = Math.min(1, o.z * 3.2);
+        ctx.beginPath();
+        ctx.arc(cx + o.x, cy + o.y, 4.4, 0, Math.PI * 2);
+        ctx.fillStyle = P.origin;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(cx + o.x, cy + o.y, 8 + pulse * 9, 0, Math.PI * 2);
+        ctx.strokeStyle = P.origin;
+        ctx.globalAlpha *= 0.55 - pulse * 0.36;
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
     };
 
-    // A resize must also request a repaint. Under reduced motion `draw`
-    // runs a single frame and never recurses, so without this the canvas
-    // stays blank whenever that first frame lands before layout has
-    // settled — and goes stale after any window resize.
-    /* ---- direct manipulation ----
+    const frame = (now: number) => {
+      if (width === 0) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+      const elapsed = (now - start) / 1000;
+
+      /* The hero slides this whole stage sideways with the pointer and
+         down with the scroll, so the offset captured at resize goes
+         stale and the right-edge clamp drifts with it. Re-reading the
+         rect forces a layout, so it happens on one frame in sixteen —
+         four times a second, against a parallax that only travels
+         thirty-odd pixels. */
+      if ((tick++ & 15) === 0) stageLeft = stage.getBoundingClientRect().left;
+
+      if (!dragging && (yawVel !== 0 || pitchVel !== 0)) {
+        // Momentum bleeds off exponentially and folds back into the
+        // ambient sway, so releasing continues the gesture rather than
+        // stopping it dead.
+        const dt = 1 / 60;
+        userYaw += yawVel * dt;
+        userPitch += pitchVel * dt;
+        yawVel *= 0.94;
+        pitchVel *= 0.94;
+        if (Math.abs(yawVel) < 0.0008) yawVel = 0;
+        if (Math.abs(pitchVel) < 0.0008) pitchVel = 0;
+      }
+      // Past roughly 60 degrees you are looking down at a pole, where
+      // an equirectangular texture is all seam and no detail.
+      userPitch = Math.max(-1.05 - BASE_PITCH, Math.min(1.05 - BASE_PITCH, userPitch));
+
+      const sway = reduced ? 0 : Math.sin(elapsed * SWAY_HZ * Math.PI * 2) * SWAY;
+      const yaw = BASE_YAW + sway + userYaw;
+      const pitch = BASE_PITCH + userPitch;
+
+      renderer?.render({ yaw, pitch, time: elapsed });
+      drawOverlay(yaw, pitch, elapsed);
+
+      if (!reduced || dragging || yawVel !== 0 || pitchVel !== 0) {
+        raf = requestAnimationFrame(frame);
+      }
+    };
+
+    /* ---- direct manipulation ----------------------------------
        setPointerCapture keeps tracking alive when the pointer leaves
-       the element mid-drag (Apple 2). Touch is deliberately allowed to
-       fall through to the page: a globe that eats vertical drags on a
-       phone traps the reader in the hero. */
-    const stage = stageRef.current;
+       the element mid-drag. Touch is deliberately allowed to fall
+       through to the page: a globe that eats vertical drags on a phone
+       traps the reader inside the hero. */
     const onDown = (e: PointerEvent) => {
-      if (reduced || e.pointerType === "touch") return;
+      if (e.pointerType === "touch") return;
       // Without this the browser starts a native text selection as the
       // pointer travels off the globe and across the headline, so a
       // spin leaves the hero copy highlighted.
@@ -555,118 +559,147 @@ export function Globe({
       dragging = true;
       lastX = e.clientX;
       lastY = e.clientY;
+      lastT = performance.now();
       vt.reset();
       vt.add(e.clientX, e.clientY);
-      spinVel = 0;
-      tiltVel = 0;
-      stage?.setPointerCapture(e.pointerId);
-      if (stage) stage.style.cursor = "grabbing";
+      yawVel = 0;
+      pitchVel = 0;
+      stage.setPointerCapture(e.pointerId);
+      stage.style.cursor = "grabbing";
+      if (reduced) {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(frame);
+      }
     };
     const onMove = (e: PointerEvent) => {
       if (!dragging) return;
-      // 1:1 with the pointer, scaled by radius so the same swipe turns
+      // 1:1 with the pointer, scaled by radius, so the same swipe turns
       // the globe by the same amount at any size.
-      const k = radius > 0 ? 1 / radius : 0.004;
-      userSpin += (e.clientX - lastX) * k;
-      userTilt += (e.clientY - lastY) * k * 0.6;
+      const k = 1 / radius;
+      userYaw += (e.clientX - lastX) * k;
+      userPitch += (e.clientY - lastY) * k * 0.62;
       lastX = e.clientX;
       lastY = e.clientY;
+      lastT = performance.now();
       vt.add(e.clientX, e.clientY);
     };
     const onUp = (e: PointerEvent) => {
       if (!dragging) return;
       dragging = false;
-      stage?.releasePointerCapture(e.pointerId);
-      if (stage) stage.style.cursor = "grab";
+      stage.releasePointerCapture(e.pointerId);
+      stage.style.cursor = "grab";
+      // Dragging is direct manipulation and stays available under
+      // reduced motion; the fling that outlives the finger is an
+      // animation, and does not.
+      if (reduced) return;
+      // A flick that ended in a pause is not a flick. Without this a
+      // held-still finger still launches, because the tracker's window
+      // keeps the stale samples from the start of the drag.
+      if (performance.now() - lastT > 120) return;
       const v = vt.velocity();
-      const k = radius > 0 ? 1 / radius : 0.004;
+      const k = 1 / radius;
       // project() answers "where would this flick land"; converting
       // that back to a rate gives the initial decay velocity.
-      spinVel = project(v.x) * k * 0.9;
-      tiltVel = project(v.y) * k * 0.55;
+      yawVel = project(v.x) * k * 0.9;
+      pitchVel = project(v.y) * k * 0.55;
     };
 
-    if (stage) {
-      stage.addEventListener("pointerdown", onDown);
-      stage.addEventListener("pointermove", onMove);
-      stage.addEventListener("pointerup", onUp);
-      stage.addEventListener("pointercancel", onUp);
-      stage.style.cursor = "grab";
-    }
+    stage.addEventListener("pointerdown", onDown);
+    stage.addEventListener("pointermove", onMove);
+    stage.addEventListener("pointerup", onUp);
+    stage.addEventListener("pointercancel", onUp);
+    stage.style.cursor = "grab";
 
     const ro = new ResizeObserver(() => {
       resize();
+      // The chip labels are hidden below the `sm` breakpoint, so their
+      // boxes genuinely change size across a resize, not just position.
+      measureChips();
       cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(draw);
+      raf = requestAnimationFrame(frame);
     });
-    ro.observe(canvas);
+    ro.observe(stage);
 
-    raf = requestAnimationFrame(draw);
+    raf = requestAnimationFrame(frame);
 
     return () => {
+      disposed = true;
       cancelAnimationFrame(raf);
       ro.disconnect();
-      if (stage) {
-        stage.removeEventListener("pointerdown", onDown);
-        stage.removeEventListener("pointermove", onMove);
-        stage.removeEventListener("pointerup", onUp);
-        stage.removeEventListener("pointercancel", onUp);
-      }
+      stage.removeEventListener("pointerdown", onDown);
+      stage.removeEventListener("pointermove", onMove);
+      stage.removeEventListener("pointerup", onUp);
+      stage.removeEventListener("pointercancel", onUp);
+      renderer?.dispose();
     };
-    // Redraw with the other palette when the theme is toggled.
-  }, [reduced, paletteKey]);
+  }, [paletteKey, reduced]);
 
   return (
-    /* Canvas draws the sphere; the DOM layer above it carries the
-       shield and the flags. Both are driven by one projection in one
-       rAF loop, so they cannot drift apart.
-
-       `perspective` lives here rather than on the shield: it has to
-       be on the ancestor for the children's Z offsets to foreshorten,
-       and a perspective set on the element itself does nothing. */
     <div
       ref={stageRef}
       className={cn("relative size-full touch-pan-y select-none", className)}
-      style={{ perspective: "1200px" }}
       role="img"
-      aria-label="Interactive globe showing flight paths from India to Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Drag to spin."
+      aria-label={
+        "Interactive globe showing flight paths from India to " +
+        COUNTRIES.map((c) => c.name).join(", ") +
+        ". Drag to spin."
+      }
     >
-      <canvas ref={canvasRef} className="size-full" aria-hidden />
-
-      {/* Brand shield at the core of the sphere. Sized by the rAF
-          loop from the measured radius, so it tracks the canvas. */}
-      {/* The centring translate is duplicated in CSS on purpose. The
-          rAF loop writes the real transform (translate + rotate +
-          scale), but until the canvas has a measured size that loop
-          returns early — leaving the shield pinned at left:50% with
-          its full 307px width, which runs 101px past the viewport on
-          a 375px phone. The static classes make the resting state
-          correct; the JS transform replaces them once it runs. */}
-      <Shield3D
-        ref={shieldRef}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[384px] w-[307px] -translate-x-1/2 -translate-y-1/2 origin-center will-change-transform"
+      {/* Fallback ground: a plain lit disc, shown until the sphere is
+          live and kept forever where there is no WebGL. The arcs,
+          markers and labels draw over it either way, so the
+          composition survives the loss of the Earth itself. */}
+      <div
+        ref={fallbackRef}
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 aspect-square w-4/5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-opacity duration-700"
+        style={{
+          background:
+            "radial-gradient(circle at 34% 30%, #17417f 0%, #0b2450 46%, #050f28 100%)",
+          boxShadow: "0 0 0 1px rgba(201,162,39,0.45), 0 0 90px rgba(201,162,39,0.16)",
+        }}
       />
 
-      {/* Destination flags, pinned to their real coordinates. */}
+      {/* The sphere. Starts transparent so the first painted frame is
+          the finished Earth, never a bare disc mid-upload. */}
+      <canvas
+        ref={glRef}
+        aria-hidden
+        className="absolute inset-0 size-full opacity-0 transition-opacity duration-700"
+      />
+
+      <canvas ref={overlayRef} aria-hidden className="absolute inset-0 size-full" />
+
+      {/* Destination labels, pinned by the rAF loop to their real
+          coordinates. Real DOM text, not canvas: a screen reader, a
+          translator and browser find-in-page all reach it.
+
+          Shown from `lg` only, which is where the hero becomes a
+          genuine two-column composition with the globe in its own
+          half. Below that the sphere is a full-bleed wash sitting
+          BEHIND centred copy, and six opaque badges land straight on
+          top of the lead paragraph — six flags with no room for their
+          names, obscuring the one thing the reader came for. The
+          surface markers and the flight arcs still draw at every size,
+          so the journey still reads; only the labels stand down. */}
       {COUNTRIES.map((c, i) => (
         <div
           key={c.slug}
           ref={(el) => {
-            flagRefs.current[i] = el;
+            chipRefs.current[i] = el;
           }}
-          className="pointer-events-none absolute left-0 top-0 will-change-transform"
+          className="pointer-events-none absolute left-0 top-0 hidden will-change-transform lg:block"
           style={{ opacity: 0 }}
         >
           <span
             className="flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3 shadow-[var(--shadow-badge)] backdrop-blur-md"
             style={{ background: "rgba(5,15,34,0.78)", border: `1.5px solid ${c.accent}` }}
           >
-            <Flag country={c.slug} className="h-5 w-[1.875rem] rounded-[3px] shadow-[0_1px_3px_rgba(0,0,0,0.5)]" />
-            {/* Name drops below sm. Six labels around a globe that is
-                only ~150px across on a phone is unreadable clutter,
-                and at that size the type falls under the 12px floor
-                the rest of the site holds itself to. */}
-            <span className="hidden whitespace-nowrap text-[0.8125rem] font-bold tracking-[0.01em] text-white sm:inline">
+            <Flag
+              country={c.slug}
+              className="h-5 w-[1.875rem] rounded-[3px] shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
+            />
+            <span className="whitespace-nowrap text-[0.8125rem] font-bold tracking-[0.01em] text-white">
               {c.name}
             </span>
           </span>

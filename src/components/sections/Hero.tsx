@@ -166,6 +166,42 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
+      {/* ---------------- Legibility veils ----------------
+          Both sit ABOVE the globe: same z-index, later in source order.
+          The copy at z-[2] still clears them.
+
+          This layer used to be a single scrim at -z-10, BEHIND the
+          globe — which protected nothing and went unnoticed only
+          because the old globe was a faint wireframe. An opaque lit
+          planet put bright coastline straight under the lead paragraph.
+
+          Two gradients because there are two layouts. From sm up the
+          copy is a left column and the globe is a right one, so the
+          veil runs horizontally and leaves the sphere's own half
+          alone. Below sm the globe is a full-bleed wash behind centred
+          copy, and only a vertical veil can protect a line of text
+          that spans the entire width. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] hidden bg-[linear-gradient(90deg,var(--navy-950)_0%,color-mix(in_srgb,var(--navy-950)_74%,transparent)_42%,color-mix(in_srgb,var(--navy-950)_34%,transparent)_66%,transparent_82%)] sm:block lg:bg-[linear-gradient(90deg,var(--navy-950)_0%,color-mix(in_srgb,var(--navy-950)_72%,transparent)_38%,transparent_68%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] sm:hidden"
+        style={{
+          /* Tuned against the lead paragraph, which lands around 45-58%
+             of the section's height — the band that has to stay opaque
+             enough to read. Everything below 80% is left nearly clear
+             so the sphere and its rim are still unmistakably there. */
+          background:
+            "linear-gradient(180deg," +
+            "color-mix(in srgb, var(--navy-950) 84%, transparent) 0%," +
+            "color-mix(in srgb, var(--navy-950) 66%, transparent) 52%," +
+            "color-mix(in srgb, var(--navy-950) 20%, transparent) 82%," +
+            "transparent 100%)",
+        }}
+      />
+
       {/* Pointer spotlight — lifts the ground where the cursor is,
           so the navy field is a lit surface rather than flat paint. */}
       {!reduced && (
@@ -176,24 +212,29 @@ export function Hero() {
         />
       )}
 
-      {/* Keeps the headline legible where it crosses the sphere. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--navy-950)_0%,color-mix(in_srgb,var(--navy-950)_72%,transparent)_38%,transparent_68%)]"
-      />
+      {/* ---------------- Copy ----------------
+          The two wrappers are pointer-transparent and each real child
+          opts back in.
 
-      {/* ---------------- Copy ---------------- */}
+          They are full-width blocks stacked ABOVE the globe, so while
+          they accepted pointer events they covered the sphere
+          completely and swallowed every drag — the globe was not
+          draggable anywhere on the page, at any viewport. Making the
+          globe's own wrapper interactive was necessary but not
+          sufficient; nothing reached it. Verify with
+          document.elementFromPoint at the sphere's centre before
+          changing any of this. */}
       <motion.div
         style={reduced ? undefined : { y: copyY, opacity: fade }}
-        className="relative z-[2] w-full"
+        className="pointer-events-none relative z-[2] w-full"
       >
       <motion.div
         style={reduced ? undefined : { x: copyX, y: copyLean }}
-        className="shell-wide relative w-full py-16 sm:py-20 lg:py-28"
+        className="shell-wide pointer-events-none relative w-full py-16 sm:py-20 lg:py-28"
       >
         <motion.div
           {...rise(0.05, 14)}
-          className="material-chip-dark hover-neon inline-flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-4"
+          className="material-chip-dark hover-neon pointer-events-auto inline-flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-4"
         >
           <span className="shrink-0 whitespace-nowrap rounded-full bg-[var(--gold-500)] px-2.5 py-1 text-[0.6875rem] font-bold tracking-[0.08em] text-[var(--navy-950)] uppercase">
             {SITE.admissionYear}
@@ -206,7 +247,9 @@ export function Hero() {
         {/* Line-by-line mask wipe, matching the reference. Each line
             is its own block so the wipe travels the width of that
             line rather than the width of the whole heading. */}
-        <h1 id="hero-title" className="t-display mt-7 max-w-[16ch] text-on-dark">
+        {/* Headline and lead stay selectable — they opt back in, and
+            their boxes end well short of the sphere. */}
+        <h1 id="hero-title" className="t-display pointer-events-auto mt-7 max-w-[16ch] text-on-dark">
           <WipeLine as="div" play={ready} delay={0.1}>
             From Dreams
           </WipeLine>
@@ -217,7 +260,7 @@ export function Hero() {
 
         <motion.p
           {...rise(0.72)}
-          className="t-lead mt-7 max-w-[46ch] !text-on-dark-secondary"
+          className="t-lead pointer-events-auto mt-7 max-w-[46ch] !text-on-dark-secondary"
         >
           We help aspiring doctors secure admission at NMC-eligible medical universities
           abroad — with doctor-led counselling, published fees and support that does not
@@ -226,7 +269,7 @@ export function Hero() {
 
         <motion.div
           {...rise(0.82)}
-          className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
+          className="pointer-events-auto mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
         >
           <Button href="/apply" variant="gold" size="lg" className="w-full sm:w-auto">
             Get Free Counselling
@@ -261,11 +304,11 @@ export function Hero() {
         // Below md the fixed Call/Apply bar overlays the viewport
         // bottom, and the last chip in this row was disappearing
         // behind it. Clear the bar plus the home indicator.
-        className="shell-wide relative w-full pb-[calc(5.75rem+env(safe-area-inset-bottom,0px))] md:pb-14"
+        className="shell-wide pointer-events-none relative w-full pb-[calc(5.75rem+env(safe-area-inset-bottom,0px))] md:pb-14"
       >
         <motion.div
           {...rise(0.96, 16)}
-          className="flex flex-wrap items-center gap-x-7 gap-y-3.5 lg:justify-end"
+          className="pointer-events-auto flex flex-wrap items-center gap-x-7 gap-y-3.5 lg:justify-end"
         >
           <span className="flex items-center gap-2 text-[0.8125rem] font-medium text-on-dark-secondary">
             <ShieldCheck className="size-4 text-[var(--gold-300)]" />
