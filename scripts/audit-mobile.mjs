@@ -16,14 +16,9 @@
  */
 
 import puppeteer from "puppeteer-core";
-import { existsSync } from "node:fs";
+import { resolveBrowser } from "./browser.mjs";
 
-const CHROME = [
-  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-  "/usr/bin/google-chrome",
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-].find((p) => existsSync(p));
+const { executablePath: CHROME } = resolveBrowser();
 
 const args = process.argv.slice(2);
 const BASE = (args.find((a) => a.startsWith("--url=")) ?? "--url=http://localhost:3000").slice(6);

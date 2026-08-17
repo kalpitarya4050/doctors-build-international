@@ -635,9 +635,16 @@ export function Globe({
 
       {/* Brand shield at the core of the sphere. Sized by the rAF
           loop from the measured radius, so it tracks the canvas. */}
+      {/* The centring translate is duplicated in CSS on purpose. The
+          rAF loop writes the real transform (translate + rotate +
+          scale), but until the canvas has a measured size that loop
+          returns early — leaving the shield pinned at left:50% with
+          its full 307px width, which runs 101px past the viewport on
+          a 375px phone. The static classes make the resting state
+          correct; the JS transform replaces them once it runs. */}
       <Shield3D
         ref={shieldRef}
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[384px] w-[307px] origin-center will-change-transform"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[384px] w-[307px] -translate-x-1/2 -translate-y-1/2 origin-center will-change-transform"
       />
 
       {/* Destination flags, pinned to their real coordinates. */}

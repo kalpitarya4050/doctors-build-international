@@ -49,3 +49,7 @@ next-env.d.ts
 # Generated responsive image variants (rebuilt in CI)
 public/**/*-[0-9]*w.webp
 public/images/.variants.json
+
+# Local headless browser for the audit scripts (see scripts/browser.mjs).
+# Install with: npx @puppeteer/browsers install chrome-headless-shell@stable
+/chrome-headless-shell/
