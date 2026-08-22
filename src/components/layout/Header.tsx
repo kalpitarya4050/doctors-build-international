@@ -16,6 +16,13 @@ import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn, inrShort } from "@/lib/utils";
 
+/* Scroll offsets at which the bar compacts, and at which it goes back
+   to full height. Two values, not one, and the gap between them has to
+   stay wider than the 14px the bar loses when it compacts — see the
+   note on the scroll listener below. */
+const COMPACT_ENTER = 32;
+const COMPACT_EXIT = 8;
+
 export function Header() {
   const pathname = usePathname();
   const reduced = useReducedMotion();
@@ -26,8 +33,23 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  /* One threshold here used to make the header oscillate at ~10Hz for
+     as long as the reader sat near the top of any page.
+       Compacting takes the bar from 78px to 64px, and the bar is in
+     normal flow above everything else, so the document gets 14px
+     shorter. The browser's scroll anchoring answers that by pulling
+     scrollY down by the same 14px to hold the content still — which
+     is the wrong call here, because the shrink is deliberate chrome,
+     not content shifting under the reader. Measured on /: scrollY 14
+     -> 1, back over the threshold, bar re-expands, scrollY pushed to
+     14 again, forever.
+       Two fixes, because either alone is thin. `overflow-anchor: none`
+     on the body stops the correction at source (globals.css), and the
+     dead band below means that even where that has no effect the
+     crossing can only be made deliberately — a 14px nudge can no
+     longer reach back across it. */
   useMotionValueEvent(scrollY, "change", (v) => {
-    setScrolled(v > 12);
+    setScrolled((prev) => (prev ? v > COMPACT_EXIT : v > COMPACT_ENTER));
   });
 
   // Close everything on navigation. Adjusting state during render on

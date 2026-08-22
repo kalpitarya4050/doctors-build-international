@@ -403,6 +403,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
+  /* The sticky header compacts from 78px to 64px as you scroll away
+     from the top, and it sits in normal flow above the rest of the
+     page — so scroll anchoring reads those 14px as content that
+     vanished and moves scrollY down to compensate. That correction
+     pushed scrollY back across the threshold that had just fired,
+     which un-compacted the bar, which moved scrollY back again: the
+     header flickered for as long as the reader stayed near the top of
+     any page. Anchoring exists to absorb content arriving above the
+     viewport; a deliberate chrome transition is not that, and an
+     element cannot opt out of being compensated for on its own.
+     Header.tsx carries the matching dead band. */
+  overflow-anchor: none;
 }
 
 ::selection {
