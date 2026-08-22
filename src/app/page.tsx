@@ -24,7 +24,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: `Study MBBS Abroad ${SITE.admissionYear} — NMC Approved Universities | ${SITE.name}`,
   description:
-    "Study MBBS abroad from ₹15.91 lakh at NMC-eligible, WHO recognized medical universities in Georgia, Russia, Kazakhstan and China. 23 partner universities, doctor-led counselling, zero donation. Free counselling — call 77460 00015.",
+    "Study MBBS abroad from ₹15.91 lakh at NMC-eligible, WHO recognized medical universities in Georgia, Russia, Kazakhstan and China. 19 partner universities, doctor-led counselling, zero donation. Free counselling — call 77460 00015.",
   alternates: { canonical: "/" },
   openGraph: {
     title: `${SITE.name} — ${SITE.tagline}`,

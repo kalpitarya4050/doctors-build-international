@@ -7,7 +7,9 @@
  *
  * A university missing from this map is NOT an error — the UI falls
  * back to a monogram tile. University of South Asia is absent
- * because usa-kg.com is off the air (no A record).
+ * because usa-kg.com is off the air (no A record); North Caucasian
+ * State Academy, East-West, Kazan State Medical University and
+ * Chitwan Medical College have no usable mark on file either.
  *
  * Logos are drawn on a light tile in both themes. Most of these are
  * dark-on-transparent and would vanish against the dark surface.
@@ -46,30 +48,10 @@ export const UNIVERSITY_LOGOS: Record<string, UniLogo> = {
     source: "https://dtmu.ge/wp-content/uploads/2023/12/dtmu-logo-EN.png",
     tone: "light",
   },
-  "kazan-federal-university": {
-    src: "/images/university-logos/kazan-federal-university.png",
-    source: "https://stud-new2.kpfu.ru/img/logo_white_full.svg",
-    tone: "dark",
-  },
-  "bashkir-state-medical-university": {
-    src: "/images/university-logos/bashkir-state-medical-university.png",
-    source: "https://bashgmu.ru/include/logo01.png",
-    tone: "light",
-  },
-  "ulyanovsk-state-university": {
-    src: "/images/university-logos/ulyanovsk-state-university.png",
-    source: "https://ulsu.ru/static/img/logo150.svg",
-    tone: "light",
-  },
   "kemerovo-state-medical-university": {
     src: "/images/university-logos/kemerovo-state-medical-university.png",
     source: "https://kemgmu.ru/local/templates/pr.v1/images/logo_70.svg",
     tone: "light",
-  },
-  "kabardino-balkarian-state-university": {
-    src: "/images/university-logos/kabardino-balkarian-state-university.png",
-    source: "https://kbsu.ru/wp-content/themes/kbsu/img/logo-kbsu.png",
-    tone: "dark",
   },
   "ingush-state-university": {
     src: "/images/university-logos/ingush-state-university.png",
@@ -110,11 +92,6 @@ export const UNIVERSITY_LOGOS: Record<string, UniLogo> = {
     src: "/images/university-logos/capital-medical-university.png",
     source: "https://www.ccmu.edu.cn/images/logo.png",
     tone: "dark",
-  },
-  "fergana-medical-institute-of-public-health": {
-    src: "/images/university-logos/fergana-medical-institute-of-public-health.png",
-    source: "https://fergmi.uz/wp-content/uploads/2025/04/fregana_logo-removebg-preview.png",
-    tone: "light",
   },
 };
 

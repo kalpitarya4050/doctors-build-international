@@ -1,73 +1,51 @@
 import Link from "next/link";
+import Image from "next/image";
+import { withBasePath } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
-/** The DB monogram, redrawn as vector so it stays crisp at any
- *  size and adapts to light and dark grounds — the source logo is
- *  a JPEG on a hard white background and cannot do either. */
-export function LogoMark({
-  className,
-  id = "dbi",
-  tone = "default",
-}: {
-  className?: string;
-  id?: string;
-  /** `onNavy` lightens the shield fill. The default navy gradient
-   *  disappears against a navy slab, leaving the mark reading as a
-   *  few floating strokes rather than an object. */
-  tone?: "default" | "onNavy";
-}) {
+/* ============================================================
+   The brand mark: the gold shield with the doctor inside, cut from
+   the client's master lockup (loho.PNG) by
+   scripts/extract-logo-mark.mjs.
+
+   This replaced a hand-drawn SVG monogram — a navy shield with a
+   graduation cap and an ECG line. That version existed because the
+   only artwork on file was a JPEG on a hard white background, which
+   could not sit on a dark ground. The extracted emblem carries a
+   real alpha channel, so it sits on the white header and the navy
+   footer without either being cut for it, and the site now shows the
+   client's actual mark rather than an interpretation of it.
+
+   Sized with `fill` + `object-contain` inside a square box, so the
+   shield fits to the box height and centres, whatever its aspect.
+
+   The first version passed explicit width/height instead. That
+   couples the component to the artwork: when the crown was restored
+   the file went from 256x273 to 256x326, the constants did not, and
+   next/image reserved the wrong box. `h-full` did not save it either
+   — percentage height inside a content-sized grid row is cyclic, so
+   it resolved to auto, the width clamped to the box instead, and the
+   mark overflowed its own container by 12px. `fill` has no
+   dimensions to keep in sync and cannot drift.
+   ============================================================ */
+
+export function LogoMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 64" fill="none" className={cn("shrink-0", className)} aria-hidden>
-      <defs>
-        <linearGradient id={`${id}-gold`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#A8851D" />
-          <stop offset="38%" stopColor="#E8C766" />
-          <stop offset="62%" stopColor="#C9A227" />
-          <stop offset="100%" stopColor="#F2DDA0" />
-        </linearGradient>
-        <linearGradient id={`${id}-navy`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#14315F" />
-          <stop offset="100%" stopColor="#0A1F44" />
-        </linearGradient>
-        <linearGradient id={`${id}-reverse`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.16" />
-          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.05" />
-        </linearGradient>
-      </defs>
-
-      {/* Shield ground */}
-      <path
-        d="M32 2.5 60 11v22.5C60 47.8 48.2 57.9 32 61.5 15.8 57.9 4 47.8 4 33.5V11L32 2.5Z"
-        fill={`url(#${id}-${tone === "onNavy" ? "reverse" : "navy"})`}
+    <span className={cn("relative block shrink-0", className)}>
+      <Image
+        src={withBasePath("/images/brand/logo-mark.webp")}
+        alt=""
+        aria-hidden
+        fill
+        // Largest rendered use is the 128px intro lockup.
+        sizes="128px"
+        // The header mark is above the fold on every page, and it is
+        // the one image whose late arrival is obvious — the wordmark
+        // would sit next to a gap.
+        priority
+        className="object-contain"
       />
-      <path
-        d="M32 2.5 60 11v22.5C60 47.8 48.2 57.9 32 61.5 15.8 57.9 4 47.8 4 33.5V11L32 2.5Z"
-        stroke={`url(#${id}-gold)`}
-        strokeWidth="2.4"
-      />
-
-      {/* Graduation cap */}
-      <path d="M32 13 46 18.6 32 24.2 18 18.6 32 13Z" fill={`url(#${id}-gold)`} />
-      <path
-        d="M23 21.2v5.1c0 2.4 4 4.3 9 4.3s9-1.9 9-4.3v-5.1"
-        stroke={`url(#${id}-gold)`}
-        strokeWidth="1.9"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path d="M46 18.6v6.6" stroke={`url(#${id}-gold)`} strokeWidth="1.6" strokeLinecap="round" />
-      <circle cx="46" cy="26.4" r="1.5" fill={`url(#${id}-gold)`} />
-
-      {/* Caduceus / ECG pulse — the medical mark */}
-      <path
-        d="M14 42h7l3.2-7.4 4.4 14.6 4-9.4 2.6 5.2H50"
-        stroke="#FFFFFF"
-        strokeWidth="2.3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-    </svg>
+    </span>
   );
 }
 

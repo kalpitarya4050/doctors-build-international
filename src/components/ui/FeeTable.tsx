@@ -234,7 +234,7 @@ export function FeeTable({
                   i % 2 === 1 && "bg-[var(--bg-sunken)]/55",
                 )}
               >
-                {/* A 3px inset rule in the country's colour. In a 23-row
+                {/* A 3px inset rule in the country's colour. In a 19-row
                     table sorted by cost the destinations otherwise
                     interleave with nothing to group them by eye. */}
                 <Td

@@ -17,7 +17,6 @@ import { cn } from "@/lib/utils";
 export type FlagCode =
   | "georgia"
   | "russia"
-  | "uzbekistan"
   | "kyrgyzstan"
   | "nepal"
   | "china"
@@ -28,7 +27,6 @@ export function toFlagCode(input: string): FlagCode | null {
   const k = input.trim().toLowerCase();
   if (k.includes("georgia")) return "georgia";
   if (k.includes("russia")) return "russia";
-  if (k.includes("uzbek")) return "uzbekistan";
   if (k.includes("kyrgyz")) return "kyrgyzstan";
   if (k.includes("nepal")) return "nepal";
   if (k.includes("china")) return "china";
@@ -39,7 +37,6 @@ export function toFlagCode(input: string): FlagCode | null {
 const LABEL: Record<FlagCode, string> = {
   georgia: "Flag of Georgia",
   russia: "Flag of Russia",
-  uzbekistan: "Flag of Uzbekistan",
   kyrgyzstan: "Flag of Kyrgyzstan",
   nepal: "Flag of Nepal",
   china: "Flag of China",
@@ -76,25 +73,6 @@ function Shapes({ code }: { code: FlagCode }) {
         </>
       );
 
-    case "uzbekistan":
-      return (
-        <>
-          <rect width="24" height="16" fill="#0099B5" />
-          <rect y="5.2" width="24" height="5.6" fill="#fff" />
-          <rect y="10.8" width="24" height="5.2" fill="#1EB53A" />
-          <rect y="5" width="24" height="0.4" fill="#CE1126" />
-          <rect y="10.6" width="24" height="0.4" fill="#CE1126" />
-          <circle cx="4.6" cy="2.6" r="1.7" fill="#fff" />
-          <circle cx="5.5" cy="2.4" r="1.7" fill="#0099B5" />
-          <g fill="#fff">
-            <circle cx="8.4" cy="1.5" r="0.32" />
-            <circle cx="8.4" cy="3.2" r="0.32" />
-            <circle cx="10.1" cy="1.5" r="0.32" />
-            <circle cx="10.1" cy="3.2" r="0.32" />
-            <circle cx="11.8" cy="3.2" r="0.32" />
-          </g>
-        </>
-      );
 
     case "kyrgyzstan":
       return (

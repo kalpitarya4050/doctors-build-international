@@ -1,11 +1,25 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Check, ArrowRight, Thermometer, Languages, Wallet, Stamp, ShieldCheck, Clock, Calendar } from "lucide-react";
+import {
+  Check,
+  ArrowRight,
+  Thermometer,
+  Languages,
+  Wallet,
+  Stamp,
+  ShieldCheck,
+  Clock,
+  Calendar,
+  MapPin,
+  GraduationCap,
+  AlertTriangle,
+} from "lucide-react";
 import { COUNTRIES, getCountry } from "@/lib/data/countries";
+import { NMC_VERIFY_NOTE } from "@/lib/data/universities";
 import { countryImage, countryImageAlt, countryGallery, countryCityTiles } from "@/lib/data/media-map";
 import { universitiesByCountry, UNIVERSITIES } from "@/lib/data/universities";
-import { FAQS } from "@/lib/data/faq";
+import { FAQS, faqsForCountry } from "@/lib/data/faq";
 import { PROCESS } from "@/lib/data/content";
 import { SITE } from "@/lib/site";
 import { PageHero } from "@/components/layout/PageHero";
@@ -74,7 +88,7 @@ export default async function CountryPage({
 
   const unis = universitiesByCountry(c.slug);
   const others = COUNTRIES.filter((x) => x.slug !== c.slug).slice(0, 6);
-  const pageFaqs = FAQS.filter((f) => f.featured).slice(0, 8);
+  const pageFaqs = faqsForCountry(c.slug);
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -284,6 +298,87 @@ export default async function CountryPage({
         </div>
       </section>
 
+
+      {/* Life in the country */}
+      <section
+        data-ground="white"
+        className="section relative isolate"
+        id="life"
+        aria-labelledby="life-abroad"
+      >
+        <DotGrid gap={26} opacity={0.6} />
+        <div className="shell">
+          <SectionHeading
+            eyebrow={`Life in ${c.name}`}
+            title={
+              <>
+                What living in <em>{c.name}</em> is actually like
+              </>
+            }
+            lead="Food, safety, weather, money and getting around — the questions families ask on the first call, answered before you have to ask them."
+          />
+          <RevealGroup
+            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            stagger={0.05}
+          >
+            {c.lifeAbroad.map((l) => (
+              <RevealItem key={l.title}>
+                <div className="material-card hover-lift h-full rounded-[var(--radius-lg)] p-6">
+                  <span className="grid size-10 place-items-center rounded-[var(--radius)] bg-[var(--accent-soft)] text-[var(--accent)]">
+                    <Icon name={l.icon} className="size-5" />
+                  </span>
+                  <h3 className="t-h4 mt-5 text-brand">{l.title}</h3>
+                  <p className="t-small mt-2.5 leading-relaxed">{l.body}</p>
+                </div>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+
+      {/* Student cities */}
+      <section
+        data-ground="linen"
+        className="section relative isolate"
+        id="cities"
+        aria-labelledby="cities"
+      >
+        <OrbField tone="gold" count={2} intensity={0.22} />
+        <div className="shell">
+          <SectionHeading
+            eyebrow="Where You Would Live"
+            title={
+              c.cities.length === 1 ? (
+                <>
+                  The city you would <em>live in</em>
+                </>
+              ) : (
+                <>
+                  The cities you would <em>choose between</em>
+                </>
+              )
+            }
+            lead={`Campus is where you study. The city is where you spend the other ${c.duration.toLowerCase().includes("5.5") ? "five and a half" : "six"} years.`}
+          />
+          <RevealGroup className="mt-12 grid gap-5 md:grid-cols-2" stagger={0.06}>
+            {c.cities.map((city) => (
+              <RevealItem key={city.name}>
+                <article className="material-card hover-lift h-full rounded-[var(--radius-lg)] p-8">
+                  <div className="flex items-center gap-2.5">
+                    <MapPin className="size-4 shrink-0 text-[var(--accent)]" />
+                    <span className="text-[0.6875rem] font-bold tracking-[0.06em] text-ink-muted uppercase">
+                      {city.note}
+                    </span>
+                  </div>
+                  <h3 className="t-h3 mt-4 text-brand">{city.name}</h3>
+                  <p className="t-body mt-4 leading-relaxed">{city.body}</p>
+                </article>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+
       {/* Universities */}
       <section data-ground="white" className="section relative isolate" id="universities" aria-labelledby="unis">
         <DotGrid gap={26} opacity={0.7} />
@@ -368,6 +463,135 @@ export default async function CountryPage({
               </RevealItem>
             ))}
           </RevealGroup>
+        </div>
+      </section>
+
+
+      {/* Eligibility & what comes after */}
+      <section
+        data-ground="white"
+        className="section"
+        id="eligibility"
+        aria-labelledby="eligibility"
+      >
+        <div className="shell grid gap-14 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <SectionHeading
+              align="left"
+              eyebrow="Eligibility"
+              title={
+                <>
+                  Do you qualify for <em>{c.name}</em>?
+                </>
+              }
+            />
+            <dl className="mt-8 divide-y divide-hairline border-y border-hairline">
+              {c.eligibility.map((e) => (
+                <div
+                  key={e.label}
+                  className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
+                >
+                  <dt className="text-[0.6875rem] font-bold tracking-[0.06em] text-ink-muted uppercase">
+                    {e.label}
+                  </dt>
+                  <dd className="text-[0.9375rem] font-medium text-ink sm:max-w-[24rem] sm:text-right">
+                    {e.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <Button href="#counselling" variant="outline" size="md" className="mt-8">
+              Check my eligibility
+              <AnimatedArrow />
+            </Button>
+          </div>
+
+          <div>
+            <SectionHeading
+              align="left"
+              eyebrow="After Graduation"
+              title={
+                <>
+                  Where a <em>{c.name}</em> degree takes you
+                </>
+              }
+            />
+            <RevealGroup className="mt-8 flex flex-col gap-4" stagger={0.05}>
+              {c.afterStudy.map((a) => (
+                <RevealItem key={a.title}>
+                  <div className="material-card rounded-[var(--radius-lg)] p-6">
+                    <h3 className="t-h4 flex items-start gap-2.5 text-brand">
+                      <GraduationCap className="mt-0.5 size-4 shrink-0 text-[var(--accent)]" />
+                      {a.title}
+                    </h3>
+                    <p className="t-small mt-2 leading-relaxed">{a.body}</p>
+                  </div>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+        </div>
+      </section>
+
+      {/* Honest considerations */}
+      <section
+        data-ground="linen"
+        className="section relative isolate"
+        id="considerations"
+        aria-labelledby="considerations"
+      >
+        <div className="shell">
+          <SectionHeading
+            eyebrow="Read This Before You Decide"
+            title={
+              <>
+                What to weigh honestly about <em>{c.name}</em>
+              </>
+            }
+            lead="Every destination has trade-offs. We publish ours, because the families who hear them at the start are the ones who do not get a surprise in year three."
+          />
+          <RevealGroup className="mt-12 grid gap-5 md:grid-cols-2" stagger={0.06}>
+            {c.considerations.map((x) => (
+              <RevealItem key={x.title}>
+                <div className="material-card h-full rounded-[var(--radius-lg)] border-l-2 border-l-[var(--accent)] p-7">
+                  <h3 className="t-h4 flex items-start gap-2.5 text-brand">
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-[var(--accent)]" />
+                    {x.title}
+                  </h3>
+                  <p className="t-small mt-2.5 leading-relaxed">{x.body}</p>
+                </div>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+
+          <Reveal direction="up" className="mx-auto mt-10 max-w-4xl">
+            <div className="rounded-[var(--radius-lg)] border border-line bg-[var(--bg-sunken)] p-6 sm:p-7">
+              <p className="flex items-center gap-2 text-[0.6875rem] font-bold tracking-[0.06em] text-ink-muted uppercase">
+                <ShieldCheck className="size-3.5 text-[var(--accent)]" />
+                Regulatory note for Indian students
+              </p>
+              <p className="t-small mt-3 leading-relaxed">{NMC_VERIFY_NOTE}</p>
+              <p className="t-small mt-3 leading-relaxed">
+                Eligibility to sit FMGE or NExT, and to register and practise in
+                India, is determined by the National Medical Commission&rsquo;s
+                regulations as they stand when you take admission and when you
+                graduate — not by anything stated on this page. Always check the
+                current position at{" "}
+                <a
+                  href="https://www.nmc.org.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-[var(--accent)] underline underline-offset-2"
+                >
+                  nmc.org.in
+                </a>
+                . We confirm it in writing for your specific university before
+                any payment is made, and we do not guarantee recognition,
+                examination results, licensure or an internship placement —
+                those are not ours to give.
+              </p>
+            </div>
+          </Reveal>
         </div>
       </section>
 

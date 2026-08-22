@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 const RULE_HUES = [
   "var(--dest-georgia)",
   "var(--dest-russia)",
-  "var(--dest-uzbekistan)",
+  "var(--dest-nepal)",
   "var(--dest-kyrgyzstan)",
 ];
 

@@ -65,7 +65,7 @@ src/
   app/
     page.tsx                      home — 12 sections
     destinations/[country]/       template → 7 country pages
-    universities/[slug]/          template → 7 university pages
+    universities/[slug]/          template → 19 university pages
     fee-comparison/               the Admission Portfolio, interactive
     about/ services/ why-us/ faq/ contact/ apply/
     privacy-policy/ terms/
@@ -141,9 +141,31 @@ Any Node host: `npm run build && npm start`.
 
 All figures come from the client's **Global MBBS Admission Portfolio 2026-27**.
 
+### Current lineup (FINAL MASTER UPDATE)
+
+Six destinations, nineteen universities. Russia is fixed in the client's
+exact order and must stay that way:
+
+| | Russia |
+|---|---|
+| 01 | North Caucasian State Academy — Cherkessk |
+| 02 | Ingush State University — Magas |
+| 03 | Kemerovo State Medical University — Kemerovo |
+| 04 | Kazan State Medical University — Kazan |
+
+Nepal carries one college, Chitwan Medical College in Bharatpur.
+**Uzbekistan was removed in full** — country, Fergana Medical Institute,
+images, fees, FAQs and every SEO reference. Bashkir State (BSMU), Kazan
+Federal, Ulyanovsk State, Chuvash State and Kabardino-Balkarian State
+were removed at the same time.
+
+Old URLs are handled by `scripts/build-redirects.mjs`, which runs as
+`prebuild` on every build. Add to `REDIRECTS` there whenever a slug
+retires — never leave a dead URL without a target.
+
 One note carried in `universities.ts`: the printed six-row semester table
 reconciles exactly to the stated total for GEOMEDI and University of South Asia.
-For Kemerovo, North Caucasian, Ingush and Fergana the printed rows sum to one
+For Kemerovo, North Caucasian and Ingush the printed rows sum to one
 annual instalment less than the stated total — a six-year course needs seven
 rows once year one is split across two semesters. The **stated total is
 authoritative** and is what the site displays as the total; the schedule is

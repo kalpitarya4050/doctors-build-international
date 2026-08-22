@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight, X, Expand, Camera, MapPin } from "lucide-react";
-import type { UniImage } from "@/lib/data/university-images";
+import type { GalleryImage } from "@/lib/data/owned-photos";
 import { withBasePath } from "@/lib/images";
 import { SPRING_UI, SPRING_SHEET, EASE_OUT } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/Section";
@@ -13,14 +13,23 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 /* ============================================================
-   Renders the nine slots from the client's image manifest:
-   five university-context shots and four of the host city.
+   Renders nine tiles: five of the university, four of the host city.
 
-   The two groups are labelled differently on purpose. City shots
-   are genuine photographs of the named place. University shots
-   are illustrative of medical study — they are not that
-   institution's campus — and the UI says so rather than letting
-   a family assume otherwise.
+   Every caption in here turns on whether the picture is real. City
+   shots are genuine photographs of the named place. The five campus
+   tiles are one of two things, and the UI must never blur them:
+
+     · `campusIsOwned` — the client's own photographs of that campus.
+       Credited to Doctors Build International, no disclaimer.
+
+     · otherwise — Pexels stock, illustrative of medical study and
+       NOT that institution. Every tile is badged "Illustrative", the
+       lightbox repeats it, and the footnote says so in full.
+
+   A family reading this page is choosing where to send a child and
+   several lakhs. Captioning stock as campus would be found out after
+   they had paid, so the disclaimer is driven by data rather than
+   left to whoever edits this next.
    ============================================================ */
 
 // On a 2-column phone grid a "col-span-2 row-span-2" tile becomes a
@@ -43,11 +52,15 @@ export function UniversityMedia({
   city,
   universityName,
   place,
+  campusIsOwned = false,
 }: {
-  campus: UniImage[];
-  city: UniImage[];
+  campus: GalleryImage[];
+  city: GalleryImage[];
   universityName: string;
   place: string;
+  /** True where the five campus tiles are the client's own
+   *  photographs of this campus rather than illustrative stock. */
+  campusIsOwned?: boolean;
 }) {
   const all = [...city, ...campus];
   const [open, setOpen] = useState<number | null>(null);
@@ -146,10 +159,20 @@ export function UniversityMedia({
           <p className="t-small mx-auto mt-8 flex max-w-[76ch] items-start justify-center gap-2 text-center">
             <Camera className="mt-0.5 size-3.5 shrink-0" />
             <span>
-              City photographs show {place}. The teaching, laboratory and hospital images are
-              illustrative of medical study abroad and are not photographs of this
-              university&rsquo;s own campus — ask a counsellor and we will send you current campus
-              photographs and video.
+              {campusIsOwned ? (
+                <>
+                  Campus photographs are our own, taken at {universityName}. City photographs show{" "}
+                  {place}. Ask a counsellor and we will send you the full set, including video of
+                  the hostel, mess and teaching hospital.
+                </>
+              ) : (
+                <>
+                  City photographs show {place}. The teaching, laboratory and hospital images are
+                  illustrative of medical study abroad and are not photographs of this
+                  university&rsquo;s own campus — ask a counsellor and we will send you current
+                  campus photographs and video.
+                </>
+              )}
             </span>
           </p>
         </Reveal>
@@ -157,7 +180,7 @@ export function UniversityMedia({
         <Reveal direction="up" delay={0.16}>
           <div className="mt-9 flex justify-center">
             <Button href="#counselling" variant="outline" size="lg">
-              Request campus photos &amp; video
+              {campusIsOwned ? <>Request more photos &amp; video</> : <>Request campus photos &amp; video</>}
             </Button>
           </div>
         </Reveal>
@@ -204,7 +227,8 @@ export function UniversityMedia({
                     )}
                   </span>
                   <span className="mt-0.5 block text-[0.75rem] text-on-dark-muted">
-                    {active.isPlace ? "" : "Illustrative · "}Photo: {active.photographer} / Pexels
+                    {active.isPlace ? "" : "Illustrative · "}Photo: {active.photographer}
+                    {active.owned ? "" : " / Pexels"}
                   </span>
                 </span>
                 <span className="text-[0.8125rem] tabular-nums text-on-dark-muted">

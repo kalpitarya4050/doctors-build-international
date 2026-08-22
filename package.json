@@ -14,7 +14,9 @@
     "images:compress": "node scripts/compress-images.mjs",
     "audit:mobile": "node scripts/audit-mobile.mjs",
     "audit:weight": "node scripts/audit-weight.mjs",
-    "images:variants": "node scripts/build-image-variants.mjs"
+    "images:variants": "node scripts/build-image-variants.mjs",
+    "redirects": "node scripts/build-redirects.mjs",
+    "prebuild": "node scripts/build-redirects.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

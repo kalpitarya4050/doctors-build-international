@@ -130,7 +130,7 @@ function Curtain() {
       />
 
       <div className="intro-lockup relative flex flex-col items-center gap-5">
-        <LogoMark id="intro" tone="onNavy" className="size-24 sm:size-32" />
+        <LogoMark className="size-24 sm:size-32" />
 
         <div className="text-center">
           <p className="font-accent text-[2.5rem] leading-none tracking-tight text-white sm:text-[3.5rem]">

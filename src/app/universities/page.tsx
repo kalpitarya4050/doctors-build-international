@@ -12,14 +12,15 @@ import { DotGrid } from "@/components/ui/Decor";
 export const metadata: Metadata = {
   title: `Partner Medical Universities ${SITE.admissionYear} — NMC Eligible MBBS Abroad`,
   description:
-    "23 NMC-eligible, WHO recognized medical universities across Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Compare fees from ₹15.91 lakh, FMGE pass rates up to 65%, duration and intake.",
+    "19 NMC-eligible, WHO recognized medical universities across Georgia, Russia, Kazakhstan, China, Nepal and Kyrgyzstan. Compare fees from ₹15.91 lakh, FMGE pass rates up to 65%, duration and intake.",
   alternates: { canonical: "/universities" },
   keywords: [
     "NMC approved medical universities abroad",
     "MBBS universities for Indian students",
     "WHO listed medical colleges",
     "GEOMEDI University fees",
-    "Kazan Federal University MBBS",
+    "Kazan State Medical University MBBS",
+    "Chitwan Medical College MBBS",
     "Nanjing Medical University MBBS",
     "Kazakh National Medical University",
   ],
@@ -55,20 +56,7 @@ export default function UniversitiesPage() {
         lead="These are the universities we place students into — not a directory of everything that exists. Each one is here because of its recognition status, its clinical exposure and the support already in place for Indian students on campus."
       />
 
-      <section data-ground="white" className="section relative isolate" aria-label="All universities">
-        <DotGrid gap={26} opacity={0.7} />
-        <div className="shell">
-          <RevealGroup className="grid gap-5 md:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
-            {UNIVERSITIES.map((u) => (
-              <RevealItem key={u.slug}>
-                <UniversityCard university={u} className="h-full" showRank />
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </div>
-      </section>
-
-      <section data-ground="linen" className="section" aria-labelledby="compare-all">
+      <section data-ground="white" className="section" aria-labelledby="compare-all">
         <div className="shell">
           <SectionHeading
             eyebrow="Full Comparison"
@@ -82,6 +70,28 @@ export default function UniversitiesPage() {
           <Reveal direction="up" className="mt-12">
             <FeeTable />
           </Reveal>
+        </div>
+      </section>
+
+      <section data-ground="linen" className="section relative isolate" aria-labelledby="all-universities">
+        <DotGrid gap={26} opacity={0.7} />
+        <div className="shell">
+          <SectionHeading
+            eyebrow="The Portfolio"
+            title={
+              <>
+                Every university, <em>in detail</em>
+              </>
+            }
+            lead="Grouped by country, in the order we place into them. Open any card for fees, recognition, the city, the campus and what the hostel is actually like."
+          />
+          <RevealGroup className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
+            {UNIVERSITIES.map((u) => (
+              <RevealItem key={u.slug}>
+                <UniversityCard university={u} className="h-full" showRank />
+              </RevealItem>
+            ))}
+          </RevealGroup>
         </div>
       </section>
 

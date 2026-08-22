@@ -44,7 +44,7 @@ export function BentoShowcase() {
               Ten years of this, <em>in one frame</em>.
             </>
           }
-          lead="Six countries, twenty-three universities, and a team that still calls your mother two years after you land."
+          lead="Six countries, nineteen universities, and a team that still calls your mother two years after you land."
           align="left"
         />
 

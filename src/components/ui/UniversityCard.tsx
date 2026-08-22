@@ -42,7 +42,7 @@ export function UniversityCard({
     >
       {/* Country hue as a top rule — the same colour coding the client
           uses to separate destinations in their printed comparison
-          sheets, so a wall of 23 cards still sorts by eye. */}
+          sheets, so a wall of 19 cards still sorts by eye. */}
       <span
         aria-hidden
         className="h-1.5 w-full shrink-0"

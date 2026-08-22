@@ -54,7 +54,7 @@ export const INTEREST_OPTIONS = [
   "MBBS in Russia",
   "MBBS in Kazakhstan",
   "MBBS in China",
-  "MBBS in Uzbekistan",
+  "MBBS in Nepal",
   "MBBS in Kyrgyzstan",
   "Not sure — please advise me",
 ] as const;

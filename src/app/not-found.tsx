@@ -14,7 +14,7 @@ export default function NotFound() {
       <OrbField tone="gold" count={2} intensity={0.3} />
 
       <div className="shell flex max-w-3xl flex-col items-center text-center">
-        <LogoMark className="size-16" id="nf" />
+        <LogoMark className="size-16" />
         <p className="t-eyebrow mt-8 text-[var(--accent)]">Error 404</p>
         <h1 className="t-h1 mt-4 text-brand">
           This page took a <em>different route</em>.

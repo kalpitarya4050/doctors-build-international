@@ -35,8 +35,6 @@ const SLOTS = [
   { id: "country-georgia-alt", q: "Georgia Caucasus mountains", pick: 1, orientation: "landscape", alt: "The Caucasus mountains in Georgia" },
   { id: "country-russia", q: "Russia city architecture", pick: 0, orientation: "landscape", alt: "Russian city architecture" },
   { id: "country-russia-alt", q: "Russia winter street", pick: 2, orientation: "landscape", alt: "A Russian street in winter" },
-  { id: "country-uzbekistan", q: "Samarkand Uzbekistan architecture", pick: 0, orientation: "landscape", alt: "Historic architecture in Uzbekistan" },
-  { id: "country-uzbekistan-alt", q: "Uzbekistan mosque tile", pick: 1, orientation: "landscape", alt: "Tilework in Uzbekistan" },
   { id: "country-kyrgyzstan", q: "Kyrgyzstan mountains landscape", pick: 0, orientation: "landscape", alt: "Mountain landscape in Kyrgyzstan" },
   { id: "country-kyrgyzstan-alt", q: "Bishkek Kyrgyzstan", pick: 0, orientation: "landscape", alt: "Bishkek, the capital of Kyrgyzstan" },
   { id: "country-nepal", q: "Kathmandu Nepal temple", pick: 0, orientation: "landscape", alt: "Kathmandu, Nepal" },
@@ -51,7 +49,6 @@ const SLOTS = [
   { id: "uni-kemerovo", q: "Siberia Russia city winter", pick: 0, orientation: "landscape", alt: "Kemerovo region, Siberia, Russia" },
   { id: "uni-north-caucasian", q: "Caucasus mountains Russia village", pick: 0, orientation: "landscape", alt: "The North Caucasus region of Russia" },
   { id: "uni-ingush", q: "modern city architecture Russia", pick: 3, orientation: "landscape", alt: "Magas, Republic of Ingushetia, Russia" },
-  { id: "uni-fergana", q: "Uzbekistan city street", pick: 2, orientation: "landscape", alt: "The Fergana Valley region of Uzbekistan" },
   { id: "uni-south-asia", q: "Kyrgyzstan city mountains", pick: 2, orientation: "landscape", alt: "Bishkek, Kyrgyzstan" },
   { id: "uni-nepal", q: "Nepal city Kathmandu valley", pick: 2, orientation: "landscape", alt: "Kathmandu valley, Nepal" },
 
@@ -119,10 +116,6 @@ const SLOTS = [
   { id: "u-ingush-4", q: "medical simulation training mannequin", pick: 0, orientation: "landscape", alt: "Medical simulation training" },
 
   // 5 · Fergana — Uzbekistan
-  { id: "u-fergana-1", q: "Uzbekistan city street people", pick: 1, orientation: "landscape", alt: "A city street in Uzbekistan" },
-  { id: "u-fergana-2", q: "Uzbekistan bazaar market", pick: 0, orientation: "landscape", alt: "A bazaar in Uzbekistan" },
-  { id: "u-fergana-3", q: "Uzbekistan modern building city", pick: 0, orientation: "landscape", alt: "Modern architecture in Uzbekistan" },
-  { id: "u-fergana-4", q: "science laboratory students research", pick: 1, orientation: "landscape", alt: "Students in a science laboratory" },
 
   // 6 · University of South Asia — Bishkek, Kyrgyzstan
   { id: "u-southasia-1", q: "Bishkek Kyrgyzstan city street", pick: 1, orientation: "landscape", alt: "A street in Bishkek, Kyrgyzstan" },

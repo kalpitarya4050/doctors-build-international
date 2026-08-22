@@ -4,7 +4,7 @@
  *
  *   npm run images:logos
  *   npm run images:logos -- --force
- *   npm run images:logos -- --only=kazan-federal-university
+ *   npm run images:logos -- --only=kazan-state-medical-university
  *
  * The domains below were each resolved and title-checked by hand
  * against the institution's own homepage — NOT taken from an agent
@@ -15,7 +15,6 @@
  *                    "Humanitarian and Technological Academy"; the
  *                    medical academy is its Medical Institute. Same
  *                    site, and the only official one.
- *   fergana          fergmi.uz, the institute's own domain. fmiph.uz
  *                    also answers but is an admissions-agent mirror.
  *   south-asia       usa-kg.com has NO A record — the site is off the
  *                    air, not merely blocked from here. There is no
@@ -62,15 +61,12 @@ const SITES = {
   "georgian-american-university": "https://gau.edu.ge/",
   "georgian-national-university-seu": "https://seu.edu.ge/",
   "east-west-university-georgia": "https://ewu.edu.ge/",
+  "kazan-state-medical-university": "https://kazangmu.ru/",
+  "chitwan-medical-college": "https://www.cmc.edu.np/",
   "david-tvildiani-medical-university": "https://dtmu.edu.ge/",
 
-  "kazan-federal-university": "https://kpfu.ru/",
-  "bashkir-state-medical-university": "https://bashgmu.ru/",
-  "ulyanovsk-state-university": "https://ulsu.ru/",
-  "chuvash-state-medical-university": "https://chuvsu.ru/",
   "kemerovo-state-medical-university": "https://kemsmu.ru/",
-  "north-caucasian-state-medical-academy": "https://ncsa.ru/",
-  "kabardino-balkarian-state-university": "https://kbsu.ru/",
+  "north-caucasian-state-academy": "https://ncsa.ru/",
   "ingush-state-university": "https://inggu.ru/",
 
   // kaznmu.kz serves the Aksay university CLINIC, a different brand
@@ -84,7 +80,6 @@ const SITES = {
   "tianjin-medical-university": "https://www.tmu.edu.cn/",
   "capital-medical-university": "https://www.ccmu.edu.cn/",
 
-  "fergana-medical-institute-of-public-health": "https://fergmi.uz/",
 };
 
 /**
@@ -98,9 +93,6 @@ const SITES = {
  * re-guessed on every run.
  */
 const OVERRIDES = {
-  "bashkir-state-medical-university": "https://bashgmu.ru/include/logo01.png",
-  "kabardino-balkarian-state-university":
-    "https://kbsu.ru/wp-content/themes/kbsu/img/logo-kbsu.png",
   "georgian-national-university-seu": "https://seu.edu.ge/assets/DPqFdKZN.svg",
   "kazakh-national-medical-university":
     "https://kaznmu.edu.kz/wp-content/uploads/2024/03/logo-4.png",

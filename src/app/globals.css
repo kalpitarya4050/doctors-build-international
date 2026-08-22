@@ -123,11 +123,11 @@
   /* ----------------------------------------------------------
      VIOLET — the third accent.
 
-     Lifted from the Fergana / Uzbekistan column of the client's
+     Lifted from the deep-violet column of the client's
      Admission Portfolio poster, so it is already part of the
      brand's printed vocabulary rather than a web invention. It
      sits between navy and gold and is used sparingly: gradient
-     mid-stops, orb fields, the Uzbekistan destination tint.
+     mid-stops and orb fields.
      ---------------------------------------------------------- */
   --violet-700: #3a2668;
   --violet-600: #4b3184;
@@ -146,7 +146,7 @@
   --dest-russia: #1b4a9c;
   --dest-kazakhstan: #0f7a8a;
   --dest-china: #9b1c2e;
-  --dest-uzbekistan: #5b3a94;
+  --dest-nepal: #a62b36;
   --dest-kyrgyzstan: #b5651d;
 
   /* Gradients. High-contrast on purpose — these carry the brand
@@ -160,7 +160,7 @@
     var(--dest-russia),
     var(--dest-kazakhstan),
     var(--dest-china),
-    var(--dest-uzbekistan),
+    var(--dest-nepal),
     var(--dest-kyrgyzstan)
   );
 
@@ -321,7 +321,7 @@
   --color-dest-russia: var(--dest-russia);
   --color-dest-kazakhstan: var(--dest-kazakhstan);
   --color-dest-china: var(--dest-china);
-  --color-dest-uzbekistan: var(--dest-uzbekistan);
+  --color-dest-nepal: var(--dest-nepal);
   --color-dest-kyrgyzstan: var(--dest-kyrgyzstan);
 
   --color-pastel-gold: var(--pastel-gold);

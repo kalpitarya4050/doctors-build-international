@@ -13,7 +13,7 @@ import { DotGrid } from "@/components/ui/Decor";
 export const metadata: Metadata = {
   title: `MBBS Abroad Fee Comparison ${SITE.admissionYear} — All Partner Universities`,
   description:
-    "Compare MBBS abroad fees across our NMC-eligible partner universities in Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Tuition, total six-year cost, living expenses and FMGE pass rates — sortable, in USD or INR.",
+    "Compare MBBS abroad fees across our NMC-eligible partner universities in Georgia, Russia, Kazakhstan, China, Nepal and Kyrgyzstan. Tuition, total six-year cost, living expenses and FMGE pass rates — sortable, in USD or INR.",
   alternates: { canonical: "/fee-comparison" },
   keywords: [
     "MBBS abroad fees comparison",
@@ -157,7 +157,7 @@ export default function FeeComparisonPage() {
                   quoted associated costs across the programme. INR conversions are approximate and
                   move with the exchange rate — a rouble-denominated course can shift several lakh
                   over six years, which is one reason our USD-denominated options in Georgia,
-                  Uzbekistan and Kyrgyzstan are worth considering if budget certainty matters to your
+                  Kyrgyzstan and Nepal are worth considering if budget certainty matters to your
                   family. All figures are as per official brochures for {SITE.admissionYear}; confirm
                   the current position with the university or its official representative before
                   applying.

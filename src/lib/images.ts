@@ -21,6 +21,63 @@ import { UNIVERSITY_IMAGES } from "./data/university-images";
    ============================================================ */
 
 const OWNED: Record<string, SiteImage> = {
+  /* Partnership photography — our own visit to North Caucasian State
+     Academy. Deliberately uncaptioned as to who is in frame: we know
+     the roles, not a verified spelling of either name, and a title
+     printed under a real person's face has to be right. Names go in
+     when the client confirms them. */
+  "dbi-ncsa-dean-welcome": {
+    src: "/images/owned/dbi/ncsa-dean-welcome.jpg",
+    alt: "A Doctors Build International representative presenting a bouquet to the Dean of North Caucasian State Academy during a partnership visit",
+    width: 1050,
+    height: 1400,
+    photographer: "Doctors Build International",
+    photographerUrl: "",
+    pexelsUrl: "",
+    avgColor: "#75685B",
+  },
+  /* The handshake again, cut to a portrait. The home page frames it
+     as an oval, and a 3:4 photograph centred in a 4:5 hole crops
+     heads first — so the crop is done at full resolution in the
+     ingest rather than with object-position at display time. */
+  "dbi-ncsa-dean-portrait": {
+    src: "/images/owned/dbi/ncsa-dean-portrait.jpg",
+    alt: "A Doctors Build International representative shaking hands with the Dean of North Caucasian State Academy",
+    width: 666,
+    height: 832,
+    photographer: "Doctors Build International",
+    photographerUrl: "",
+    pexelsUrl: "",
+    avgColor: "#7D7A78",
+  },
+
+  "dbi-ncsa-dean-handshake": {
+    src: "/images/owned/dbi/ncsa-dean-handshake.jpg",
+    alt: "A Doctors Build International representative shaking hands with the Dean of North Caucasian State Academy",
+    width: 1050,
+    height: 1400,
+    photographer: "Doctors Build International",
+    photographerUrl: "",
+    pexelsUrl: "",
+    avgColor: "#88847D",
+  },
+
+  /* NCSA's real campus, used in the homepage university strip. The
+     university's own page draws from owned-photos.ts; this id exists
+     so the strip can show the genuine article instead of the regional
+     landscape that UNI_IMAGE still points at for the page hero, whose
+     caption explicitly says "photograph of the region". */
+  "uni-ncsa-campus": {
+    src: "/images/owned/north-caucasian-state-academy/campus-grounds.jpg",
+    alt: "Indian students on the grounds of North Caucasian State Academy in Cherkessk, Russia",
+    width: 1280,
+    height: 720,
+    photographer: "Doctors Build International",
+    photographerUrl: "",
+    pexelsUrl: "",
+    avgColor: "#9DA3A2",
+  },
+
   "campus-geomedi": {
     src: "/images/campus-geomedi.jpg",
     alt: "The GEOMEDI University building in Tbilisi, Georgia, with Georgian and Indian flags outside",

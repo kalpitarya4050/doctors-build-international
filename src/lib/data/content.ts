@@ -355,9 +355,9 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     name: "Student E",
     course: "MBBS",
-    university: "Fergana Medical Institute",
-    country: "Uzbekistan",
-    flag: "🇺🇿",
+    university: "Kemerovo State Medical University",
+    country: "Russia",
+    flag: "🇷🇺",
     quote:
       "The FMGE guidance is what sets them apart. From my third year they have been sending preparation material and connected me with a coaching partner. They understood that clearing FMGE is the actual goal — the degree is only halfway there.",
     rating: 5,
@@ -366,7 +366,7 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     name: "Student F",
     course: "MBBS",
-    university: "North Caucasian State Medical Academy",
+    university: "North Caucasian State Academy",
     country: "Russia",
     flag: "🇷🇺",
     quote:
@@ -380,6 +380,6 @@ export const TESTIMONIALS: Testimonial[] = [
 export const STATS = [
   { value: 10, suffix: "+", label: "Years of Experience", sub: "In medical education" },
   { value: 5000, suffix: "+", label: "Students & Parents", sub: "Trust Doctors Build" },
-  { value: 23, suffix: "", label: "Partner Universities", sub: "Across six countries" },
+  { value: 19, suffix: "", label: "Partner Universities", sub: "Across six countries" },
   { value: 4.5, suffix: "/5", label: "Average Rating", sub: "From student families", decimal: true },
 ] as const;

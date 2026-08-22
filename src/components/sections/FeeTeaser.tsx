@@ -22,7 +22,7 @@ import { inrShort, cn } from "@/lib/utils";
    Instead the tiers are the real spread of published six-year
    totals: the cheapest option we hold a figure for, the one in
    the middle, and the dearest. Every rupee below comes from
-   universities.ts. The 17 universities without published fees are
+   universities.ts. The 14 universities without published fees are
    excluded entirely — a pricing block is the last place to imply
    a number we do not have.
    ============================================================ */
@@ -75,7 +75,7 @@ const DEST_TINT: Record<string, string> = {
   russia: "var(--dest-russia)",
   kazakhstan: "var(--dest-kazakhstan)",
   china: "var(--dest-china)",
-  uzbekistan: "var(--dest-uzbekistan)",
+  nepal: "var(--dest-nepal)",
   kyrgyzstan: "var(--dest-kyrgyzstan)",
 };
 

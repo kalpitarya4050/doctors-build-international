@@ -10,7 +10,7 @@ import { DotGrid } from "@/components/ui/Decor";
 
 export const metadata: Metadata = {
   title: `Apply for MBBS Abroad ${SITE.admissionYear} — Free Counselling`,
-  description: `Apply for MBBS admission abroad ${SITE.admissionYear}. Two-minute application, free doctor-led counselling, response within two hours. NMC-eligible universities in Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan.`,
+  description: `Apply for MBBS admission abroad ${SITE.admissionYear}. Two-minute application, free doctor-led counselling, response within two hours. NMC-eligible universities in Georgia, Russia, Kazakhstan, China, Nepal and Kyrgyzstan.`,
   alternates: { canonical: "/apply" },
   robots: { index: true, follow: true },
 };

@@ -172,5 +172,22 @@ export function stagger(staggerChildren = 0.07, delayChildren = 0): Variants {
 }
 
 /** Viewport config for scroll reveals — fire slightly before the
- *  element is fully on screen so motion never feels late. */
-export const VIEWPORT = { once: true, amount: 0.2, margin: "0px 0px -10% 0px" } as const;
+ *  element is fully on screen so motion never feels late.
+ *
+ *  `amount` is deliberately "some" and not a fraction. A fractional
+ *  threshold is only ever satisfiable while
+ *
+ *      elementHeight <= detectionBandHeight / amount
+ *
+ *  and the detection band is the viewport shrunk by the margin below.
+ *  At amount 0.2 on a 900px viewport that caps out around 4050px —
+ *  so the 19-card university grid (4267px) could never reach the
+ *  threshold, whileInView never fired, and every child sat at
+ *  opacity 0 forever. The taller the page got, the more of it went
+ *  invisible, which is the worst possible failure mode for a
+ *  reveal-on-scroll.
+ *
+ *  "some" cannot fail that way at any height. The negative bottom
+ *  margin still holds the trigger ~10% of the viewport in, so the
+ *  original "fire slightly early, not instantly" intent survives. */
+export const VIEWPORT = { once: true, amount: "some", margin: "0px 0px -10% 0px" } as const;

@@ -6,7 +6,7 @@
    1. "Global MBBS Admission Portfolio 2026-27" (earlier)
       Carries full fee tables. Six universities from it survive
       into the current lineup and keep their verified figures:
-      GEOMEDI, Kemerovo, North Caucasian, Ingush, Fergana and
+      GEOMEDI, Kemerovo, North Caucasian and Ingush, plus
       University of South Asia. Marked `hasPublishedFees: true`.
 
    2. "Top MBBS Universities for Indian Students" (current)
@@ -24,13 +24,30 @@
       published, verifiable numbers, an invented pass rate is the
       one thing that would actually damage the client.
 
-   NEPAL was removed at the client's instruction — they no longer
-   place students there.
+   ---- FINAL MASTER UPDATE ----------------------------------
+   UZBEKISTAN was removed in full at the client's instruction —
+   the country, Fergana Medical Institute of Public Health, and
+   every image, fee, FAQ and SEO reference attached to them.
+
+   The Russian lineup was cut to the client's final four, in their
+   exact order: North Caucasian State Academy, Ingush State
+   University, Kemerovo State Medical University, Kazan State
+   Medical University. Bashkir State (BSMU), Kazan Federal,
+   Ulyanovsk State, Chuvash State and Kabardino-Balkarian State
+   were removed. Old URLs redirect — see public/_redirects.ts.
+
+   NEPAL was reinstated with a single college, Chitwan Medical
+   College in Bharatpur. KIST was never published.
+
+   Kazan State Medical University and Chitwan Medical College were
+   written from official and authoritative sources, not from the
+   client brochure, so they carry no fee table and no pass-rate,
+   enrolment or safety figure. `hasPublishedFees: false`.
 
    NOTE ON SEMESTER SCHEDULES (portfolio universities only): the
    printed 6-row semester table reconciles exactly to the stated
    total for GEOMEDI and University of South Asia. For Kemerovo,
-   North Caucasian, Ingush and Fergana the printed rows sum to
+   North Caucasian and Ingush the printed rows sum to
    one annual instalment less than the stated total (the first
    year is split across two semester rows, which needs 7 rows in
    a 6-year course). The STATED TOTAL is authoritative and is
@@ -103,6 +120,17 @@ export interface University {
   about: string[];
   highlights: string[];
   whyStudy: { title: string; body: string }[];
+
+  /* ---- Long-form sections, 2026 rewrite ---- */
+
+  /** Living in the university's city. Written per city, shared by
+   *  the universities that sit in it. */
+  cityLife: { name: string; body: string };
+  /** Campus facilities. Country-level defaults where the client's
+   *  material describes the country rather than the institution. */
+  facilities: string[];
+  /** Hostel and accommodation, as the client's material sets it out. */
+  hostel: string[];
 }
 
 /** The brochure prints "NMC Eligible*" throughout, and the China
@@ -209,6 +237,268 @@ function feesOnRequest(name: string): string {
   return `Tuition, hostel and living costs for ${name} are confirmed directly with the university for each intake, and are not published in our current brochure. A counsellor will give you the complete written cost breakdown — including everything payable beyond tuition — before you commit to anything.`;
 }
 
+
+/* ------------------------------------------------------------------
+   CITY COPY, 2026 REWRITE
+
+   Rewritten from the client's own city material where they publish
+   it (Tbilisi, Batumi, Ufa, Almaty, Bishkek) and written fresh in
+   the same voice where they do not. Descriptive geography only —
+   no enrolment counts, no cost figures beyond those already
+   verified elsewhere in this file.
+   ------------------------------------------------------------------ */
+
+const CITY_TBILISI = {
+  name: "Tbilisi",
+  body:
+    "Georgia's capital sits on the banks of the Kura, and it is where almost all of Georgian medical education happens. It is a genuinely old city — Persian and Russian layers, Eastern Orthodox churches, art nouveau facades and Soviet modernist blocks, with the reconstructed Narikala fortress and the Kartlis Deda statue above it all. The climate is humid subtropical shading into continental: moderately cold winters, warm summers, rain spread across the year and an annual average around 13°C, which is a mild adjustment rather than a shock. For a student it means the largest Indian community in the country, a metro and cheap ride-hailing, Indian restaurants and messes, and a safe, walkable centre.",
+};
+
+const CITY_BATUMI = {
+  name: "Batumi",
+  body:
+    "Georgia's second city and its principal Black Sea port. The climate here is subtropical rather than continental — milder winters, heavier rain and a coastline that shapes the whole feel of the place. Batumi is compact enough to walk, cheaper than the capital, and quieter, with a smaller but growing Indian student presence. It suits students who want Georgia's advantages without a capital-city pace.",
+};
+
+const CITY_KAZAN = {
+  name: "Kazan",
+  body:
+    "The capital of Tatarstan, on the Volga, and one of Russia's great university cities — its academic tradition runs back more than two centuries. It is a genuinely mixed city, Tatar and Russian, with a preserved kremlin, a large student population and a milder climate than the Russian stereotype suggests. Living costs sit well below Moscow or St Petersburg.",
+};
+
+
+
+
+const CITY_KEMEROVO = {
+  name: "Kemerovo",
+  body:
+    "The administrative centre of the Kuzbass region in western Siberia, and the coldest posting in our Russian lineup. It is an industrial city with a substantial regional hospital network attached to the university, and the costs are among the lowest we publish. The winter is the real thing and demands proper clothing — but it is a serious teaching institution, and the students who choose it know what they are choosing.",
+};
+
+const CITY_CHERKESSK = {
+  name: "Cherkessk",
+  body:
+    "The capital of Karachay-Cherkessia in the northern Caucasus, set in the foothills of the mountains. Winters here are markedly milder than in northern or Siberian Russia and the summers are pleasant. It is a small, quiet city with a low cost base — one of the reasons this group carries the lowest total cost in the portfolio.",
+};
+
+
+const CITY_MAGAS = {
+  name: "Magas",
+  body:
+    "The purpose-built capital of Ingushetia in the northern Caucasus — one of the newest cities in Russia, small, planned and quiet, in the mountainous south where winters are far milder than the Russian north. It is the lowest-cost posting in the entire portfolio, and the calm suits students who want a distraction-free six years.",
+};
+
+const CITY_BHARATPUR = {
+  name: "Bharatpur",
+  body:
+    "Bharatpur is the largest city in the Chitwan district of south-central Nepal, on the banks of the Narayani river in the Terai lowlands, and it has grown into the medical hub of the region — the city carries several major hospitals as well as the college's own teaching hospital. It sits roughly midway between Kathmandu and the Indian border, with its own domestic airport and a good road connection south, which makes it one of the shortest journeys home of anywhere we place students. The climate is subtropical: hot summers, a monsoon from June to September, and mild dry winters that require nothing heavier than a jacket. Chitwan National Park, a UNESCO World Heritage site, is directly to the south.",
+};
+
+const NEPAL_FACILITIES = [
+  "Teaching hospital on the college campus, with the clinical departments attached to it",
+  "Anatomy, physiology, biochemistry, pathology and microbiology laboratories",
+  "Central library with physical and digital medical resources",
+  "Lecture theatres, tutorial rooms and skills-training facilities",
+  "Campus canteen — Nepali and Indian food are effectively the same cuisine here",
+  "On-campus student health services",
+  "Sports and recreational facilities",
+  "Internet access across academic and residential areas",
+];
+
+const NEPAL_HOSTEL = [
+  "Separate hostel accommodation for male and female students",
+  "Furnished rooms on a sharing basis, with study desks and storage",
+  "Mess facilities serving vegetarian and non-vegetarian food",
+  "Laundry and common-room facilities",
+  "Internet access in the residential blocks",
+  "Campus security with controlled entry",
+  "No language barrier in daily life — Hindi is widely understood across Nepal",
+  "Private accommodation in Bharatpur is available and affordable from the later years",
+];
+
+const NEPAL_WHY = [
+  {
+    title: "The shortest journey home in the portfolio",
+    body: "Bharatpur is a short flight or an overland journey from the Indian border. No other destination we place into is this close, and across five and a half years that changes how often families actually visit.",
+  },
+  {
+    title: "No language adjustment",
+    body: "Teaching is in English, and Hindi is widely understood in daily life and on the ward. Of every destination in the portfolio this is the one where a student can take a patient history in a language they already speak.",
+  },
+  {
+    title: "Curriculum close to the Indian syllabus",
+    body: "Nepali MBBS curricula are structured similarly to Indian ones, which is directly relevant to how the FMGE or NExT preparation goes later.",
+  },
+  {
+    title: "Regulated, published fee ceilings",
+    body: "MBBS fees at Nepali colleges are capped by the Medical Education Commission rather than set freely by each institution — an unusual degree of price regulation for a private medical college.",
+  },
+];
+
+const CITY_ALMATY = {
+  name: "Almaty",
+  body:
+    "Kazakhstan's largest city and its commercial capital, set directly against the Tian Shan range — the mountains are visible from most of the city and they shape both the weather and the weekends. The name comes from the apple trees the region is known for. Almaty holds most of the country's financial sector and is the centre of Kazakh higher education, and its climate is genuinely extreme in both directions: hot summers, cold winters, sharpened by the mountainous terrain. For students it means a real city with a metro, a short direct flight home, and established Indian food supply.",
+};
+
+const CITY_NANJING = {
+  name: "Nanjing",
+  body:
+    "A historic city on the Yangtze in Jiangsu province and a former capital of China, now one of the country's major academic centres. Summers are humid and winters cool. It has an established international student presence, a comprehensive metro system and high-speed rail links to Shanghai and Beijing.",
+};
+
+const CITY_GUANGZHOU = {
+  name: "Guangzhou",
+  body:
+    "The commercial capital of southern China on the Pearl River, subtropical and warm through most of the year — by some distance the mildest winter in our Chinese lineup. It has one of the largest expatriate populations in the country, strong direct connectivity to India, and a food culture that students tend to enjoy rather than tolerate.",
+};
+
+const CITY_CHONGQING = {
+  name: "Chongqing",
+  body:
+    "One of the largest municipalities in the world, in the mountainous southwest where the Jialing meets the Yangtze. It is humid subtropical, built vertically across steep terrain, and famous nationally for its food. The scale of the city is matched by the scale of the hospital network attached to the university.",
+};
+
+const CITY_TIANJIN = {
+  name: "Tianjin",
+  body:
+    "A major northern port city half an hour from Beijing by high-speed rail, with a long history of international education and a visible European architectural legacy in its old concession districts. The climate is close to the capital's — hot summers, cold dry winters — at a noticeably lower cost of living.",
+};
+
+const CITY_BEIJING = {
+  name: "Beijing",
+  body:
+    "China's capital and the centre of its medical research and health policy. Winters are cold and dry, summers hot, and the public transport system is among the best anywhere. For a medical student it means proximity to the largest teaching hospital networks in the country and to the institutions that set national clinical standards.",
+};
+
+
+const CITY_BISHKEK = {
+  name: "Bishkek",
+  body:
+    "The capital of Kyrgyzstan and by a wide margin its largest city, laid out on a Soviet grid at the foot of the Tien Shan. It has a reputation as one of the safest capitals in Central Asia, with a low crime rate and petty theft as the main practical concern, and it is compact and walkable. Winters are snowy and drop to around -10°C, spring is mild and summers are warm and sunny. Osh and Dordoy bazaars, Panfilov and Dubovy parks, Erkindik boulevard and the historical museum are ordinary student life; Ala Archa national park, Lake Issyk-Kul and the Burana Tower are the weekends.",
+};
+
+/* ------------------------------------------------------------------
+   FACILITIES AND HOSTEL COPY
+
+   Stated at country level where the client's material describes the
+   country rather than the institution, and overridden per university
+   where they publish something specific.
+   ------------------------------------------------------------------ */
+
+const GEORGIA_FACILITIES = [
+  "Modern lecture halls and seminar rooms built for interactive teaching",
+  "Fully equipped practical laboratories and clinical skills rooms",
+  "Central library with physical and digital access, and extended study hours",
+  "Campus canteen with affordable meals, and Indian food available in the city",
+  "On-campus medical centre for routine student healthcare",
+  "Sports facilities and open recreational grounds",
+  "Round-the-clock internet across academic and residential areas",
+  "24/7 campus security with controlled entry and surveillance",
+];
+
+const GEORGIA_HOSTEL = [
+  "Hostel accommodation on or adjacent to campus, maintained by dedicated staff",
+  "Separate blocks for male and female students",
+  "Twin and triple sharing, furnished with beds, study desks, wardrobes and storage",
+  "Centralised heating and uninterrupted water supply for the local winter",
+  "High-speed internet throughout the residential areas",
+  "Laundry facilities on site or within the residential complex",
+  "24/7 security with controlled entry and monitoring",
+  "Food arrangements vary by residence — Indian messes, self-cooking and nearby Indian restaurants are all available",
+];
+
+const RUSSIA_FACILITIES = [
+  "Well-equipped laboratories, smart classrooms and simulation facilities",
+  "Attached research centres and institutes, open to students during the degree",
+  "Library and reading rooms with extended access",
+  "Campus canteen and dining hall, with Indian food at negligible extra cost",
+  "On-campus medical centre and pharmacy point",
+  "Gymnasium and sports facilities, plus organised cultural and sporting events",
+  "24/7 internet access across campus and dormitories",
+  "International Relations Office handling registration, visa extension and student support",
+];
+
+const RUSSIA_HOSTEL = [
+  "Dormitory accommodation available to all international students",
+  "Double and triple sharing, with separate blocks for men and women",
+  "Rooms furnished with bed, mattress, bedding, blanket, desk, chair and wardrobe",
+  "Centralised heating, uninterrupted water and electricity",
+  "Communal kitchen and washing machines on the premises",
+  "Dedicated Indian mess serving vegetarian and non-vegetarian meals",
+  "24/7 CCTV surveillance, controlled entry, fire alarms and marked emergency exits",
+  "Grocery shops and a medical point within the hostel's immediate vicinity",
+];
+
+const KAZAKHSTAN_FACILITIES = [
+  "Trained faculty and teaching staff, supplemented by a visiting guest-faculty programme",
+  "Modern laboratories and clinical training facilities",
+  "Library and study spaces with extended hours",
+  "Campus canteen, with Indian food available in Almaty",
+  "On-campus medical support and student services",
+  "Sports halls, swimming facilities and organised co-curricular activities",
+  "Round-the-clock internet across campus",
+  "A straightforward, documented admission process with no entrance examination",
+];
+
+const KAZAKHSTAN_HOSTEL = [
+  "Several dormitory blocks per university, sited inside the campus so there is no daily commute",
+  "Lodging, mess and laundry facilities within each block",
+  "Rooms with built-in furniture, beds, bedsheets, quilts, mattresses and blankets",
+  "Separate accommodation arrangements for male and female students",
+  "Mess arrangements covering three meals a day",
+  "Centralised heating for the Almaty winter, and uninterrupted water supply",
+  "Internet access throughout the residential blocks",
+  "Campus security with controlled entry",
+];
+
+const CHINA_FACILITIES = [
+  "Advanced simulation laboratories and clinical skills centres",
+  "Large affiliated teaching hospitals with current diagnostic technology",
+  "Funded research laboratories, open to students during the degree",
+  "Extensive libraries with digital and international journal access",
+  "Campus canteens with multiple counters, including halal and vegetarian options",
+  "On-campus medical centre and student health services",
+  "Sports complexes, gymnasiums and organised student activities",
+  "High-speed internet across academic and residential areas",
+];
+
+const CHINA_HOSTEL = [
+  "University residences on or adjacent to campus, reserved for international students",
+  "Typically twin sharing, furnished with beds, desks, wardrobes and storage",
+  "Air conditioning and heating appropriate to the city's climate",
+  "Private or shared bathrooms depending on the residence",
+  "High-speed internet in every room",
+  "Laundry facilities within the residential block",
+  "24-hour security with controlled campus and building access",
+  "Self-catering common from the later years, alongside campus canteen access",
+];
+
+
+
+const KYRGYZSTAN_FACILITIES = [
+  "Well-equipped classrooms, laboratories and surgical training rooms",
+  "Library and study spaces",
+  "Campus canteen, with long-established Indian food supply across Bishkek",
+  "On-campus medical support",
+  "Sports and recreational facilities",
+  "Round-the-clock internet access",
+  "Campus security with controlled entry",
+  "An established international student office used to Indian cohorts",
+];
+
+const KYRGYZSTAN_HOSTEL = [
+  "Shared hostel rooms, furnished and heated for the Bishkek winter",
+  "Separate blocks for male and female students",
+  "Hostel mess serving Indian food, alongside a common kitchen for self-cooking",
+  "Laundry facilities on the premises",
+  "24-hour internet and security",
+  "Uninterrupted water supply and centralised heating",
+  "Grocery shops and Indian restaurants within easy reach of campus",
+  "Private flats near campus are affordable from the later years",
+];
+
+
 export const UNIVERSITIES: University[] = [
   /* ============================================================
      PRIORITY 1 — GEORGIA · Best for Easy Adaptation
@@ -255,6 +545,7 @@ export const UNIVERSITIES: University[] = [
       "GEOMEDI University is a private medical institution in Tbilisi, Georgia, offering undergraduate and postgraduate programmes in medicine, dentistry and nursing. It is accredited by Georgia's National Center for Educational Quality Enhancement and is recognized by the World Health Organization and the National Medical Commission of India.",
       "The MD (equivalent to MBBS) programme runs for five academic years followed by a one-year clinical internship, delivered entirely in English. Georgia's position at the crossroads of Europe and Asia gives students a European-standard curriculum with a cost of living far below Western Europe.",
       "For Indian students, GEOMEDI is consistently the strongest performer in our portfolio on FMGE outcomes, with a pass rate above 65% — a direct result of a curriculum that maps closely onto the Indian syllabus and dedicated FMGE/NExT coaching alongside regular coursework.",
+      "The university runs its own University Clinic on campus, which is where a large part of the clinical teaching happens and where graduates are sometimes taken on directly. Alongside the core curriculum it runs USMLE Step 1 and Step 2 preparation and, from the fourth year, German language classes for students weighing a European postgraduate route. GEOMEDI is a signatory to the Lisbon Recognition Convention, the instrument that makes an academic qualification portable across the European higher education area.",
     ],
     highlights: [
       "Highest FMGE pass rate in our portfolio — 65%+",
@@ -282,6 +573,9 @@ export const UNIVERSITIES: University[] = [
         body: "A safe, affordable, culturally rich capital with a large Indian student community, Indian restaurants, and direct connectivity to India.",
       },
     ],
+    cityLife: CITY_TBILISI,
+    facilities: GEORGIA_FACILITIES,
+    hostel: GEORGIA_HOSTEL,
   },
   {
     slug: "avicenna-batumi-medical-university",
@@ -321,8 +615,9 @@ export const UNIVERSITIES: University[] = [
     blurb:
       "The only option in our Georgian lineup outside the capital — a Black Sea coastal city with a milder climate, a smaller student population and a lower cost base than Tbilisi.",
     about: [
-      "Avicenna Batumi Medical University is located in Batumi, Georgia's principal Black Sea port and its second city. It delivers its medical programme in English to international students, and sits in the client's Priority 1 band — the group selected for how straightforward Indian students find the adjustment.",
+      "Avicenna Batumi Medical University is located in Batumi, Georgia's principal Black Sea port and its second city. It delivers its medical programme in English to international students, and sits in our Priority 1 band — the group selected for how straightforward Indian students find the adjustment.",
       "Batumi is a markedly different proposition from Tbilisi: a coastal, subtropical climate rather than a continental one, a compact city that is quick to learn, and a cost base below the capital. Students who want Georgia's advantages without a capital-city environment tend to shortlist here.",
+      "Batumi's compactness works in a first-year student's favour in a way that is easy to underrate: campus, accommodation and the city centre sit within a short distance of one another, which removes a whole category of friction that larger cities create in the first term. The subtropical coast also means the winter adjustment most students brace for never really arrives.",
       feesOnRequest("Avicenna Batumi Medical University"),
     ],
     highlights: [
@@ -334,6 +629,9 @@ export const UNIVERSITIES: University[] = [
       "Modern infrastructure and growing hospital exposure",
     ],
     whyStudy: GEORGIA_WHY,
+    cityLife: CITY_BATUMI,
+    facilities: GEORGIA_FACILITIES,
+    hostel: GEORGIA_HOSTEL,
   },
   {
     slug: "georgian-american-university",
@@ -374,7 +672,8 @@ export const UNIVERSITIES: University[] = [
       "A Tbilisi university built on an American academic model — credit-based structure, English throughout, and a teaching culture oriented towards Western medical education.",
     about: [
       "Georgian American University is a private institution in Tbilisi delivering its medical programme in English. As the name indicates, its academic structure follows an American model, which shows in the credit system and the emphasis on continuous assessment rather than a small number of high-stakes examinations.",
-      "It sits in the client's Priority 1 band alongside the other Georgian universities — the group selected for ease of adaptation, cost of living, and proximity to India. Tbilisi's established Indian student community, Indian food supply and direct flight connectivity all apply here.",
+      "It sits in our Priority 1 band alongside the other Georgian universities — the group selected for ease of adaptation, cost of living, and proximity to India. Tbilisi's established Indian student community, Indian food supply and direct flight connectivity all apply here.",
+      "GAU was established in Tbilisi in 2001 and is accredited by the Ministry of Education and Science of Georgia. It runs student-exchange arrangements with partner institutions in Europe, the United States, Canada and Australia, which gives students a route to academic mobility during the degree rather than only after it. The campus is deliberately international in composition, and its facilities — library, information centre, computer laboratories, common room and cafeteria — are built around that mix. Student-run educational, sporting and charitable projects are a visible part of life there.",
       feesOnRequest("Georgian American University"),
     ],
     highlights: [
@@ -386,6 +685,9 @@ export const UNIVERSITIES: University[] = [
       "Easy visa process and light documentation",
     ],
     whyStudy: GEORGIA_WHY,
+    cityLife: CITY_TBILISI,
+    facilities: GEORGIA_FACILITIES,
+    hostel: GEORGIA_HOSTEL,
   },
   {
     slug: "georgian-national-university-seu",
@@ -426,7 +728,8 @@ export const UNIVERSITIES: University[] = [
       "One of Georgia's larger private universities, with a medical faculty taught in English and a modern Tbilisi campus.",
     about: [
       "Georgian National University, known as SEU, is a private university in Tbilisi with a medical faculty delivering its programme in English to international students. It is one of the larger private institutions in the country and has invested substantially in its campus infrastructure.",
-      "SEU is part of the client's Priority 1 group — the Georgian universities selected because Indian students adapt to them most easily. That band is defined by pleasant climate, affordable living, a safer environment and a short flight home rather than by any single institutional feature.",
+      "SEU is part of our Priority 1 group — the Georgian universities selected because Indian students adapt to them most easily. That band is defined by pleasant climate, affordable living, a safer environment and a short flight home rather than by any single institutional feature.",
+      "SEU was established in 2001 and operates from a modern, purpose-built campus in Tbilisi with sustained investment in medical teaching infrastructure: simulation-based clinical laboratories, 3D anatomy and anatomage tables, and structured cadaver-assisted learning. The programme follows European higher education standards under the Bologna Process and the university is listed in the World Directory of Medical Schools. There is no IELTS or TOEFL requirement — English competence is assessed through a university interview — and the campus carries accessibility provision for students with disabilities. SEU also operates a merit-based co-financing scheme that reduces tuition in later semesters for students who meet defined academic thresholds; it is not an entry-level scholarship and is awarded at the university's discretion.",
       feesOnRequest("Georgian National University (SEU)"),
     ],
     highlights: [
@@ -438,6 +741,9 @@ export const UNIVERSITIES: University[] = [
       "High student satisfaction and safety",
     ],
     whyStudy: GEORGIA_WHY,
+    cityLife: CITY_TBILISI,
+    facilities: GEORGIA_FACILITIES,
+    hostel: GEORGIA_HOSTEL,
   },
   {
     slug: "east-west-university-georgia",
@@ -478,7 +784,8 @@ export const UNIVERSITIES: University[] = [
       "A Tbilisi university whose medical programme is built specifically around international cohorts, taught entirely in English.",
     about: [
       "East-West University is a private institution in Tbilisi delivering an English-medium medical programme. Its intake is oriented towards international students, which shapes how the teaching is organised — teaching and student support are designed for cohorts arriving from outside Georgia rather than adapted for them.",
-      "It appears in the client's Priority 1 band: the Georgian group chosen for ease of adaptation. In practice that means a short flight from India, a familiar food supply in the city, low living costs and a straightforward visa process.",
+      "It appears in our Priority 1 band: the Georgian group chosen for ease of adaptation. In practice that means a short flight from India, a familiar food supply in the city, low living costs and a straightforward visa process.",
+      "What distinguishes East-West within the Tbilisi group is scale rather than location. It is a smaller institution than SEU or GAU, and students who want a capital-city posting — with the Indian community, the food supply and the direct connectivity that Tbilisi provides — but would rather not be one of a very large cohort tend to shortlist it against the bigger Tbilisi options.",
       feesOnRequest("East-West University"),
     ],
     highlights: [
@@ -490,6 +797,9 @@ export const UNIVERSITIES: University[] = [
       "Three to four hours from India",
     ],
     whyStudy: GEORGIA_WHY,
+    cityLife: CITY_TBILISI,
+    facilities: GEORGIA_FACILITIES,
+    hostel: GEORGIA_HOSTEL,
   },
   {
     slug: "david-tvildiani-medical-university",
@@ -530,7 +840,8 @@ export const UNIVERSITIES: University[] = [
       "A dedicated medical university in Tbilisi — medicine is the entire institution rather than one faculty among many.",
     about: [
       "David Tvildiani Medical University is a specialist medical institution in Tbilisi, teaching its programme in English. Being a dedicated medical university rather than a general university with a medical faculty means teaching resources, laboratories and clinical partnerships are concentrated entirely on medical training.",
-      "It is the sixth Georgian university in the client's Priority 1 band. As with the rest of that group, the case for it rests on how straightforward Georgia is for an Indian student — climate, cost, food, safety and a short journey home — rather than on any one distinguishing claim.",
+      "It is the sixth Georgian university in our Priority 1 band. As with the rest of that group, the case for it rests on how straightforward Georgia is for an Indian student — climate, cost, food, safety and a short journey home — rather than on any one distinguishing claim.",
+      "DTMU was founded in 1989 by David and Dimitri Tvildiani and has grown to include the AIETI medical school, a nursing school and doctoral programmes alongside the undergraduate degree. Its alumni practise as physicians in universities and clinics across the United States and Europe, and the university's reputation among Indian students rests on how deliberately it prepares them for international licensing examinations. It is affiliated with the Association of Medical Schools in Europe, the Association for Medical Education in Europe, FAIMER, ORPHEUS and the Eurasian Universities Union.",
       feesOnRequest("David Tvildiani Medical University"),
     ],
     highlights: [
@@ -542,294 +853,15 @@ export const UNIVERSITIES: University[] = [
       "High student satisfaction and safety",
     ],
     whyStudy: GEORGIA_WHY,
+    cityLife: CITY_TBILISI,
+    facilities: GEORGIA_FACILITIES,
+    hostel: GEORGIA_HOSTEL,
   },
-
-  /* ============================================================
-     PRIORITY 2 — RUSSIA · Best for Clinical Experience & Value
-     ============================================================ */
   {
-    slug: "kazan-federal-university",
+    slug: "north-caucasian-state-academy",
     rank: 7,
-    name: "Kazan Federal University",
-    shortName: "Kazan Federal",
-    country: "Russia",
-    countrySlug: "russia",
-    flag: "🇷🇺",
-    city: "Kazan",
-    priority: 2,
-    airport: "Kazan International Airport",
-    airportCode: "KZN",
-    airportDistance: null,
-    airportDrive: null,
-    course: "MBBS",
-    duration: null,
-    durationYears: null,
-    medium: "English",
-    intake: null,
-    recognition: ["NMC", "WHO", "WDOMS"],
-    recognitionText: "NMC Eligible · WHO Listed · WDOMS",
-    affiliatedHospitals: null,
-    fmgePassRate: null,
-    indianStudents: null,
-    safetyRating: null,
-    climate: "Continental — cold winters, warm summers",
-    livingCost: null,
-    currency: "VARIES",
-    tuitionTotal: null,
-    tuitionInr: null,
-    totalExpense: null,
-    totalExpenseInr: null,
-    semesterSchedule: [null, null, null, null, null, null],
-    hasPublishedFees: false,
-    accent: "#7C2D5E",
-    blurb:
-      "One of Russia's oldest and most internationally recognised universities, in Tatarstan's capital — the highest-profile institution in the client's Russian lineup.",
-    about: [
-      "Kazan Federal University is among the oldest universities in Russia and one of its most internationally recognised, with a medical institute delivering an English-medium programme to international students. It leads the client's Priority 2 band, the group selected for clinical experience and value.",
-      "Kazan is the capital of Tatarstan and one of Russia's major cities, with a large student population and a substantial Muslim community alongside its Russian one — which many Indian students find makes food and cultural adjustment noticeably easier than elsewhere in the country.",
-      feesOnRequest("Kazan Federal University"),
-    ],
-    highlights: [
-      "Among Russia's oldest and best-known universities",
-      "Strong international recognition",
-      "Large teaching hospital network",
-      "Kazan — a major city with a big student population",
-      "Halal and vegetarian food widely available",
-      "Research opportunities and a strong alumni network",
-    ],
-    whyStudy: RUSSIA_WHY,
-  },
-  {
-    slug: "bashkir-state-medical-university",
-    rank: 8,
-    name: "Bashkir State Medical University (BSMU)",
-    shortName: "Bashkir State",
-    country: "Russia",
-    countrySlug: "russia",
-    flag: "🇷🇺",
-    city: "Ufa",
-    priority: 2,
-    airport: "Ufa International Airport",
-    airportCode: "UFA",
-    airportDistance: null,
-    airportDrive: null,
-    course: "MBBS",
-    duration: null,
-    durationYears: null,
-    medium: "English",
-    intake: null,
-    recognition: ["NMC", "WHO", "WDOMS"],
-    recognitionText: "NMC Eligible · WHO Listed · WDOMS",
-    affiliatedHospitals: null,
-    fmgePassRate: null,
-    indianStudents: null,
-    safetyRating: null,
-    climate: "Continental — cold winters, warm summers",
-    livingCost: null,
-    currency: "VARIES",
-    tuitionTotal: null,
-    tuitionInr: null,
-    totalExpense: null,
-    totalExpenseInr: null,
-    semesterSchedule: [null, null, null, null, null, null],
-    hasPublishedFees: false,
-    accent: "#9B3030",
-    blurb:
-      "A long-established state medical university in Bashkortostan, with the concentrated clinical focus of a dedicated medical institution.",
-    about: [
-      "Bashkir State Medical University is a Russian state medical university in Ufa, the capital of the Republic of Bashkortostan. As a dedicated medical university it concentrates its entire faculty and budget on medical education rather than spreading across unrelated departments.",
-      "It sits in the client's Priority 2 band — the Russian group selected for clinical experience and value for money. Bashkortostan has a substantial Muslim population, which in practice means halal and vegetarian food are ordinary rather than something to hunt for.",
-      feesOnRequest("Bashkir State Medical University"),
-    ],
-    highlights: [
-      "Dedicated state medical university",
-      "Extensive clinical exposure",
-      "Experienced faculty with international cohorts",
-      "Halal and vegetarian food widely available",
-      "No donation or capitation fee",
-      "WHO listed, NMC eligible",
-    ],
-    whyStudy: RUSSIA_WHY,
-  },
-  {
-    slug: "ulyanovsk-state-university",
-    rank: 9,
-    name: "Ulyanovsk State University",
-    shortName: "Ulyanovsk State",
-    country: "Russia",
-    countrySlug: "russia",
-    flag: "🇷🇺",
-    city: "Ulyanovsk",
-    priority: 2,
-    airport: "Ulyanovsk Baratayevka Airport",
-    airportCode: "ULY",
-    airportDistance: null,
-    airportDrive: null,
-    course: "MBBS",
-    duration: null,
-    durationYears: null,
-    medium: "English",
-    intake: null,
-    recognition: ["NMC", "WHO", "WDOMS"],
-    recognitionText: "NMC Eligible · WHO Listed · WDOMS",
-    affiliatedHospitals: null,
-    fmgePassRate: null,
-    indianStudents: null,
-    safetyRating: null,
-    climate: "Continental — cold winters, warm summers",
-    livingCost: null,
-    currency: "VARIES",
-    tuitionTotal: null,
-    tuitionInr: null,
-    totalExpense: null,
-    totalExpenseInr: null,
-    semesterSchedule: [null, null, null, null, null, null],
-    hasPublishedFees: false,
-    accent: "#8E3A52",
-    blurb:
-      "A state university on the Volga with a long-running English-medium medical faculty and a well-worn admission pathway for Indian students.",
-    about: [
-      "Ulyanovsk State University is a Russian state university on the Volga, with a medical faculty that has taught international students in English for many years. It is one of the three Volga-region institutions in the client's Russian lineup.",
-      "The Priority 2 band it belongs to is defined by clinical experience and value — large teaching hospital networks, experienced faculty, practical training weighted through the later years, and state-regulated tuition with nothing payable under the table.",
-      feesOnRequest("Ulyanovsk State University"),
-    ],
-    highlights: [
-      "Long-running English-medium medical faculty",
-      "State university — regulated fees, no capitation",
-      "Volga-region city with a large student population",
-      "Extensive clinical exposure",
-      "Experienced faculty and practical training",
-      "WHO listed, NMC eligible",
-    ],
-    whyStudy: RUSSIA_WHY,
-  },
-  {
-    slug: "chuvash-state-medical-university",
-    rank: 10,
-    name: "Chuvash State Medical University",
-    shortName: "Chuvash State",
-    country: "Russia",
-    countrySlug: "russia",
-    flag: "🇷🇺",
-    city: "Cheboksary",
-    priority: 2,
-    airport: "Cheboksary Airport",
-    airportCode: "CSY",
-    airportDistance: null,
-    airportDrive: null,
-    course: "MBBS",
-    duration: null,
-    durationYears: null,
-    medium: "English",
-    intake: null,
-    recognition: ["NMC", "WHO", "WDOMS"],
-    recognitionText: "NMC Eligible · WHO Listed · WDOMS",
-    affiliatedHospitals: null,
-    fmgePassRate: null,
-    indianStudents: null,
-    safetyRating: null,
-    climate: "Continental — cold winters, warm summers",
-    livingCost: null,
-    currency: "VARIES",
-    tuitionTotal: null,
-    tuitionInr: null,
-    totalExpense: null,
-    totalExpenseInr: null,
-    semesterSchedule: [null, null, null, null, null, null],
-    hasPublishedFees: false,
-    accent: "#A03A45",
-    blurb:
-      "A state medical university in the Chuvash Republic — a smaller, quieter city than the Volga's larger campuses, with correspondingly lower living costs.",
-    about: [
-      "Chuvash State Medical University is located in Cheboksary, capital of the Chuvash Republic on the Volga. It delivers its medical programme in English to international students, within the Russian federal medical education standard.",
-      "Cheboksary is a smaller and quieter city than Kazan or Ufa, which students who prefer a calmer environment — and a lower cost base — tend to weigh in its favour. It belongs to the client's Priority 2 band for clinical experience and value.",
-      feesOnRequest("Chuvash State Medical University"),
-    ],
-    highlights: [
-      "Dedicated state medical university",
-      "Smaller, quieter city than the larger Volga campuses",
-      "Lower cost base",
-      "Extensive clinical exposure",
-      "Excellent infrastructure and teaching hospitals",
-      "No donation or capitation fee",
-    ],
-    whyStudy: RUSSIA_WHY,
-  },
-  {
-    slug: "kemerovo-state-medical-university",
-    rank: 11,
-    name: "Kemerovo State Medical University",
-    shortName: "Kemerovo State",
-    country: "Russia",
-    countrySlug: "russia",
-    flag: "🇷🇺",
-    city: "Kemerovo",
-    priority: 2,
-    airport: "Kemerovo International Airport",
-    airportCode: "KEJ",
-    airportDistance: "~15 – 20 km",
-    airportDrive: null,
-    course: "MBBS",
-    duration: "6 Years (Incl. 1 Year Internship)",
-    durationYears: 6,
-    medium: "English",
-    intake: "Sept / Oct",
-    recognition: ["NMC", "WHO"],
-    recognitionText: "NMC (India) Recognized, WHO Approved",
-    affiliatedHospitals: null,
-    fmgePassRate: "58%+",
-    indianStudents: "2500+",
-    safetyRating: 4.2,
-    climate: "Cold",
-    livingCost: "USD 100 – 150",
-    currency: "RUB",
-    tuitionTotal: 2010000,
-    tuitionInr: 2050500,
-    totalExpense: 2795000,
-    totalExpenseInr: 2855000,
-    semesterSchedule: [167500, 167500, 335000, 335000, 335000, 335000],
-    hasPublishedFees: true,
-    established: "1955",
-    accent: "#B33636",
-    blurb:
-      "A large Russian government medical university with the biggest Indian student community in our portfolio — 2500+ students, established Indian mess facilities and a well-worn admission pathway.",
-    about: [
-      "Kemerovo State Medical University is a Russian government medical university in the Siberian city of Kemerovo, founded in 1955. It is recognized by the National Medical Commission of India and approved by the World Health Organization, and is listed in the World Directory of Medical Schools.",
-      "The MBBS programme runs six years including a one-year internship, taught in English for international students. As a state university it charges no donation or capitation fee — the published tuition is the tuition.",
-      "With over 2500 Indian students on campus, Kemerovo has among the most established Indian support infrastructure of any university we work with: Indian mess facilities, Indian senior networks, and faculty long experienced in teaching Indian cohorts.",
-    ],
-    highlights: [
-      "Government university — zero donation, zero capitation",
-      "2500+ Indian students already on campus",
-      "Established Indian mess and hostel facilities",
-      "Recognized by NMC (India) and WHO",
-      "Airport only 15 – 20 km from campus",
-      "Full six-year programme including internship",
-    ],
-    whyStudy: [
-      {
-        title: "Government-backed stability",
-        body: "A state university with seventy years of continuous operation, state-regulated fees and a curriculum aligned to Russia's federal medical education standard.",
-      },
-      {
-        title: "Large Indian cohort",
-        body: "2500+ Indian students means an existing support network from day one — seniors, societies, and food you recognise.",
-      },
-      {
-        title: "Clinical infrastructure",
-        body: "Affiliated regional and city hospitals across Kemerovo provide broad clinical exposure across specialties.",
-      },
-      {
-        title: "Cost efficiency",
-        body: "Living costs of USD 100 – 150 a month make Kemerovo one of the most economical routes to a recognized medical degree.",
-      },
-    ],
-  },
-  {
-    slug: "north-caucasian-state-medical-academy",
-    rank: 12,
-    name: "North Caucasian State Medical Academy",
-    shortName: "North Caucasian",
+    name: "North Caucasian State Academy",
+    shortName: "NCSA",
     country: "Russia",
     countrySlug: "russia",
     flag: "🇷🇺",
@@ -863,9 +895,10 @@ export const UNIVERSITIES: University[] = [
     blurb:
       "A focused medical academy in the North Caucasus with strong clinical training, a 1800-strong Indian cohort and a milder southern-Russian climate than Siberia.",
     about: [
-      "North Caucasian State Medical Academy is located in Cherkessk in southern Russia. It is recognized by the National Medical Commission of India and approved by the World Health Organization, delivering its MBBS programme in English to international students.",
+      "North Caucasian State Academy (NCSA) is located in Cherkessk, the capital of the Karachay-Cherkess Republic in southern Russia. The medical programme is delivered by the academy's Medical Institute, which sits within the North Caucasian State Humanitarian and Technological Academy — the institution's full registered name, and the one to look for when you verify its status. Teaching is in English throughout, to an international cohort.",
       "The six-year programme includes a one-year internship. As a dedicated medical academy rather than a general university, teaching resources are concentrated entirely on medical training — anatomy, physiology and clinical skills laboratories are the institution's core investment.",
       "Southern Russia offers a more temperate climate than the Siberian universities, and the region has a substantial Muslim and multi-ethnic population, which many Indian students find makes food and cultural adjustment easier.",
+      "NCSA sits in Cherkessk, in the foothills of the Caucasus mountains, where winters are markedly milder than anywhere north of it. It teaches in English to an international cohort and carries verified fee data in this portfolio. For families weighing Russia's value proposition but worried about the cold, this is the part of the country that answers the objection.",
     ],
     highlights: [
       "Dedicated medical academy — medicine is the entire focus",
@@ -877,7 +910,7 @@ export const UNIVERSITIES: University[] = [
     ],
     whyStudy: [
       {
-        title: "Specialist institution",
+        title: "A dedicated medical institute",
         body: "A dedicated medical academy concentrates its entire budget and faculty on medical education rather than spreading across unrelated departments.",
       },
       {
@@ -893,62 +926,13 @@ export const UNIVERSITIES: University[] = [
         body: "Southern Russia is markedly warmer than the Siberian options — a genuine consideration over six years.",
       },
     ],
-  },
-  {
-    slug: "kabardino-balkarian-state-university",
-    rank: 13,
-    name: "Kabardino-Balkarian State University",
-    shortName: "Kabardino-Balkarian",
-    country: "Russia",
-    countrySlug: "russia",
-    flag: "🇷🇺",
-    city: "Nalchik",
-    priority: 2,
-    airport: "Nalchik Airport",
-    airportCode: "NAL",
-    airportDistance: null,
-    airportDrive: null,
-    course: "MBBS",
-    duration: null,
-    durationYears: null,
-    medium: "English",
-    intake: null,
-    recognition: ["NMC", "WHO", "WDOMS"],
-    recognitionText: "NMC Eligible · WHO Listed · WDOMS",
-    affiliatedHospitals: null,
-    fmgePassRate: null,
-    indianStudents: null,
-    safetyRating: null,
-    climate: "Moderate — southern Russia",
-    livingCost: null,
-    currency: "VARIES",
-    tuitionTotal: null,
-    tuitionInr: null,
-    totalExpense: null,
-    totalExpenseInr: null,
-    semesterSchedule: [null, null, null, null, null, null],
-    hasPublishedFees: false,
-    accent: "#356B8C",
-    blurb:
-      "A southern-Russian state university in the Caucasus foothills — a milder climate than Siberia, in a region where Indian students adapt comparatively easily.",
-    about: [
-      "Kabardino-Balkarian State University is a Russian state university in Nalchik, capital of the Kabardino-Balkarian Republic in the northern Caucasus. Its medical faculty teaches international students in English within the Russian federal medical education standard.",
-      "Nalchik sits in the Caucasus foothills, giving it a considerably milder climate than the Siberian universities — a real factor across a six-year course. Like the region's other campuses, it has a substantial Muslim population, so halal and vegetarian food are ordinary rather than a special arrangement.",
-      feesOnRequest("Kabardino-Balkarian State University"),
-    ],
-    highlights: [
-      "Milder southern-Russian climate",
-      "State university — regulated fees, no capitation",
-      "Halal and vegetarian food widely available",
-      "Large regional teaching hospital network",
-      "Experienced faculty and practical training",
-      "WHO listed, NMC eligible",
-    ],
-    whyStudy: RUSSIA_WHY,
+    cityLife: CITY_CHERKESSK,
+    facilities: RUSSIA_FACILITIES,
+    hostel: RUSSIA_HOSTEL,
   },
   {
     slug: "ingush-state-university",
-    rank: 14,
+    rank: 8,
     name: "Ingush State University",
     shortName: "Ingush State",
     country: "Russia",
@@ -988,6 +972,7 @@ export const UNIVERSITIES: University[] = [
       "Ingush State University is a Russian government university in Magas, the capital of the Republic of Ingushetia, established in 1994. Its medical faculty is recognized by the National Medical Commission of India, approved by the World Health Organization, and listed in the World Directory of Medical Schools.",
       "The six-year MBBS programme, including a one-year internship, is delivered in English. At approximately ₹15.91 lakh for the entire six years including living costs, Ingush State represents the lowest total cost of any option in our portfolio while maintaining a 62%+ FMGE pass rate.",
       "Magas is a modern, purpose-built capital city with a very low crime rate — reflected in its 4.5/5 safety rating — and the airport sits only 5 to 10 km from campus, the shortest transfer of any university we work with.",
+      "Ingush State University is in Magas, the purpose-built capital of Ingushetia in Russia's mountainous south, where the winters are far milder than the Russian stereotype. It carries the lowest verified total cost in this entire portfolio — approximately ₹15.91 lakh across six years including living costs — with no donation or capitation at any stage. It is a small, calm posting, and that suits students who want six distraction-free years at the lowest possible cost.",
     ],
     highlights: [
       "Lowest total six-year cost in the portfolio — ₹15.91 lakh",
@@ -1015,6 +1000,142 @@ export const UNIVERSITIES: University[] = [
         body: "Magas Airport is 5 – 10 km away — the easiest arrival and the cheapest travel logistics in the portfolio.",
       },
     ],
+    cityLife: CITY_MAGAS,
+    facilities: RUSSIA_FACILITIES,
+    hostel: RUSSIA_HOSTEL,
+  },
+  {
+    slug: "kemerovo-state-medical-university",
+    rank: 9,
+    name: "Kemerovo State Medical University",
+    shortName: "Kemerovo State",
+    country: "Russia",
+    countrySlug: "russia",
+    flag: "🇷🇺",
+    city: "Kemerovo",
+    priority: 2,
+    airport: "Kemerovo International Airport",
+    airportCode: "KEJ",
+    airportDistance: "~15 – 20 km",
+    airportDrive: null,
+    course: "MBBS",
+    duration: "6 Years (Incl. 1 Year Internship)",
+    durationYears: 6,
+    medium: "English",
+    intake: "Sept / Oct",
+    recognition: ["NMC", "WHO"],
+    recognitionText: "NMC (India) Recognized, WHO Approved",
+    affiliatedHospitals: null,
+    fmgePassRate: "58%+",
+    indianStudents: "2500+",
+    safetyRating: 4.2,
+    climate: "Cold",
+    livingCost: "USD 100 – 150",
+    currency: "RUB",
+    tuitionTotal: 2010000,
+    tuitionInr: 2050500,
+    totalExpense: 2795000,
+    totalExpenseInr: 2855000,
+    semesterSchedule: [167500, 167500, 335000, 335000, 335000, 335000],
+    hasPublishedFees: true,
+    established: "1955",
+    accent: "#B33636",
+    blurb:
+      "A large Russian government medical university with the biggest Indian student community in our portfolio — 2500+ students, established Indian mess facilities and a well-worn admission pathway.",
+    about: [
+      "Kemerovo State Medical University is a Russian government medical university in the Siberian city of Kemerovo, founded in 1955. It is recognized by the National Medical Commission of India and approved by the World Health Organization, and is listed in the World Directory of Medical Schools.",
+      "The MBBS programme runs six years including a one-year internship, taught in English for international students. As a state university it charges no donation or capitation fee — the published tuition is the tuition.",
+      "With over 2500 Indian students on campus, Kemerovo has among the most established Indian support infrastructure of any university we work with: Indian mess facilities, Indian senior networks, and faculty long experienced in teaching Indian cohorts.",
+      "Kemerovo State Medical University serves the Kuzbass region of western Siberia and is attached to a substantial regional hospital system — which is what produces the patient volume behind its clinical teaching. It is a demanding posting on climate and an unusually strong one on value, and it carries verified fee data in this portfolio rather than a figure quoted on request. Students who choose it do so with the winter in full view, and the ones who prepare for it properly do well there.",
+    ],
+    highlights: [
+      "Government university — zero donation, zero capitation",
+      "2500+ Indian students already on campus",
+      "Established Indian mess and hostel facilities",
+      "Recognized by NMC (India) and WHO",
+      "Airport only 15 – 20 km from campus",
+      "Full six-year programme including internship",
+    ],
+    whyStudy: [
+      {
+        title: "Government-backed stability",
+        body: "A state university with seventy years of continuous operation, state-regulated fees and a curriculum aligned to Russia's federal medical education standard.",
+      },
+      {
+        title: "Large Indian cohort",
+        body: "2500+ Indian students means an existing support network from day one — seniors, societies, and food you recognise.",
+      },
+      {
+        title: "Clinical infrastructure",
+        body: "Affiliated regional and city hospitals across Kemerovo provide broad clinical exposure across specialties.",
+      },
+      {
+        title: "Cost efficiency",
+        body: "Living costs of USD 100 – 150 a month make Kemerovo one of the most economical routes to a recognized medical degree.",
+      },
+    ],
+    cityLife: CITY_KEMEROVO,
+    facilities: RUSSIA_FACILITIES,
+    hostel: RUSSIA_HOSTEL,
+  },
+  {
+    slug: "kazan-state-medical-university",
+    rank: 10,
+    name: "Kazan State Medical University",
+    shortName: "KSMU",
+    country: "Russia",
+    countrySlug: "russia",
+    flag: "🇷🇺",
+    city: "Kazan",
+    priority: 2,
+    airport: "Kazan International Airport",
+    airportCode: "KZN",
+    airportDistance: "~25 km",
+    airportDrive: null,
+    course: "MBBS",
+    duration: "6 Years (Incl. 1 Year Internship)",
+    durationYears: 6,
+    medium: "English",
+    intake: "Sept / Oct",
+    recognition: ["NMC", "WHO", "WDOMS"],
+    recognitionText:
+      "Listed in the World Directory of Medical Schools · NMC eligibility to be verified against current regulations",
+    affiliatedHospitals: null,
+    fmgePassRate: null,
+    indianStudents: null,
+    safetyRating: null,
+    climate: "Continental — cold winters, warm summers",
+    livingCost: null,
+    currency: "VARIES",
+    tuitionTotal: null,
+    tuitionInr: null,
+    totalExpense: null,
+    totalExpenseInr: null,
+    semesterSchedule: [null, null, null, null, null, null],
+    hasPublishedFees: false,
+    established: "1814",
+    accent: "#1B4A9C",
+    blurb:
+      "Founded in 1814 and the third-oldest medical school in Russia — a state university in Kazan with its clinical teaching spread across the city's major hospitals.",
+    about: [
+      "Kazan State Medical University traces its foundation to 14 May 1814, when a medical faculty was established at the Imperial Kazan University. It became an independent medical institute in 1930 and was granted full university status in April 1994. After Moscow and St Petersburg it is the third-oldest institution of medical education in Russia. It is a separate institution from the federal university in the same city, with which it is sometimes confused.",
+      "The university runs faculties in general medicine, paediatrics, dentistry, pharmacy, nursing and social work, alongside preventive medicine, biomedical science and postgraduate education. A dedicated faculty for work with international students was created in 2014, and the English-medium programme for overseas students sits within it.",
+      "Its clinical teaching is not confined to a single campus hospital. Departments are distributed across leading hospitals throughout Kazan, which is what gives students access to a wide caseload rather than to whatever one institution happens to admit. The university's own clinic dates back to 1840 and its anatomical theatre to 1837.",
+      "Kazan itself is the capital of Tatarstan and one of Russia's principal university cities, with a settled international student population drawn from across Asia, Africa and the Middle East. The university is listed in the World Directory of Medical Schools.",
+      feesOnRequest("Kazan State Medical University"),
+    ],
+    highlights: [
+      "Founded 1814 — the third-oldest medical school in Russia",
+      "Full university status since 1994; a state institution",
+      "Clinical departments across Kazan's major hospitals, not one campus ward",
+      "English-medium programme within a dedicated international faculty",
+      "Listed in the World Directory of Medical Schools",
+      "No donation or capitation fee at any stage",
+    ],
+    whyStudy: RUSSIA_WHY,
+    cityLife: CITY_KAZAN,
+    facilities: RUSSIA_FACILITIES,
+    hostel: RUSSIA_HOSTEL,
   },
 
   /* ============================================================
@@ -1022,7 +1143,7 @@ export const UNIVERSITIES: University[] = [
      ============================================================ */
   {
     slug: "kazakh-national-medical-university",
-    rank: 15,
+    rank: 11,
     name: "Kazakh National Medical University",
     shortName: "Kazakh National",
     country: "Kazakhstan",
@@ -1058,8 +1179,9 @@ export const UNIVERSITIES: University[] = [
     blurb:
       "Kazakhstan's leading national medical university, in Almaty — the country's largest city and the short-flight option in Central Asia.",
     about: [
-      "Kazakh National Medical University is located in Almaty, Kazakhstan's largest city and its commercial centre. It delivers medical education to international students in English and heads the client's Priority 3 band — the destinations selected as affordable and emerging choices.",
+      "Kazakh National Medical University is located in Almaty, Kazakhstan's largest city and its commercial centre. It delivers medical education to international students in English and heads our Priority 3 band — the destinations selected as affordable and emerging choices.",
       "Almaty sits against the Tian Shan mountains and has a continental climate that is comfortable through much of the year. Kazakhstan's proximity to India means a notably shorter flight than the Russian or Chinese options, which matters for both arrival and family visits.",
+      "Established in 1930 and granted national university status in 2001, KazNMU is the largest medical campus in Kazakhstan and is recognised by the Ministry of Education and Science of the Republic of Kazakhstan alongside the WHO and WFME. It is taught by a very large faculty of clinicians, scientists and award-winning academics, and it supplements them with a visiting guest-faculty programme. Semesters run to five months, and English is the medium of instruction throughout the international programme.",
       feesOnRequest("Kazakh National Medical University"),
     ],
     highlights: [
@@ -1071,10 +1193,13 @@ export const UNIVERSITIES: University[] = [
       "Comfortable climate and modern curriculum",
     ],
     whyStudy: KAZAKHSTAN_WHY,
+    cityLife: CITY_ALMATY,
+    facilities: KAZAKHSTAN_FACILITIES,
+    hostel: KAZAKHSTAN_HOSTEL,
   },
   {
     slug: "kazakh-russian-medical-university",
-    rank: 16,
+    rank: 12,
     name: "Kazakh Russian Medical University",
     shortName: "Kazakh Russian",
     country: "Kazakhstan",
@@ -1108,10 +1233,11 @@ export const UNIVERSITIES: University[] = [
     hasPublishedFees: false,
     accent: "#2578A0",
     blurb:
-      "A medical university in Almaty teaching international cohorts in English, in the client's most economical destination band.",
+      "A medical university in Almaty teaching international cohorts in English, in our most economical destination band.",
     about: [
-      "Kazakh Russian Medical University is based in Almaty and delivers its medical programme in English to international students. It is the second of the two Kazakh institutions in the client's current lineup.",
+      "Kazakh Russian Medical University is based in Almaty and delivers its medical programme in English to international students. It is the second of the two Kazakh institutions in our current lineup.",
       "Kazakhstan sits in the Priority 3 band — the affordable and emerging choice. The case for it is economy without a long journey: modest tuition and living costs, a comfortable climate, Indian food available in the city, and a short flight from India.",
+      "Founded in 1992 as the Kazakhstan Medical University, KRMU was established under Dr Mukhtar Aliyev of the Academy of Sciences of Kazakhstan and is regarded as one of the country's premier private medical institutions. Its teaching staff includes foreign scientists and clinicians alongside Kazakh faculty, and it runs an academic mobility programme that lets students study and practise abroad during the degree. Indian teaching staff prepare Indian students specifically for the Indian screening examination, and admission follows the rules set by the Government of the Republic of Kazakhstan.",
       feesOnRequest("Kazakh Russian Medical University"),
     ],
     highlights: [
@@ -1123,6 +1249,9 @@ export const UNIVERSITIES: University[] = [
       "Good clinical exposure",
     ],
     whyStudy: KAZAKHSTAN_WHY,
+    cityLife: CITY_ALMATY,
+    facilities: KAZAKHSTAN_FACILITIES,
+    hostel: KAZAKHSTAN_HOSTEL,
   },
 
   /* ============================================================
@@ -1133,7 +1262,7 @@ export const UNIVERSITIES: University[] = [
      ============================================================ */
   {
     slug: "nanjing-medical-university",
-    rank: 17,
+    rank: 13,
     name: "Nanjing Medical University",
     shortName: "Nanjing Medical",
     country: "China",
@@ -1169,8 +1298,9 @@ export const UNIVERSITIES: University[] = [
     blurb:
       "Jiangsu's principal medical university, with the largest affiliated hospital network in the China lineup — 30+ teaching hospitals across the province.",
     about: [
-      "Nanjing Medical University is located in Nanjing, capital of Jiangsu Province, and heads the client's China selection. It teaches its MBBS programme in English across six years — five academic years plus a one-year internship — with a September intake.",
+      "Nanjing Medical University is located in Nanjing, capital of Jiangsu Province, and heads our China selection. It teaches its MBBS programme in English across six years — five academic years plus a one-year internship — with a September intake.",
       "Its clinical strength is the affiliated hospital network: more than thirty teaching hospitals, the largest of the five Chinese universities in the lineup. Nanjing itself is a major eastern city with a humid subtropical climate, hot summers and mild winters, roughly forty kilometres from Lukou International Airport.",
+      "Nanjing Medical University's clinical case rests on the scale of its affiliated network — 30+ teaching hospitals, the largest in our Chinese lineup alongside Capital Medical. The six-year English-medium programme runs five academic years plus a one-year internship on a single September intake, and Mandarin is taught alongside it because the clinical years put students in front of Chinese-speaking patients. It is a research-intensive institution, and undergraduates who want laboratory work can get it during the degree.",
       feesOnRequest("Nanjing Medical University"),
     ],
     highlights: [
@@ -1182,10 +1312,13 @@ export const UNIVERSITIES: University[] = [
       "40 km from Nanjing Lukou International Airport",
     ],
     whyStudy: CHINA_WHY,
+    cityLife: CITY_NANJING,
+    facilities: CHINA_FACILITIES,
+    hostel: CHINA_HOSTEL,
   },
   {
     slug: "southern-medical-university",
-    rank: 18,
+    rank: 14,
     name: "Southern Medical University",
     shortName: "Southern Medical",
     country: "China",
@@ -1223,6 +1356,7 @@ export const UNIVERSITIES: University[] = [
     about: [
       "Southern Medical University is based in Guangzhou, capital of Guangdong Province and the centre of the Pearl River Delta. Its MBBS programme runs six years in English — five academic years plus a one-year internship — with a September intake and more than twenty affiliated teaching hospitals.",
       "Guangzhou is one of China's most internationally connected cities, with a long-established foreign resident community. The climate is humid subtropical with hot summers and mild winters, and Baiyun International Airport is roughly forty-five kilometres from campus.",
+      "Southern Medical University in Guangzhou offers the mildest climate in our Chinese lineup — subtropical and warm through most of the year, which removes the winter adjustment that the northern campuses demand. Its 20+ affiliated teaching hospitals sit in one of China's largest and best-connected cities, with strong direct routes to India and a substantial international population already in place.",
       feesOnRequest("Southern Medical University"),
     ],
     highlights: [
@@ -1234,10 +1368,13 @@ export const UNIVERSITIES: University[] = [
       "Advanced simulation laboratories",
     ],
     whyStudy: CHINA_WHY,
+    cityLife: CITY_GUANGZHOU,
+    facilities: CHINA_FACILITIES,
+    hostel: CHINA_HOSTEL,
   },
   {
     slug: "chongqing-medical-university",
-    rank: 19,
+    rank: 15,
     name: "Chongqing Medical University",
     shortName: "Chongqing Medical",
     country: "China",
@@ -1275,6 +1412,7 @@ export const UNIVERSITIES: University[] = [
     about: [
       "Chongqing Medical University is located in Chongqing, one of China's four direct-administered municipalities and the largest city in the country's west. Its MBBS programme is taught in English over six years, including a one-year internship, with a September intake.",
       "The university has more than twenty affiliated teaching hospitals. Chongqing's climate is subtropical monsoon — mild winters and hot summers — and Jiangbei International Airport is around thirty kilometres from campus, a thirty-five to forty-five minute transfer.",
+      "Chongqing Medical University sits in one of the largest municipalities in the world, in the mountainous southwest where the Jialing meets the Yangtze. Its 20+ affiliated teaching hospitals serve an enormous urban population, which is precisely what produces the case variety the later years are chosen for. The six-year English-medium programme runs on a single September intake, with Mandarin taught alongside for clinical communication.",
       feesOnRequest("Chongqing Medical University"),
     ],
     highlights: [
@@ -1286,10 +1424,13 @@ export const UNIVERSITIES: University[] = [
       "30 km from Jiangbei International Airport",
     ],
     whyStudy: CHINA_WHY,
+    cityLife: CITY_CHONGQING,
+    facilities: CHINA_FACILITIES,
+    hostel: CHINA_HOSTEL,
   },
   {
     slug: "tianjin-medical-university",
-    rank: 20,
+    rank: 16,
     name: "Tianjin Medical University",
     shortName: "Tianjin Medical",
     country: "China",
@@ -1327,6 +1468,7 @@ export const UNIVERSITIES: University[] = [
     about: [
       "Tianjin Medical University is located in Tianjin, a direct-administered municipality on the northern coast and one of China's largest port cities, well connected to Beijing by high-speed rail. Its MBBS programme runs six years in English, including a one-year internship, with a September intake.",
       "The university has more than twenty affiliated teaching hospitals. Tianjin's climate is temperate monsoon — cold winters and warm summers — and Binhai International Airport is only about twenty kilometres from campus, the shortest transfer of the five Chinese universities.",
+      "Tianjin Medical University has one of the longer histories of international medical education in China, in a major northern port city half an hour from Beijing by high-speed rail. It offers something specific: a Beijing-adjacent education, with 20+ affiliated teaching hospitals and comparable climate, at a noticeably lower cost of living than the capital itself.",
       feesOnRequest("Tianjin Medical University"),
     ],
     highlights: [
@@ -1338,10 +1480,13 @@ export const UNIVERSITIES: University[] = [
       "Modern transport and smart-city infrastructure",
     ],
     whyStudy: CHINA_WHY,
+    cityLife: CITY_TIANJIN,
+    facilities: CHINA_FACILITIES,
+    hostel: CHINA_HOSTEL,
   },
   {
     slug: "capital-medical-university",
-    rank: 21,
+    rank: 17,
     name: "Capital Medical University",
     shortName: "Capital Medical",
     country: "China",
@@ -1378,7 +1523,8 @@ export const UNIVERSITIES: University[] = [
       "Beijing's own medical university, with 30+ affiliated teaching hospitals in the capital — the largest clinical network in the lineup alongside Nanjing.",
     about: [
       "Capital Medical University is located in Beijing and is one of the principal medical institutions in the Chinese capital. Its MBBS programme is delivered in English over six years, five academic years plus a one-year internship, with a September intake.",
-      "It has more than thirty affiliated teaching hospitals across Beijing — the joint-largest clinical network in the client's China selection. The climate is temperate monsoon, with cold winters and warm summers, and Capital International Airport is roughly thirty kilometres from campus.",
+      "It has more than thirty affiliated teaching hospitals across Beijing — the joint-largest clinical network in our China selection. The climate is temperate monsoon, with cold winters and warm summers, and Capital International Airport is roughly thirty kilometres from campus.",
+      "Capital Medical University sits in Beijing at the centre of Chinese medical research and health policy, and it carries one of the largest affiliated teaching hospital networks in the country — 30+ institutions, including several that set national clinical standards. For students who want proximity to the research and policy end of medicine as well as to patient volume, this is the strongest position in the Chinese lineup.",
       feesOnRequest("Capital Medical University"),
     ],
     highlights: [
@@ -1390,85 +1536,72 @@ export const UNIVERSITIES: University[] = [
       "Excellent international connectivity",
     ],
     whyStudy: CHINA_WHY,
+    cityLife: CITY_BEIJING,
+    facilities: CHINA_FACILITIES,
+    hostel: CHINA_HOSTEL,
   },
-
-  /* ============================================================
-     RETAINED — destinations from the 2026-27 portfolio that the
-     current brochure does not cover. Kept at the client's
-     instruction; fee data is the verified portfolio figure.
-     ============================================================ */
   {
-    slug: "fergana-medical-institute-of-public-health",
-    rank: 22,
-    name: "Fergana Medical Institute of Public Health",
-    shortName: "Fergana Medical",
-    country: "Uzbekistan",
-    countrySlug: "uzbekistan",
-    flag: "🇺🇿",
-    city: "Fergana",
+    slug: "chitwan-medical-college",
+    rank: 18,
+    name: "Chitwan Medical College",
+    shortName: "CMC",
+    country: "Nepal",
+    countrySlug: "nepal",
+    flag: "🇳🇵",
+    city: "Bharatpur",
     priority: 5,
-    airport: "Fergana International Airport",
-    airportCode: "FEG",
-    airportDistance: "~10 – 15 km",
+    airport: "Bharatpur Airport",
+    airportCode: "BHR",
+    airportDistance: "~5 km",
     airportDrive: null,
     course: "MBBS",
-    duration: "5 + 1 Years",
-    durationYears: 6,
+    duration: "4.5 + 1 Years (Incl. 1 Year Internship)",
+    durationYears: 5.5,
     medium: "English",
-    intake: "Sept / Oct",
+    intake: "Per the Medical Education Commission admission calendar",
     recognition: ["NMC", "WHO", "WDOMS"],
-    recognitionText: "Recognized by NMC (India), WHO & WDOMS",
+    recognitionText:
+      "Affiliated to Tribhuvan University · Recognized by the Nepal Medical Council · Listed in the World Directory of Medical Schools · NMC (India) eligibility to be verified against current regulations",
     affiliatedHospitals: null,
-    fmgePassRate: "55%+",
-    indianStudents: "1000+",
-    safetyRating: 4.2,
-    climate: "Moderate",
-    livingCost: "USD 120 – 180",
-    currency: "USD",
-    tuitionTotal: 21600,
-    tuitionInr: 1825200,
-    totalExpense: 25850,
-    totalExpenseInr: 2180000,
-    semesterSchedule: [1800, 1800, 3600, 3600, 3600, 3600],
-    hasPublishedFees: true,
-    accent: "#0E7C7B",
+    fmgePassRate: null,
+    indianStudents: null,
+    safetyRating: null,
+    climate: "Subtropical — hot summers, monsoon, mild winters",
+    livingCost: null,
+    currency: "VARIES",
+    tuitionTotal: null,
+    tuitionInr: null,
+    totalExpense: null,
+    totalExpenseInr: null,
+    semesterSchedule: [null, null, null, null, null, null],
+    hasPublishedFees: false,
+    established: "2006",
+    accent: "#A62B36",
     blurb:
-      "Central Asia's fast-rising medical destination — USD-denominated fees that shield you from currency volatility, a moderate climate, and food and culture close to home.",
+      "Nepal's closest thing to studying at home — a Tribhuvan University-affiliated college in Bharatpur with its own 750-bed teaching hospital, taught in English, a short journey from the Indian border.",
     about: [
-      "Fergana Medical Institute of Public Health is located in the Fergana Valley in eastern Uzbekistan. It is recognized by the National Medical Commission of India, approved by the World Health Organization, and listed in the World Directory of Medical Schools.",
-      "The programme runs five academic years plus a one-year internship, taught in English. Fees are denominated in US dollars rather than local currency, which removes the exchange-rate uncertainty that affects programmes priced in a volatile local currency over a six-year horizon.",
-      "Uzbekistan has invested heavily in its medical education sector over the past decade, and the Fergana Valley offers a warm, moderate climate and a food culture — plov, breads, kebabs, extensive vegetarian options — that Indian students adapt to quickly.",
+      "Chitwan Medical College was established in 2006 in Bharatpur, in Nepal's Chitwan district, and is affiliated to Tribhuvan University — Nepal's oldest and largest university, whose Institute of Medicine is the country's principal producer of medical graduates. The MBBS programme runs four and a half academic years followed by a one-year compulsory rotating internship.",
+      "The college operates its own 750-bed teaching hospital on site, which is where the clinical years are spent. Alongside MBBS it runs undergraduate programmes in nursing, pharmacy and public health, and a substantial postgraduate portfolio including MD and MS specialities and DM/MCh super-speciality programmes — which means the teaching hospital functions as a genuine tertiary referral centre rather than a teaching annexe.",
+      "It is recognized by the Nepal Medical Council, listed in the World Directory of Medical Schools, and holds quality-assurance accreditation from the University Grants Commission of Nepal. For Indian students, eligibility to sit FMGE or NExT on return is governed by the National Medical Commission's regulations as they stand at the time of admission and graduation — we confirm the current position in writing before anything is paid.",
+      "Two things make Nepal genuinely different from every other destination in this portfolio. Teaching is in English and Hindi is widely understood, so there is effectively no language adjustment on the ward. And MBBS fees at Nepali colleges are capped by the Medical Education Commission rather than set by each college, with a published ceiling that is higher outside the Kathmandu Valley than inside it.",
+      feesOnRequest("Chitwan Medical College"),
     ],
     highlights: [
-      "Fees in USD — no local-currency exchange exposure",
-      "NMC, WHO and WDOMS recognized",
-      "Moderate climate year-round",
-      "Culturally close to India — food, spices, hospitality",
-      "Rapidly modernising medical infrastructure",
-      "Direct flight connectivity via Tashkent",
+      "Affiliated to Tribhuvan University, Nepal",
+      "Its own 750-bed teaching hospital on campus",
+      "MD, MS and DM/MCh programmes alongside the MBBS",
+      "Recognized by the Nepal Medical Council; WDOMS listed",
+      "English-medium teaching, with Hindi widely understood in daily life",
+      "Fees regulated by Nepal's Medical Education Commission",
     ],
-    whyStudy: [
-      {
-        title: "Currency stability",
-        body: "USD-denominated tuition means your six-year budget is predictable, unlike programmes priced in a volatile local currency.",
-      },
-      {
-        title: "Cultural proximity",
-        body: "Uzbek cuisine, climate and hospitality are among the closest to India of any destination in the portfolio — the adjustment is genuinely easier.",
-      },
-      {
-        title: "New infrastructure",
-        body: "Significant recent state investment means modern laboratories, simulation facilities and teaching hospitals.",
-      },
-      {
-        title: "Growing recognition",
-        body: "Uzbek medical degrees are increasingly recognized internationally as the country expands its higher-education partnerships.",
-      },
-    ],
+    whyStudy: NEPAL_WHY,
+    cityLife: CITY_BHARATPUR,
+    facilities: NEPAL_FACILITIES,
+    hostel: NEPAL_HOSTEL,
   },
   {
     slug: "university-of-south-asia-kyrgyzstan",
-    rank: 23,
+    rank: 19,
     name: "University of South Asia",
     shortName: "University of South Asia",
     country: "Kyrgyzstan",
@@ -1507,6 +1640,7 @@ export const UNIVERSITIES: University[] = [
       "The University of South Asia is located in Bishkek, the capital of Kyrgyzstan. It is approved by the World Health Organization and recognized by the Educational Commission for Foreign Medical Graduates (ECFMG), which is the gateway body for US medical licensure.",
       "The MBBS programme runs 5.5 years including a one-year internship — a shorter path to graduation than the six-year Russian programmes — and is taught entirely in English. At USD 20,400 total for the full course, it is the most affordable option in our portfolio.",
       "Bishkek has one of the largest Indian student populations in Central Asia, with a well-developed ecosystem of Indian restaurants, grocery stores and student communities built up over two decades.",
+      "The University of South Asia sits in Bishkek, which has hosted Indian medical students for over two decades — long enough that Indian restaurants, grocery supply, hostel messes, student associations and senior guidance are all settled before a new student arrives. The programme runs 5.5 years including a one-year internship, half a year shorter than the Russian route, with intakes in both February and September. One thing must be read before anything else on this page: this listing carries ECFMG and WHO recognition, not NMC. If the intention is to return to India and practise, confirm the current NMC position for this university in writing before committing to anything.",
     ],
     highlights: [
       "Lowest total fee in the portfolio — USD 20,400",
@@ -1534,6 +1668,9 @@ export const UNIVERSITIES: University[] = [
         body: "Two decades of Indian students in Bishkek means Indian food, community and senior support are readily available.",
       },
     ],
+    cityLife: CITY_BISHKEK,
+    facilities: KYRGYZSTAN_FACILITIES,
+    hostel: KYRGYZSTAN_HOSTEL,
   },
 ];
 

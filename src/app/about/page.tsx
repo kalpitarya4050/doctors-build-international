@@ -11,6 +11,8 @@ import { RevealMedia, ParallaxMedia } from "@/components/ui/MediaMotion";
 import { Scrim } from "@/components/ui/Media";
 import { SectionHeading, Bloom } from "@/components/ui/Section";
 import { Icon } from "@/components/ui/Icon";
+import { UniversityLogo } from "@/components/ui/UniversityLogo";
+import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { DotGrid } from "@/components/ui/Decor";
 
@@ -90,7 +92,7 @@ export default function AboutPage() {
               <Reveal direction="up" delay={0.1}>
                 <p className="t-body max-w-[68ch]">
                   Over ten years we have placed students into medical universities across Georgia,
-                  Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Five thousand families have
+                  Russia, Kazakhstan, China, Nepal and Kyrgyzstan. Five thousand families have
                   made this decision with us. Most of our enquiries now arrive through parents who
                   have already sent one child abroad and are sending the next — which is the only
                   endorsement that has ever mattered to us.
@@ -149,6 +151,101 @@ export default function AboutPage() {
                 />
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partnerships.
+
+          The only photographs on this page that are actually OURS.
+          Everything else in the collage above is licensed stock
+          captioned as illustrative, which is honest but does not
+          prove anything. These do: an ordinary room, an ordinary
+          handshake, a bouquet — the kind of picture nobody stages
+          for a website, which is exactly why it carries weight with
+          a family deciding whether we are real.
+
+          Nobody is named. We have the roles from the client but not
+          a verified spelling of either name, and a caption under a
+          real person's face is a claim like any other on this site —
+          it goes in when it can be checked, not before. */}
+      <section
+        data-ground="white"
+        className="section relative isolate overflow-hidden"
+        aria-labelledby="partnerships"
+      >
+        <Bloom tone="gold" />
+        <div className="shell grid items-center gap-14 lg:grid-cols-[1fr_1.05fr] lg:gap-20">
+          <div>
+            <SectionHeading
+              align="left"
+              eyebrow="Partner Universities"
+              title={
+                <>
+                  We go and meet them <em>ourselves</em>
+                </>
+              }
+              lead="An agreement on paper is not the same as knowing the people behind it. Our team travels to the universities we place students at and sits down with the faculty who will actually teach them."
+            />
+
+            <Reveal direction="up" delay={0.08}>
+              <p className="t-body mt-7 max-w-[54ch]">
+                These photographs are from our visit to the Dean of North Caucasian State Academy
+                in Cherkessk, Russia — an NMC-eligible, WHO-recognised state academy where our
+                students study medicine in English.
+              </p>
+            </Reveal>
+
+            <Reveal direction="up" delay={0.14}>
+              <Link
+                href="/universities/north-caucasian-state-academy"
+                className="material-card hover-lift mt-8 flex items-center gap-4 rounded-[var(--radius-lg)] p-4 pr-6"
+              >
+                <UniversityLogo
+                  slug="north-caucasian-state-academy"
+                  shortName="NCSA"
+                  size={52}
+                />
+                <span className="min-w-0">
+                  <span className="block text-[0.9375rem] font-semibold text-brand">
+                    North Caucasian State Academy
+                  </span>
+                  <span className="block text-[0.8125rem] text-ink-muted">
+                    Cherkessk, Russia — see the campus and fees →
+                  </span>
+                </span>
+              </Link>
+            </Reveal>
+          </div>
+
+          {/* Offset pair, same treatment as the founding-story
+              collage so the page reads as one piece. */}
+          <div className="relative mx-auto w-full max-w-[34rem]">
+            <div className="relative grid grid-cols-2 gap-4">
+              <ParallaxMedia
+                id="dbi-ncsa-dean-handshake"
+                strength={10}
+                className="aspect-[3/4] rounded-[var(--radius-xl)] border border-line shadow-[var(--shadow-lg)]"
+                sizes="(max-width: 1024px) 45vw, 16rem"
+              />
+              <RevealMedia
+                id="dbi-ncsa-dean-welcome"
+                from="bottom"
+                className="mt-10 aspect-[3/4] rounded-[var(--radius-xl)] border border-line shadow-[var(--shadow-lg)]"
+                sizes="(max-width: 1024px) 45vw, 16rem"
+                overlay={
+                  <>
+                    <Scrim strength="medium" />
+                    <p className="absolute inset-x-0 bottom-0 p-4 text-[0.75rem] font-semibold leading-snug text-white">
+                      With the Dean of North Caucasian State Academy
+                    </p>
+                  </>
+                }
+              />
+            </div>
+            <p className="t-small mt-5 text-center">
+              Our own photographs, Cherkessk, Russia.
+            </p>
           </div>
         </div>
       </section>

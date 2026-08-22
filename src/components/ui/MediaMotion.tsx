@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { useRef, type ReactNode } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { img } from "@/lib/images";
@@ -245,33 +247,66 @@ export function RevealMedia({
 
 /** Continuously scrolling band of photographs. Two identical tracks
  *  translated -50% make the loop seamless. */
+export interface MarqueeTile {
+  /** Image-registry id, resolved through `img()`. */
+  id: string;
+  /** Primary line over the photograph. */
+  caption: string;
+  /** Where the tile navigates. Every tile is a link — a row of
+   *  photographs of places you can actually go to is an invitation,
+   *  and an invitation that does not click is a dead end. */
+  href: string;
+  /** Optional second line — city, fee, count. */
+  meta?: string;
+}
+
 export function MediaMarquee({
-  ids,
+  items,
   className,
   speed = 58,
   reverse = false,
   tileClassName = "w-[15rem] sm:w-[19rem] aspect-[4/3]",
   gap = 14,
-  captions,
+  label,
 }: {
-  ids: string[];
+  items: MarqueeTile[];
   className?: string;
   speed?: number;
   reverse?: boolean;
   tileClassName?: string;
   gap?: number;
-  captions?: Record<string, string>;
+  /** Names the row for screen readers, e.g. "Study destinations". */
+  label?: string;
 }) {
-  const track = (
+  /* The keyframe translates the doubled strip by exactly -50%, i.e.
+     one track width, so the loop only closes while a single track is
+     wider than the viewport. Six destinations at 19rem come to about
+     1900px — narrower than a large desktop, which would show a gap at
+     the wrap. Repeating the list until there are at least eight tiles
+     closes the loop without changing what is on screen. */
+  const MIN_TILES = 8;
+  const filled =
+    items.length === 0 || items.length >= MIN_TILES
+      ? items
+      : Array.from({ length: Math.ceil(MIN_TILES / items.length) }, () => items).flat();
+
+  /* `dup` renders the visual duplicate that makes the loop seamless.
+     It is hidden from assistive tech AND taken out of the tab order:
+     without tabIndex={-1} every destination would appear twice when
+     tabbing through, landing on the same page both times. */
+  const track = (dup: boolean) => (
     <div className="flex shrink-0 items-stretch" style={{ gap, paddingRight: gap }}>
-      {ids.map((id, i) => {
-        const src = img(id);
-        const caption = captions?.[id];
+      {filled.map((item, i) => {
+        const src = img(item.id);
         return (
-          <figure
-            key={`${id}-${i}`}
+          <Link
+            key={`${item.id}-${item.href}-${i}`}
+            href={item.href}
+            aria-hidden={dup || undefined}
+            tabIndex={dup ? -1 : undefined}
             className={cn(
-              "relative shrink-0 overflow-hidden rounded-[var(--radius-lg)] border border-line",
+              "group/tile relative shrink-0 overflow-hidden rounded-[var(--radius-lg)] border border-line",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-bright)]",
               tileClassName,
             )}
           >
@@ -283,27 +318,38 @@ export function MediaMarquee({
                 sizes="(max-width: 640px) 60vw, 20vw"
                 placeholder="blur"
                 blurDataURL={solidBlur(src.avgColor)}
-                className="object-cover"
+                className="object-cover transition-transform duration-[900ms] ease-out group-hover/tile:scale-[1.06]"
               />
             ) : (
-              <Placeholder className="absolute inset-0" seed={hashId(id)} />
+              <Placeholder className="absolute inset-0" seed={hashId(item.id)} />
             )}
-            {caption && (
-              <>
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(0deg, rgba(5,15,34,0.85), rgba(5,15,34,0.15) 45%, transparent 70%)",
-                  }}
-                />
-                <figcaption className="absolute inset-x-0 bottom-0 p-4 text-[0.8125rem] font-semibold tracking-[-0.005em] text-white">
-                  {caption}
-                </figcaption>
-              </>
-            )}
-          </figure>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(0deg, rgba(5,15,34,0.88), rgba(5,15,34,0.18) 48%, transparent 72%)",
+              }}
+            />
+            <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4">
+              <span className="min-w-0">
+                <span className="block truncate text-[0.8125rem] font-semibold tracking-[-0.005em] text-white">
+                  {item.caption}
+                </span>
+                {item.meta && (
+                  <span className="mt-0.5 block truncate text-[0.6875rem] text-on-dark-secondary">
+                    {item.meta}
+                  </span>
+                )}
+              </span>
+              <span
+                aria-hidden
+                className="grid size-6 shrink-0 place-items-center rounded-full material-chip-dark opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100"
+              >
+                <ArrowUpRight className="size-3.5" />
+              </span>
+            </span>
+          </Link>
         );
       })}
     </div>
@@ -317,8 +363,11 @@ export function MediaMarquee({
         WebkitMaskImage: "linear-gradient(90deg, transparent, black 6%, black 94%, transparent)",
       }}
     >
-      <div
-        className="flex w-max animate-marquee group-hover:[animation-play-state:paused]"
+      {/* Pauses on hover so a moving tile can actually be clicked, and
+          on focus-within so it stops for keyboard users too. */}
+      <ul
+        aria-label={label}
+        className="flex w-max animate-marquee list-none group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]"
         style={
           {
             "--marquee-duration": `${speed}s`,
@@ -326,11 +375,11 @@ export function MediaMarquee({
           } as React.CSSProperties
         }
       >
-        {track}
-        <div aria-hidden className="contents">
-          {track}
-        </div>
-      </div>
+        <li className="contents">{track(false)}</li>
+        <li aria-hidden className="contents">
+          {track(true)}
+        </li>
+      </ul>
     </div>
   );
 }

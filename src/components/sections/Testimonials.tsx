@@ -12,7 +12,7 @@ const DEST_TINT: Record<string, string> = {
   Russia: "linear-gradient(135deg,var(--dest-russia),var(--gold-300))",
   Kazakhstan: "linear-gradient(135deg,var(--dest-kazakhstan),var(--gold-300))",
   China: "linear-gradient(135deg,var(--dest-china),var(--gold-300))",
-  Uzbekistan: "linear-gradient(135deg,var(--dest-uzbekistan),var(--gold-300))",
+  Nepal: "linear-gradient(135deg,var(--dest-nepal),var(--gold-300))",
   Kyrgyzstan: "linear-gradient(135deg,var(--dest-kyrgyzstan),var(--gold-300))",
 };
 

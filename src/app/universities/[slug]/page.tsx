@@ -15,7 +15,9 @@ import {
   MapPin,
   Check,
   Info,
-  } from "lucide-react";
+  Building2,
+  BedDouble,
+} from "lucide-react";
 import {
   UNIVERSITIES,
   getUniversity,
@@ -34,7 +36,11 @@ import {
   uniHeroCaption,
   uniSlotImage,
 } from "@/lib/data/media-map";
-import { uniCampusImages, uniCityImages } from "@/lib/data/university-images";
+import {
+  galleryCampusImages,
+  galleryCityImages,
+  hasOwnedPhotos,
+} from "@/lib/data/owned-photos";
 import { PageHero } from "@/components/layout/PageHero";
 import { LeadSection } from "@/components/sections/LeadSection";
 import { UniversityMedia } from "@/components/sections/UniversityMedia";
@@ -504,6 +510,102 @@ export default async function UniversityPage({
         </div>
       </section>
 
+
+      {/* ---------------- Living in the city ---------------- */}
+      <section
+        data-ground="white"
+        className="section relative isolate"
+        id="city"
+        aria-labelledby="city-life"
+      >
+        <DotGrid gap={26} opacity={0.55} />
+        <div className="shell">
+          <SectionHeading
+            eyebrow="Where You Would Live"
+            title={
+              <>
+                Living in <em>{u.cityLife.name}</em>
+              </>
+            }
+            lead={`Campus is where you study. ${u.cityLife.name} is where you spend the rest of it.`}
+          />
+          <Reveal direction="up" className="mx-auto mt-10 max-w-[72ch]">
+            <div className="material-card rounded-[var(--radius-lg)] p-8 sm:p-10">
+              <div className="flex items-center gap-2.5">
+                <MapPin className="size-4 shrink-0 text-[var(--accent)]" />
+                <span className="text-[0.6875rem] font-bold tracking-[0.06em] text-ink-muted uppercase">
+                  {u.city}, {u.country}
+                </span>
+              </div>
+              <p className="t-body mt-5 leading-relaxed">{u.cityLife.body}</p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ---------------- Facilities & hostel ---------------- */}
+      <section
+        data-ground="linen"
+        className="section"
+        id="campus"
+        aria-labelledby="campus-life"
+      >
+        <div className="shell grid gap-14 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <SectionHeading
+              align="left"
+              eyebrow="On Campus"
+              title={
+                <>
+                  Facilities at <em>{u.shortName}</em>
+                </>
+              }
+            />
+            <RevealGroup className="mt-8 flex flex-col gap-3" stagger={0.04}>
+              {u.facilities.map((f) => (
+                <RevealItem key={f}>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
+                      <Building2 className="size-3.5" />
+                    </span>
+                    <p className="t-small leading-relaxed">{f}</p>
+                  </div>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          </div>
+
+          <div>
+            <SectionHeading
+              align="left"
+              eyebrow="Accommodation"
+              title={
+                <>
+                  Hostel and <em>daily life</em>
+                </>
+              }
+            />
+            <RevealGroup className="mt-8 flex flex-col gap-3" stagger={0.04}>
+              {u.hostel.map((h) => (
+                <RevealItem key={h}>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
+                      <BedDouble className="size-3.5" />
+                    </span>
+                    <p className="t-small leading-relaxed">{h}</p>
+                  </div>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+            <p className="t-small mt-6 text-ink-muted italic">
+              Facilities and accommodation are confirmed per university and per
+              intake during counselling — ask us for the current position before
+              you commit.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ---------------- Photographic band ---------------- */}
       <ParallaxMedia
         id={uniSlotImage(u.slug, "students")}
@@ -635,10 +737,11 @@ export default async function UniversityPage({
       </section>
 
       <UniversityMedia
-        campus={uniCampusImages(u.slug)}
-        city={uniCityImages(u.slug)}
+        campus={galleryCampusImages(u.slug)}
+        city={galleryCityImages(u.slug)}
         universityName={u.shortName}
         place={`${u.city}, ${u.country}`}
+        campusIsOwned={hasOwnedPhotos(u.slug)}
       />
 
       {/* ---------------- FAQ ---------------- */}

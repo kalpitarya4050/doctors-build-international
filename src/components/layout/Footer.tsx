@@ -74,7 +74,7 @@ export function Footer() {
         <div className="shell grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
-              <LogoMark className="size-12" id="footer" />
+              <LogoMark className="size-12" />
               <span className="flex flex-col leading-none">
                 <span className="font-accent text-[1.25rem] tracking-[0.01em]">
                   Doctors <span className="gold-text">Build</span>

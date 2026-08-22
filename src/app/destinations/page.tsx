@@ -12,7 +12,7 @@ import { DotGrid } from "@/components/ui/Decor";
 export const metadata: Metadata = {
   title: `MBBS Abroad Destinations ${SITE.admissionYear} — Six Countries Compared`,
   description:
-    "Compare MBBS abroad destinations for Indian students: Georgia, Russia, Kazakhstan, China, Uzbekistan and Kyrgyzstan. Fees from ₹15.91 lakh, NMC eligible, English medium, no IELTS.",
+    "Compare MBBS abroad destinations for Indian students: Georgia, Russia, Kazakhstan, China, Nepal and Kyrgyzstan. Fees from ₹15.91 lakh, NMC eligible, English medium, no IELTS.",
   alternates: { canonical: "/destinations" },
 };
 

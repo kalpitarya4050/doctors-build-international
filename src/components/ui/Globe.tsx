@@ -212,11 +212,11 @@ export function Globe({
     }
 
     /* ---- destinations ----------------------------------------- */
-    /* Fan the labels by LONGITUDE RANK, not array index. Uzbekistan
-       (69E), Kyrgyzstan (74.6E) and Kazakhstan (76.9E) sit within eight
-       degrees of one another, so any fan keyed on array order can hand
-       two neighbours the same offset and hide one behind the other.
-       Ranking by longitude guarantees adjacent labels differ. */
+    /* Fan the labels by LONGITUDE RANK, not array index. Kyrgyzstan
+       (74.6E) and Kazakhstan (76.9E) sit two degrees apart, and Nepal
+       (84.4E) is not far behind, so any fan keyed on array order can
+       hand two neighbours the same offset and hide one behind the
+       other. Ranking by longitude guarantees adjacent labels differ. */
     const byLng = [...COUNTRIES].sort((a, b) => a.lng - b.lng).map((c) => c.slug);
     const targets = COUNTRIES.map((c) => ({
       lat: c.lat,

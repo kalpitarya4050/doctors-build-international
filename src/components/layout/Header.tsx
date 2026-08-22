@@ -295,9 +295,9 @@ function DestinationsMega() {
 /* ============================================================
    Partner universities — one country open at a time.
 
-   The previous version printed all six countries and all 23
+   The previous version printed all six countries and all 19
    universities at once, in three columns, inside a scroll box. It
-   was accurate and unreadable: six headings and 23 two-line
+   was accurate and unreadable: six headings and 19 two-line
    entries is more than a nav menu can carry, the columns broke the
    country grouping across gutters, and any country below the fold
    needed a scroll inside a hover menu — which closes the moment
@@ -531,7 +531,7 @@ function MobileMenu({
                 ))}
               </ul>
 
-              {/* Grouped under a country heading rather than 23 rows
+              {/* Grouped under a country heading rather than 19 rows
                   each repeating the same six flags — on a phone that
                   list was the same flag six or eight times running,
                   which reads as noise and tells you nothing. */}
